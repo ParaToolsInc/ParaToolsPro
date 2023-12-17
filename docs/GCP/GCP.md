@@ -6,18 +6,18 @@ In the following tutorial, we roughly follow the same steps as the
 ["quickstart tutorial"][1] from the [Google HPC-Toolkit][2] project.
 For the purposes of this tutorial, we make the following assumptions:
 
-1. You have [created a Google Cloud account][3].
-2. You have [created a Google Cloud project][4] appropriate for this tutorial
-   and it is [selected][15].
-3. You have [setup billing for your Google Cloud Project][5].
-4. You have [enabled the Compute Engine API][6].
-5. You have [enabled the Filestore API][7].
-6. You have [enabled the Cloud Storage API][8]
-7. You have [enabled the Sevice Usage API][9].
-8. You have [enabled the Secret Manager API][10].
-9. You are aware of [the costs for running instances on GCP Compute Engine][11] and
-   of the costs of using the E4S Pro GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
-10. You are comfortable using the [GCP Cloud Shell][12], or are running locally
+- You have [created a Google Cloud account][3].
+- You have [created a Google Cloud project][4] appropriate for this tutorial
+  and it is [selected][15].
+- You have [setup billing for your Google Cloud Project][5].
+- You have [enabled the Compute Engine API][6].
+- You have [enabled the Filestore API][7].
+- You have [enabled the Cloud Storage API][8]
+- You have [enabled the Sevice Usage API][9].
+- You have [enabled the Secret Manager API][10].
+- You are aware of [the costs for running instances on GCP Compute Engine][11] and
+  of the costs of using the E4S Pro GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
+- You are comfortable using the [GCP Cloud Shell][12], or are running locally
     (which will match this tutorial) and are familiar with SSH, a terminal and have
     [installed][13] and [initialized the gcloud CLI][14]
 
@@ -39,29 +39,42 @@ For the purposes of this tutorial, we make the following assumptions:
 
 ## Tutorial
 
-### Getting set up
+### Getting Set Up
 
 First, let's grab your `PROJECT_ID` and `PROJECT_NUMBER`.
-
-1. Navigate to the [GCP project selector][15] and select the project that you'll be using for this tutorial.
-2. Take note of the `PROJECT_ID` and `PROJECT_NUMBER`
-3. Open your local shell or the [GCP Cloud Shell][12], and run the following commands:
-``` shell linenums="1"
+Navigate to the [GCP project selector][15] and select the project that you'll be using for this tutorial.
+Take note of the `PROJECT_ID` and `PROJECT_NUMBER`
+Open your local shell or the [GCP Cloud Shell][12], and run the following commands:
+``` bash linenums="1"
 export PROJECT_ID=<enter your project ID here>
 export PROJECT_NUMBER=<enter your project number here>
 ```
 
 Next, nsure that the default Compute Engine service account is enabled:
-``` shell
- gcloud iam service-accounts enable \
-     --project="$PROJECT_ID" \
+``` bash
+gcloud iam service-accounts enable \
+     --project="${PROJECT_ID}" \
      ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
 ```
 and add the `roles/editor` IAM role to the service account:
 
-``` shell
-gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+``` bash
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
     --role=roles/editor
 ```
 
+### Install the [Google Cloud HPC-Toolkit][2]
+
+Clone the [Google Cloud HPC-Toolkit][2] and change directories to the cloned repository:
+``` bash linenums="1"
+git clone https://github.com/GoogleCloudPlatform/hpc-toolkit.git
+cd hpc-toolkit/
+```
+Next build the HPC-Toolkit and verify the version and that it built correctly.
+``` bash
+make
+./ghpc --version
+```
+
+### Deploy the Cluster
