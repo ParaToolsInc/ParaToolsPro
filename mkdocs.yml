@@ -1,7 +1,10 @@
 site_name: E4S Pro Documentation
 theme:
   name: material
+  logo: assets/e4spro-440-220.png
   features:
+    - navigation.instant
+    - navigation.tracking
     - navigation.tabs
     - navigation.sections
     - toc.integrate
@@ -10,21 +13,29 @@ theme:
     - search.highlight
     - contgent.tabs.link
     - content.code.annotation
+    - content.code.annotate # (1)
     - content.code.copy
+    - content.code.select
   language: en
   palette:
-    - scheme: default
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
       toggle:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
-      primary: teal
-      accent: purple
-    - scheme: slate
+      primary: grey
+      accent: red
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
-      primary: teal
-      accent: lime
+      primary: white
+      accent: deep orange
+
+# plugins:
+#   - privacy:
+#       enabled: !ENV [CI, false]
 
 markdown_extensions:
   - pymdownx.highlight:
@@ -44,9 +55,26 @@ markdown_extensions:
       emoji_generator: !!python/name:materialx.emoji.to_svg
 
 extra:
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ParaToolsInc
+      link: https://github.com/ParaToolsInc/E4S-Pro
 
 copyright: |
   &copy; 2023 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
+
+# Page tree
+nav:
+  - Home: index.md
+  - AWS:
+    - AWS Getting Started: AWS/AWS.md
+    - AWS Parallel Cluster Config: AWS/pcluster.md
+  - GCP:
+    - GCP Getting Started: GCP/GCP.md
+    - HPC Toolkit Blueprint: GCP/blueprint.md

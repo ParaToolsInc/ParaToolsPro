@@ -1,0 +1,45 @@
+Region: us-west-2
+Image:
+  Os: ubuntu2004
+  CustomAmi: ami-0875d0d78428a1ac3
+HeadNode:
+  Dcv:
+    Enabled: true
+  InstanceType: t3.2xlarge
+  Networking:
+    SubnetId: subnet-0c1b5c5afcae4b08a
+  Ssh:
+    KeyName: paratools-collab
+  LocalStorage:
+    RootVolume:
+      Size: 200
+      VolumeType: gp3
+Scheduling:
+  Scheduler: slurm
+  SlurmQueues:
+  - Name: queue1
+    ComputeSettings:
+      LocalStorage:
+        RootVolume:
+          Size: 200
+          VolumeType: gp3
+    ComputeResources:
+    - Name: c5n-9xlarge
+      Efa:
+        Enabled: true
+      InstanceType: c5n.9xlarge
+      MinCount: 0
+      MaxCount: 2
+    Networking:
+      PlacementGroup:
+        Enabled: true
+      SubnetIds:
+      - subnet-0f4d821e9e98cbab9
+LoginNodes:
+  Pools:
+    - Name: e4s-login
+      Count: 1
+      InstanceType: c5n.2xlarge
+      Networking:
+        SubnetIds:
+          - subnet-0c1b5c5afcae4b08a
