@@ -17,6 +17,7 @@ theme:
     - content.code.annotate # (1)
     - content.code.copy
     - content.code.select
+    - content.tabs.link
   language: en
   palette:
     - media: "(prefers-color-scheme: light)"
@@ -25,20 +26,23 @@ theme:
         icon: material/toggle-switch-off-outline
         name: Switch to dark mode
       primary: grey
-      accent: red
+      accent: blue
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
       toggle:
         icon: material/toggle-switch
         name: Switch to light mode
       primary: white
-      accent: deep orange
+      accent: blue
 
 # plugins:
 #   - privacy:
 #       enabled: !ENV [CI, false]
 
 markdown_extensions:
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true
   - toc:
       permalink: true
       toc_depth: 3
@@ -54,7 +58,6 @@ markdown_extensions:
       generic: true
   - footnotes
   - pymdownx.details
-  - pymdownx.superfences
   - pymdownx.mark
   - attr_list
 

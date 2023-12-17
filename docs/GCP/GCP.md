@@ -50,6 +50,13 @@ export PROJECT_ID=<enter your project ID here>
 export PROJECT_NUMBER=<enter your project number here>
 ```
 
+Set a default project you will be using for this tutorial.
+If you have multiple projects you can switch back to a different one when you are finished.
+
+``` bash
+gcloud config set project "${PROJECT_ID}"
+```
+
 Next, nsure that the default Compute Engine service account is enabled:
 ``` bash
 gcloud iam service-accounts enable \
@@ -66,7 +73,54 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 ### Install the [Google Cloud HPC-Toolkit][2]
 
-Clone the [Google Cloud HPC-Toolkit][2] and change directories to the cloned repository:
+First install the dependencies of `ghpc`. Instructions to do this are included below.
+If you encounter trouble please check the latest instructions from Google,
+available [here]:[prereqs].
+
+[prereqs]: https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies
+
+!!! info "Install the [Google Cloud HPC-Toolkit][2]  Prerequisites"
+    Please download and install any missing software packages from the following list:
+
+    - [Terraform] version 1.2.0 or later
+    - [Packer] version 1.7.9 or later
+    - [Go] version 1.188 or later. Ensure that the `GOPATH` is setup and `go` is on your `PATH`.
+      You may need to add the following to `.profile` or `.bashrc` startup "dot" file:
+      ``` bash
+      export PATH=$PATH:$(go env GOPATH)/bin
+      ```
+    - [Git]
+    - `make` (see below for instructions specific to your OS)
+    === "macOS"
+        `make` is packaged with the Xcode command line developer tools on macOS.
+        To install, run:
+        ``` bash
+        xcode-select --install
+        ```
+    === "Ubuntu/Debian"
+        Install `make` with the OS' package manager:
+        ``` bash
+        apt-get -y install make
+        ```
+    === "CentOS/RHEL"
+        Install `make` with the OS' package manager:
+        ``` bash
+        yum install -y make
+        ```
+
+    !!! Note
+        Most of the packages above may be installable through your OSes package manager.
+        For example, if you have [Homebrew] on macOS you should be able to `brew install <package_name>`
+        for most of these items, where `<package_name>` is, e.g., `go`.
+
+[Terraform]: https://www.terraform.io/downloads
+[Packer]: https://www.packer.io/downloads
+[Go]: https://go.dev/doc/install
+[Git]: https://github.com/git-guides/install-git
+[Homebrew]: https://brew.sh
+
+Once all the software listed above has been verified and/or iinstalled, clone the [Google Cloud HPC-Toolkit][2]
+and change directories to the cloned repository:
 ``` bash linenums="1"
 git clone https://github.com/GoogleCloudPlatform/hpc-toolkit.git
 cd hpc-toolkit/
@@ -75,6 +129,42 @@ Next build the HPC-Toolkit and verify the version and that it built correctly.
 ``` bash
 make
 ./ghpc --version
+```
+If you would like to install the compiled binary to a location on your `$PATH`,
+run
+``` bash
+sudo make install
+```
+to install the `ghpc` binary into `/usr/local/bin`, of if you do not have root
+priviledges or do not want to install the binary into a system wide location, run
+``` bash
+make install-user
+```
+to install `ghpc` into `${HOME}/bin` and then ensure this is on your path:
+
+``` bash
+export PATH="${PATH}:${HOME}/bin"
+```
+
+### Grant ADC access to Terraform and Enable OS Login
+
+Generate cloud credentials associated with your Google Cloud account and grant
+Terraform access to the Aplication Default Credential (ADC).
+
+!!! note
+    If you are using the Cloud Shell you can skip this step.
+
+``` bash
+gcloud auth application-default login
+```
+
+To be able to connect to VMs in the cluster OS Login must be enabled.
+Unless OS Login is already enabled at the organization level, enable it at the project level.
+To do this, run:
+
+``` bash
+gcloud compute project-info add-metadata \
+     --metadata enable-oslogin=TRUE
 ```
 
 ### Deploy the Cluster
