@@ -50,10 +50,18 @@ First, let's grab your `PROJECT_ID` and `PROJECT_NUMBER`.
 export PROJECT_ID=<enter your project ID here>
 export PROJECT_NUMBER=<enter your project number here>
 ```
-4. Ensure that the default Compute Engine service account is enabled:
-``` shell linenums="1"
+
+Next, nsure that the default Compute Engine service account is enabled:
+``` shell
  gcloud iam service-accounts enable \
-     --project=$PROJECT_ID \
+     --project="$PROJECT_ID" \
      ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
+```
+and add the `roles/editor` IAM role to the service account:
+
+``` shell
+gcloud projects add-iam-policy-binding "$PROJECT_ID" \
+    --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --role=roles/editor
 ```
 
