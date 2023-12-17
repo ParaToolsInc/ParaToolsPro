@@ -168,3 +168,66 @@ gcloud compute project-info add-metadata \
 ```
 
 ### Deploy the Cluster
+
+Copy the [e4s-pro-slurm-cluster-blueprint-example][blueprint] from the
+E4S Pro documentation to your clipboard, then paste it into a file named
+`E4S-Pro-Slurm-Cluster-Blueprint.yaml`. After copying the text, in your terminal
+do the following:
+
+``` bash
+cat > E4S-Pro-Slurm-Cluster-Blueprint.yaml
+# paste the copied text # (1)
+# press Ctrl-d to add an end-of-file character
+cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
+```
+
+1. !!! note
+       Usually `Ctrl-v`, or `Command-v` on macOS
+2. !!! note
+       This is optional, but usually a good idea
+
+Using your favorite editor, select appropriate instance typtes for the compute partitions,
+and remove the h3 partition if you do not have access to h3 instances yet.
+See the annotations and pay extra attention to the highlihgted lines.
+
+!!! note
+    In particular:
+
+    - Determine if you want to pass the `${PROJECT_ID}` on the command line or in the blueprint
+    - Verify that the `image_family` key matches the image for E4S Pro from the GCP marketplace
+    - Adjust the region and zone used, if desired
+    - Limit the IP `ranges` to those you will be connecting from via SSH in the `ssh-login`
+      `firewall_rules` rule.
+    - Set an appropriate `machine_type` and `dynamic_node_count_max` for your `compute_node_group`.
+
+Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
+set deployment variables and create the deployment folder.
+
+!!! info "Create deployment folder"
+
+    ``` bash
+    ./ghpc create E4S-Pro-Slurm-Cluster-Blueprint.yaml \
+      --vars project_id=${PROJECT_ID} # (1)!
+    ```
+
+    1. !!! note
+           If you uncommented and updated the `vars.project_id:` you do not need to pass
+           `--vars project_id=...` on the command line.
+           If you're bringing a cluster back online that was previously deleted, but
+           the blueprint has been modified and the deployment folder is still present,
+           the `-w` flag will let you overwrite the deployment folder contents with the
+           latest changes.
+
+??? note inline end
+    It may take a few minutes to finish provisioning your cluster.
+At this point you will be prompted to review or accept the proposed changes.
+You may review them if you like, but you should press `a` for accept once satisfied.
+Now the cluster can be deployed.
+Run the following command to deploy your E4S Pro cluster:
+
+!!! info "Perform the deployment"
+    ``` bash
+    ./ghpc deploy e4s-23-11-cluster-slurm-rocky8
+    ```
+
+[blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
