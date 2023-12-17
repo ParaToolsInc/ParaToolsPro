@@ -152,7 +152,7 @@ Generate cloud credentials associated with your Google Cloud account and grant
 Terraform access to the Aplication Default Credential (ADC).
 
 !!! note
-    If you are using the Cloud Shell you can skip this step.
+    If you are using the [Cloud Shell][12] you can skip this step.
 
 ``` bash
 gcloud auth application-default login
@@ -188,16 +188,19 @@ cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
 
 Using your favorite editor, select appropriate instance typtes for the compute partitions,
 and remove the h3 partition if you do not have access to h3 instances yet.
-See the annotations and pay extra attention to the highlihgted lines.
+See the expandable annotations and pay extra attention to the highlihgted lines
+on the [e4s-pro-slurm-cluster-blueprint-example][blueprint] example.
 
-!!! note
+!!! Tip "Pay Attention"
     In particular:
 
     - Determine if you want to pass the `${PROJECT_ID}` on the command line or in the blueprint
     - Verify that the `image_family` key matches the image for E4S Pro from the GCP marketplace
     - Adjust the region and zone used, if desired
     - Limit the IP `ranges` to those you will be connecting from via SSH in the `ssh-login`
-      `firewall_rules` rule.
+      `firewall_rules` rule, if in a production setting.
+      If you plan to connect only from the [cloud shell][12] the `ssh-login`
+      `firewall_rules` rule may be completely removed.
     - Set an appropriate `machine_type` and `dynamic_node_count_max` for your `compute_node_group`.
 
 Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
@@ -229,5 +232,15 @@ Run the following command to deploy your E4S Pro cluster:
     ``` bash
     ./ghpc deploy e4s-23-11-cluster-slurm-rocky8
     ```
+
+### Connect to the Cluster
+
+Once the cluster is deployed, ssh to the login node.
+
+1. Go to the __Compute Engine > VM Instances__ page.
+
+    [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
+
+2. 
 
 [blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
