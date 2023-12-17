@@ -1,4 +1,4 @@
-# GCP Getting Started
+# E4S Pro Getting Started with Google Cloud Platform (GCP)
 
 ## General Background Information
 
@@ -241,6 +241,6 @@ Once the cluster is deployed, ssh to the login node.
 
     [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
 
-2. 
+2. `ssh`
 
 [blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
