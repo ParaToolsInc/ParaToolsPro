@@ -57,7 +57,7 @@ If you have multiple projects you can switch back to a different one when you ar
 gcloud config set project "${PROJECT_ID}"
 ```
 
-Next, nsure that the default Compute Engine service account is enabled:
+Next, ensure that the default Compute Engine service account is enabled:
 ``` bash
 gcloud iam service-accounts enable \
      --project="${PROJECT_ID}" \
@@ -75,7 +75,7 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 First install the dependencies of `ghpc`. Instructions to do this are included below.
 If you encounter trouble please check the latest instructions from Google,
-available [here]:[prereqs].
+available [here]:[prereqs]. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.
 
 [prereqs]: https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies
 
@@ -119,7 +119,7 @@ available [here]:[prereqs].
 [Git]: https://github.com/git-guides/install-git
 [Homebrew]: https://brew.sh
 
-Once all the software listed above has been verified and/or iinstalled, clone the [Google Cloud HPC-Toolkit][2]
+Once all the software listed above has been verified and/or installed, clone the [Google Cloud HPC-Toolkit][2]
 and change directories to the cloned repository:
 ``` bash linenums="1"
 git clone https://github.com/GoogleCloudPlatform/hpc-toolkit.git
@@ -186,9 +186,9 @@ cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
 2. !!! note
        This is optional, but usually a good idea
 
-Using your favorite editor, select appropriate instance typtes for the compute partitions,
+Using your favorite editor, select appropriate instance types for the compute partitions,
 and remove the h3 partition if you do not have access to h3 instances yet.
-See the expandable annotations and pay extra attention to the highlihgted lines
+See the expandable annotations and pay extra attention to the highlighted lines
 on the [e4s-pro-slurm-cluster-blueprint-example][blueprint] example.
 
 !!! Tip "Pay Attention"
