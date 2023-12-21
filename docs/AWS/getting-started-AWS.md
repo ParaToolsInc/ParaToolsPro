@@ -46,16 +46,19 @@ sudo ./aws/install
 ```
 Note, if you do not have sudo user rights, you must select the install and bin, with the flags `-i` and `-b`.
 ```
-./aws/install -i ~.local/aws-cli -b ~/local/bin
+./aws/install -i ~.local/aws-cli -b ~/.local/bin
 ```
 
 ### AWS Security Credentials and CLI Configuration 
-If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credential**, and scroll down to **
+If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credential**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely.
+
+Now we can configure AWS with the security credentials.
+```
 $ aws configure
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-Default region name [us-east-1]: us-east-1
-Default output format [None]:
+Default region name [us-east-1]: us-west-2
+Default output format [None]: json
 ```
 
 
@@ -105,7 +108,7 @@ You can then ssh into the cluster
 
 
 
-Now that you have AWS, and Pcluster, you must configure them with the information required to authenticate you. First on AWS console, if you do not already have an AWS Access Key, go to IAM -> Users -> "your-user-name" -> Security Credentials -> Create ccess key. CHATGPT FIX THE NEXT STUFF Making sure to treat that key very safely. 
+Now that you have AWS, and Pcluster, you must configure them with the information required to authenticate you. First on AWS console, if you do not already have an AWS Access Key, go to IAM -> Users -> "your-user-name" -> Security Credentials -> Create ccess key. Making sure to treat that key very safely. 
 
 Then in the command line,  
 ``` bash linenums="1"
