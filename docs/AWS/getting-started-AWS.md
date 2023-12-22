@@ -10,7 +10,7 @@ For the purposes of this tutorial, we make the following assumptions:
 ## Tutorial
 
 ### Install [AWS ParallelCluster][1]
-To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.  Note, for this section we essentially follow ["Setting Up AWS ParallelCluster"][1], if you have any issues look there.
+To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.  For this section we essentially follow ["Setting Up AWS ParallelCluster"][1], if you have any issues look there.
 
 ``` bash linenums="1"
 python3 -m pip install --upgrade pip
@@ -38,7 +38,7 @@ node --version
 ```
 
 ### Install [AWS Command Line Interface][3]
-Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster. Note, for this section we essentially follow ["Installing AWS CLI"][9], if you have any issues look there. 
+Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster. Dor this section we follow ["Installing AWS CLI"][9], if you have any issues look there. 
 ```
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -50,7 +50,7 @@ Note, if you do not have sudo user rights, you must select the install and bin, 
 ```
 
 ### AWS Security Credentials and CLI Configuration 
-Note, for this section we follow [Creating Access Keys][11] and [Configuring AWS CLI][10], if you have any issues look there. 
+For this section we follow [Creating Access Keys][11] and [Configuring AWS CLI][10], if you have any issues look there. 
 If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credentials**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely. 
 
 Now we can configure AWS with those security credentials.
