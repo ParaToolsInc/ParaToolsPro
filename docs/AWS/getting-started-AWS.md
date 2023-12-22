@@ -6,7 +6,7 @@ In this tutorial we will show you how to launch an HPC cluster on AWS. You will 
 
 Up until step X. we essentially follow, with some extra clairifcation, ["Setting Up AWS ParallelCluster"][1]. For the purposes of this tutorial, we make the following assumptions:
 - You have created an [AWS account][5], and [Administrative User][4]
-- you have create an EC2 Key 
+  
 ## Tutorial
 
 ### Install [AWS ParallelCluster][1]
