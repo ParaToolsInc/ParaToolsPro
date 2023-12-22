@@ -4,13 +4,13 @@
 
 In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.
 
-Up until step X. we essentially follow, with some extra clairifcation, ["Setting Up AWS ParallelCluster"][1]. For the purposes of this tutorial, we make the following assumptions:
+For the purposes of this tutorial, we make the following assumptions:
 - You have created an [AWS account][5], and an [Administrative User][4]
   
 ## Tutorial
 
 ### Install [AWS ParallelCluster][1]
-To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.
+To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.  Note, for this section we essentially follow ["Setting Up AWS ParallelCluster"][1], if you have any issues look there.
 
 ``` bash linenums="1"
 python3 -m pip install --upgrade pip
@@ -38,7 +38,7 @@ node --version
 ```
 
 ### Install [AWS Command Line Interface][3]
-Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster.
+Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster. Note, for this section we essentially follow ["Installing AWS CLI"][9], if you have any issues look there. 
 ```
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
@@ -50,9 +50,10 @@ Note, if you do not have sudo user rights, you must select the install and bin, 
 ```
 
 ### AWS Security Credentials and CLI Configuration 
-If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credentials**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely.
+Note, for this section we follow [Creating Access Keys][11] and [Configuring AWS CLI][10], if you have any issues look there. 
+If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credentials**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely. 
 
-Now we can configure AWS with the security credentials.
+Now we can configure AWS with those security credentials.
 ```
 aws configure
 ```
@@ -64,6 +65,7 @@ Default region name [us-east-1]: us-west-2
 Default output format [None]: json
 ```
 ### AWS EC2 Key Pair
+To perform cluster tasks, such as running and monitoring jobs, or managing users, you must be able to access the cluster head node. To verify you can access the head node instance using SSH, you must use an EC2 key pair. 
 
 ### [AWS user policies][6]
 To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
@@ -211,3 +213,6 @@ From there you should be able to launch jobs.
 [6]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html
 [7]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-base-user-policy
 [8]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-privileged-iam-access
+[9]: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
+[10]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html
+[11]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
