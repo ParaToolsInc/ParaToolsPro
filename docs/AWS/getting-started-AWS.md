@@ -6,10 +6,10 @@ In this tutorial we will show you how to launch an HPC cluster on AWS. You will 
 
 Up until step X. we essentially follow, with some extra clairifcation, ["Setting Up AWS ParallelCluster"][1]. For the purposes of this tutorial, we make the following assumptions:
 - You have created an [AWS account][5], and [Administrative User][4]
-
+- you have create an EC2 Key 
 ## Tutorial
 
-### Install [AWS ParallelCLuster][1]
+### Install [AWS ParallelCluster][1]
 To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon rcommends installing pcluster in a virtual environment.
 
 ``` bash linenums="1"
@@ -50,28 +50,91 @@ Note, if you do not have sudo user rights, you must select the install and bin, 
 ```
 
 ### AWS Security Credentials and CLI Configuration 
-If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credential**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely.
+If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credentials**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely.
 
 Now we can configure AWS with the security credentials.
 ```
-$ aws configure
+aws configure
+```
+And then enter the respective information,
+```
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [us-east-1]: us-west-2
 Default output format [None]: json
 ```
+### [AWS user policies][6]
+To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
+* Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
+* Permissions that the cluster resources require to perform cluster actions.
+The policies described here are supersets of the required permissions to create clusters. If you know what you are doing you can remove permissions as you feel fit To make the policies, open the **IAM** page, select **Policies** on the left, and **Create Policy**, then select the **JSON** editor. Copy and paste the policy found [here][7]. Unless you plan to use AWS secrets, you must remove the final section from the JSON.
+```
+      {
+          "Action": "secretsmanager:DescribeSecret",
+          "Resource": "arn:aws:secretsmanager:<REGION>:<AWS ACCOUNT ID>:secret:<SECRET NAME>",
+          "Effect": "Allow"
+      }
+```
+Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2". From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
+
+### Find the ami
+I don't know the right way to do this.
+
+### Cluster configuration and creation
+To create a test cluster-config.yaml, do the following:
+
+     `pcluster configure --config cluster-config.yaml`  
+
+You will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, and the compute instance types. Your region should be whichever region you are planning to launch these in.
+
+```
+INFO: Configuration file cluster-config.yaml will be written.
+Press CTRL-C to interrupt the procedure.
+
+Allowed values for AWS Region ID:
+1. ap-northeast-1
+2. ap-northeast-2
+...
+15. us-west-1
+16. us-west-2
+AWS Region ID [us-west-2]:
+Allowed values for EC2 Key Pair Name:
+1. Your-EC2-key
+
+EC2 Key Pair Name [Your-EC2-key]: 1
+Allowed values for Scheduler:
+1. slurm
+2. awsbatch
+Scheduler [slurm]: 1
+Allowed values for Operating System: 
+1. alinux2
+2. centos7
+3. ubuntu2004
+4. ubuntu2204
+Operating System [ubuntu2004]:
+Head node instance type [t2.micro]:
+Number of queues [1]:
+Name of queue 1 [queue1]:
+Number of compute resources for queue1 [1]:
+Compute instance type for compute resource 1 in queue1 [t3.micro]: t3.micro
+Maximum instance count [10]:
+Automate VPC creation? (y/n) [n]: y
+Allowed values for Availability Zone:
+1. us-west-2a
+2. us-west-2b
+3. us-west-2c
+Availability Zone [us-west-2a]: 1
+Allowed values for Network Configuration:
+1. Head node in a public subnet and compute fleet in a private subnet
+2. Head node and compute fleet in the same public subnet 
+Network Configuration [Head node in a public subnet and compute fleet in a private subnet]: 
+Beginning VPC creation. Please do not leave the terminal until the creation is finalized
+Creating CloudFormation stack...
+Do not leave the terminal until the process has finished.
+```
 
 
 
-
-
-  
-- You have created an [EC2 key pair]
-- You have downloaded [PCluster tool]
-- You have downloaded [AWS CLI]
-- You have made a security credential
-- You have configured AWS cli with that security credential
-- You have created the 3 policies, and assigned them to anyone creating clusters
 - pcluster create configure -c cluster.yaml, select trhough tree
 - open and edit, add ,, mention DCV
       Specify the E4S-Pro AMI
@@ -95,10 +158,10 @@ You can then ssh into the cluster
 [3]: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 [4]: https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html#create-an-admin
 [5]: https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html
-[6]: 
-[7]:  
-[8]:  
-[9]:  
+[6]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html
+[7]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-base-user-policy
+[8]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-privileged-iam-access
+[9]: 
 [10]:  
 [11]:  
 [12]:  
