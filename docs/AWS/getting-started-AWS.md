@@ -5,7 +5,7 @@
 In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.
 
 Up until step X. we essentially follow, with some extra clairifcation, ["Setting Up AWS ParallelCluster"][1]. For the purposes of this tutorial, we make the following assumptions:
-- You have created an [AWS account][5], and [Administrative User][4]
+- You have created an [AWS account][5], and an [Administrative User][4]
   
 ## Tutorial
 
