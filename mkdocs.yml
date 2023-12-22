@@ -80,7 +80,7 @@ copyright: |
 nav:
   - Home: index.md
   - AWS:
-    - Getting Started: AWS/AWS.md
+    - Getting Started: AWS/getting-started-AWS.md
     - AWS Parallel Cluster Config: AWS/pcluster.md
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
