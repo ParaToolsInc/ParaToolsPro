@@ -63,6 +63,8 @@ AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [us-east-1]: us-west-2
 Default output format [None]: json
 ```
+### AWS EC2 Key Pair
+
 ### [AWS user policies][6]
 To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
 * Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
@@ -81,11 +83,21 @@ Then create and name the policy "ClusterPolicy1". Create another policy, with th
 I don't know the right way to do this.
 
 ### Cluster configuration and creation
-To create a test cluster-config.yaml, do the following:
+When creating a cluster you will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, compute instance types, and network settings. Your region should be whichever region you are planning to launch these in. Your EC2 key pair should be the one you just created. For OS, select Ubuntu 22.04<Is this right?>. For head node instance type, as it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. Note the head node does not have to be EFA capable. Select the structure of your queue as relevant to your use case. For the compute instance types you must select an EFA capable node. You can find these out by:
+```
+aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query InstanceTypes[].InstanceType
+```
+Furthermore you can find which EFA capable nodes that have GPU support by
+```
+aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query 'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
+```
+For the network settings, select as required for your workflow, or follow below.
 
-     `pcluster configure --config cluster-config.yaml`  
 
-You will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, and the compute instance types. Your region should be whichever region you are planning to launch these in.
+To create the cluster-config.yaml file,
+```
+     `pcluster configure --config cluster-config.yaml`
+```
 
 ```
 INFO: Configuration file cluster-config.yaml will be written.
@@ -133,25 +145,62 @@ Creating CloudFormation stack...
 Do not leave the terminal until the process has finished.
 ```
 
+If there is an error regarding a failed authorization, there may have been an issue in setting up your policies, make sure you have created the 3 policies correctly.
 
+### Final Cluster Configurations
+Opening cluster-config.yaml, add the line `CustomAmi: <E4S-Pro-ami-id>` under the Image section. Replacing <E4S-Pro-ami-id> with the AMI you got in the prior section.
+```
+Image:
+      Os: ubuntu2004
+      CustomAmi: <E4S-Pro-ami-id>
+```
+Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
+```
+HeadNode:
+      Dcv:
+            Enabled: true
+```
 
-- pcluster create configure -c cluster.yaml, select trhough tree
-- open and edit, add ,, mention DCV
-      Specify the E4S-Pro AMI
-      ```Image:
-        Os: ubuntu2004
-        CustomAmi: <E4S-Pro-ami-id>
-
+### Spinning up the cluster head node
+Now that all configuration is complete,
+```
 pcluster create -c cluster.yaml -n name_of_cluster
-You can then ssh into the cluster
+```
+This process will should return some JSON such as
+```
+{
+  "cluster": {
+    "clusterName": "name_of_cluster",
+    "cloudformationStackStatus": "CREATE_IN_PROGRESS",
+    "cloudformationStackArn": "arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster/67cbc130-a06d-11ee-a68a-021abfea5bf1",
+    "region": "us-west-2",
+    "version": "3.5.1",
+    "clusterStatus": "CREATE_IN_PROGRESS",
+    "scheduler": {
+      "type": "slurm"
+    }
+  },
+  "validationMessages": [
+    {
+      "level": "WARNING",
+      "type": "CustomAmiTagValidator",
+      "message": "The custom AMI may not have been created by pcluster. You can ignore this warning if the AMI is shared or copied from another pcluster AMI. If the AMI is indeed not created by pcluster, cluster creation will fail. If the cluster creation fails, please go to https://docs.aws.amazon.com/parallelcluster/latest/ug/troubleshooting.html#troubleshooting-stack-creation-failures for troubleshooting."
+    },
+    {
+      "level": "WARNING",
+      "type": "AmiOsCompatibleValidator",
+      "message": "Could not check node AMI ami-12345678912 OS and cluster OS ubuntu2004 compatibility, please make sure they are compatible before cluster creation and update operations."
+    }
+  ]
+}
+```
+This process will take a few minutes to finish. Progress can be viewed by performing `pcluster list-clusters`
+### Accessing your cluster
+Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labled "Head Node". The in the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu".
+From there you should be able to launch jobs.
 
 
-- You have [enabled the Secret Manager API][10].
-- You are aware of [the costs for running instances on GCP Compute Engine][11] and
-  of the costs of using the E4S Pro GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
-- You are comfortable using the [GCP Cloud Shell][12], or are running locally
-    (which will match this tutorial) and are familiar with SSH, a terminal and have
-    [installed][13] and [initialized the gcloud CLI][14]
+
 
 [1]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3.html
 [2]: https://aws.amazon.com/hpc/parallelcluster/
@@ -161,236 +210,3 @@ You can then ssh into the cluster
 [6]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html
 [7]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-base-user-policy
 [8]: https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-privileged-iam-access
-[9]: 
-[10]:  
-[11]:  
-[12]:  
-[13]:  
-[14]:  
-[15]: 
-
-
-
-Now that you have AWS, and Pcluster, you must configure them with the information required to authenticate you. First on AWS console, if you do not already have an AWS Access Key, go to IAM -> Users -> "your-user-name" -> Security Credentials -> Create ccess key. Making sure to treat that key very safely. 
-
-Then in the command line,  
-``` bash linenums="1"
-$ aws configure
-AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
-AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
-Default region name [us-east-1]: us-east-1
-Default output format [None]:
-```
-
-pcluster config -c test.yaml
-select through the list
-then edit the yaml,
-altering the lines as stated in e4s-pro.yaml
-YOu must find the ami, this required me going to launch an instance, and selecting the ami found
-
-then once it is ready do pcluster create
-
-
-First, let's grab your `PROJECT_ID` and `PROJECT_NUMBER`.
-Navigate to the [GCP project selector][15] and select the project that you'll be using for this tutorial.
-Take note of the `PROJECT_ID` and `PROJECT_NUMBER`
-Open your local shell or the [GCP Cloud Shell][12], and run the following commands:
-
-export PROJECT_ID=<enter your project ID here>
-export PROJECT_NUMBER=<enter your project number here>
-```
-
-Set a default project you will be using for this tutorial.
-If you have multiple projects you can switch back to a different one when you are finished.
-
-``` bash
-gcloud config set project "${PROJECT_ID}"
-```
-
-Next, ensure that the default Compute Engine service account is enabled:
-``` bash
-gcloud iam service-accounts enable \
-     --project="${PROJECT_ID}" \
-     ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
-```
-and add the `roles/editor` IAM role to the service account:
-
-``` bash
-gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-    --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-    --role=roles/editor
-```
-
-### Install the [Google Cloud HPC-Toolkit][2]
-
-First install the dependencies of `ghpc`. Instructions to do this are included below.
-If you encounter trouble please check the latest instructions from Google,
-available [here]:[prereqs]. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.
-
-[prereqs]: https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies
-
-!!! info "Install the [Google Cloud HPC-Toolkit][2]  Prerequisites"
-    Please download and install any missing software packages from the following list:
-
-    - [Terraform] version 1.2.0 or later
-    - [Packer] version 1.7.9 or later
-    - [Go] version 1.188 or later. Ensure that the `GOPATH` is setup and `go` is on your `PATH`.
-      You may need to add the following to `.profile` or `.bashrc` startup "dot" file:
-      ``` bash
-      export PATH=$PATH:$(go env GOPATH)/bin
-      ```
-    - [Git]
-    - `make` (see below for instructions specific to your OS)
-    === "macOS"
-        `make` is packaged with the Xcode command line developer tools on macOS.
-        To install, run:
-        ``` bash
-        xcode-select --install
-        ```
-    === "Ubuntu/Debian"
-        Install `make` with the OS' package manager:
-        ``` bash
-        apt-get -y install make
-        ```
-    === "CentOS/RHEL"
-        Install `make` with the OS' package manager:
-        ``` bash
-        yum install -y make
-        ```
-
-    !!! Note
-        Most of the packages above may be installable through your OSes package manager.
-        For example, if you have [Homebrew] on macOS you should be able to `brew install <package_name>`
-        for most of these items, where `<package_name>` is, e.g., `go`.
-
-[Terraform]: https://www.terraform.io/downloads
-[Packer]: https://www.packer.io/downloads
-[Go]: https://go.dev/doc/install
-[Git]: https://github.com/git-guides/install-git
-[Homebrew]: https://brew.sh
-
-Once all the software listed above has been verified and/or installed, clone the [Google Cloud HPC-Toolkit][2]
-and change directories to the cloned repository:
-``` bash linenums="1"
-git clone https://github.com/GoogleCloudPlatform/hpc-toolkit.git
-cd hpc-toolkit/
-```
-Next build the HPC-Toolkit and verify the version and that it built correctly.
-``` bash
-make
-./ghpc --version
-```
-If you would like to install the compiled binary to a location on your `$PATH`,
-run
-``` bash
-sudo make install
-```
-to install the `ghpc` binary into `/usr/local/bin`, of if you do not have root
-priviledges or do not want to install the binary into a system wide location, run
-``` bash
-make install-user
-```
-to install `ghpc` into `${HOME}/bin` and then ensure this is on your path:
-
-``` bash
-export PATH="${PATH}:${HOME}/bin"
-```
-
-### Grant ADC access to Terraform and Enable OS Login
-
-Generate cloud credentials associated with your Google Cloud account and grant
-Terraform access to the Aplication Default Credential (ADC).
-
-!!! note
-    If you are using the [Cloud Shell][12] you can skip this step.
-
-``` bash
-gcloud auth application-default login
-```
-
-To be able to connect to VMs in the cluster OS Login must be enabled.
-Unless OS Login is already enabled at the organization level, enable it at the project level.
-To do this, run:
-
-``` bash
-gcloud compute project-info add-metadata \
-     --metadata enable-oslogin=TRUE
-```
-
-### Deploy the Cluster
-
-Copy the [e4s-pro-slurm-cluster-blueprint-example][blueprint] from the
-E4S Pro documentation to your clipboard, then paste it into a file named
-`E4S-Pro-Slurm-Cluster-Blueprint.yaml`. After copying the text, in your terminal
-do the following:
-
-``` bash
-cat > E4S-Pro-Slurm-Cluster-Blueprint.yaml
-# paste the copied text # (1)
-# press Ctrl-d to add an end-of-file character
-cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
-```
-
-1. !!! note
-       Usually `Ctrl-v`, or `Command-v` on macOS
-2. !!! note
-       This is optional, but usually a good idea
-
-Using your favorite editor, select appropriate instance types for the compute partitions,
-and remove the h3 partition if you do not have access to h3 instances yet.
-See the expandable annotations and pay extra attention to the highlighted lines
-on the [e4s-pro-slurm-cluster-blueprint-example][blueprint] example.
-
-!!! Tip "Pay Attention"
-    In particular:
-
-    - Determine if you want to pass the `${PROJECT_ID}` on the command line or in the blueprint
-    - Verify that the `image_family` key matches the image for E4S Pro from the GCP marketplace
-    - Adjust the region and zone used, if desired
-    - Limit the IP `ranges` to those you will be connecting from via SSH in the `ssh-login`
-      `firewall_rules` rule, if in a production setting.
-      If you plan to connect only from the [cloud shell][12] the `ssh-login`
-      `firewall_rules` rule may be completely removed.
-    - Set an appropriate `machine_type` and `dynamic_node_count_max` for your `compute_node_group`.
-
-Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
-set deployment variables and create the deployment folder.
-
-!!! info "Create deployment folder"
-
-    ``` bash
-    ./ghpc create E4S-Pro-Slurm-Cluster-Blueprint.yaml \
-      --vars project_id=${PROJECT_ID} # (1)!
-    ```
-
-    1. !!! note
-           If you uncommented and updated the `vars.project_id:` you do not need to pass
-           `--vars project_id=...` on the command line.
-           If you're bringing a cluster back online that was previously deleted, but
-           the blueprint has been modified and the deployment folder is still present,
-           the `-w` flag will let you overwrite the deployment folder contents with the
-           latest changes.
-
-??? note inline end
-    It may take a few minutes to finish provisioning your cluster.
-At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press `a` for accept once satisfied.
-Now the cluster can be deployed.
-Run the following command to deploy your E4S Pro cluster:
-
-!!! info "Perform the deployment"
-    ``` bash
-    ./ghpc deploy e4s-23-11-cluster-slurm-rocky8
-    ```
-
-### Connect to the Cluster
-
-Once the cluster is deployed, ssh to the login node.
-
-1. Go to the __Compute Engine > VM Instances__ page.
-
-    [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
-
-2. `ssh`
-
-[blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
