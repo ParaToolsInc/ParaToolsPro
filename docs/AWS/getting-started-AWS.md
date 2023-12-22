@@ -10,7 +10,7 @@ Up until step X. we essentially follow, with some extra clairifcation, ["Setting
 ## Tutorial
 
 ### Install [AWS ParallelCluster][1]
-To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon rcommends installing pcluster in a virtual environment.
+To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.
 
 ``` bash linenums="1"
 python3 -m pip install --upgrade pip
@@ -38,13 +38,13 @@ node --version
 ```
 
 ### Install [AWS Command Line Interface][3]
-Now we must install AWS CLI, which will handle authenticating your information everytime you create a cluster.
+Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster.
 ```
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 ```
-Note, if you do not have sudo user rights, you must select the install and bin, with the flags `-i` and `-b`.
+Note, if you do not have sudo user rights, you must select the install and bin, with the flags `-i` and `-b`, as shown below
 ```
 ./aws/install -i ~.local/aws-cli -b ~/.local/bin
 ```
@@ -68,8 +68,8 @@ Default output format [None]: json
 ### [AWS user policies][6]
 To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
 * Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
-* Permissions that the cluster resources require to perform cluster actions.
-The policies described here are supersets of the required permissions to create clusters. If you know what you are doing you can remove permissions as you feel fit To make the policies, open the **IAM** page, select **Policies** on the left, and **Create Policy**, then select the **JSON** editor. Copy and paste the policy found [here][7]. Unless you plan to use AWS secrets, you must remove the final section from the JSON.
+* Permissions that the cluster resources require to perform cluster actions.  
+The policies described here are supersets of the required permissions to create clusters. If you know what you are doing you can remove permissions as you feel fit. To make the policies, open the **IAM** page, select **Policies** on the left, and **Create Policy**, then select the **JSON** editor. Copy and paste the policy found [here][7]. Unless you plan to use AWS secrets, you must remove the final section from the JSON.
 ```
       {
           "Action": "secretsmanager:DescribeSecret",
@@ -77,13 +77,14 @@ The policies described here are supersets of the required permissions to create 
           "Effect": "Allow"
       }
 ```
-Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2". From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
+If it reports errors, replace FILL IN HERE THE THING THAT THEY HAVE TO REPLACE
+Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
 
 ### Find the ami
 I don't know the right way to do this.
 
 ### Cluster configuration and creation
-When creating a cluster you will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, compute instance types, and network settings. Your region should be whichever region you are planning to launch these in. Your EC2 key pair should be the one you just created. For OS, select Ubuntu 22.04<Is this right?>. For head node instance type, as it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. Note the head node does not have to be EFA capable. Select the structure of your queue as relevant to your use case. For the compute instance types you must select an EFA capable node. You can find these out by:
+When creating a cluster you will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, compute instance types, and network settings. Your region should be whichever region you are planning to launch these in. Your EC2 key pair should be the one you just created. For OS, select Ubuntu 22.04<Is this right?>. For head node instance type, as it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. Note the head node does not have to be EFA capable. Select the structure of your queue as relevant to your use case. For the compute instance types you **must** select an EFA capable node. You can find these out by:
 ```
 aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query InstanceTypes[].InstanceType
 ```
@@ -172,7 +173,7 @@ This process will should return some JSON such as
   "cluster": {
     "clusterName": "name_of_cluster",
     "cloudformationStackStatus": "CREATE_IN_PROGRESS",
-    "cloudformationStackArn": "arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster/67cbc130-a06d-11ee-a68a-021abfea5bf1",
+    "cloudformationStackArn": "arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster",
     "region": "us-west-2",
     "version": "3.5.1",
     "clusterStatus": "CREATE_IN_PROGRESS",
@@ -189,7 +190,7 @@ This process will should return some JSON such as
     {
       "level": "WARNING",
       "type": "AmiOsCompatibleValidator",
-      "message": "Could not check node AMI ami-12345678912 OS and cluster OS ubuntu2004 compatibility, please make sure they are compatible before cluster creation and update operations."
+      "message": "Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2004 compatibility, please make sure they are compatible before cluster creation and update operations."
     }
   ]
 }
