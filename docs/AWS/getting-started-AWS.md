@@ -23,9 +23,9 @@ python3 -m virtualenv ~/apc-ve
 source ~/apc-ve/bin/activate
 ```
 
-Then install ParallelCluster
+Then install ParallelCluster. If you do not install the correct current version, 3.5.1, then you can not launch the AMI which is made with that version.
 ```
-python3 -m pip install --upgrade "aws-parallelcluster"
+python3 -m pip install --upgrade "aws-parallelcluster"==3.5.1
 ```
 
 ParallelCluster needs node.js for CloudFormation, so
@@ -78,22 +78,29 @@ The policies described here are supersets of the required permissions to create 
           "Effect": "Allow"
       }
 ```
-If it reports errors, replace FILL IN HERE THE THING THAT THEY HAVE TO REPLACE
+If it reports errors, replace the <AWS ACCOUNT ID> with your 12 digit account ID.
 Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
 
 ### Find the ami
-I don't know the right way to do this.
-
+**DO THIS**
 ### Cluster configuration and creation
-When creating a cluster you will be prompted for the region, EC2 key, scheduler,  OS, head node instance type, information regarding the structure of your queues, compute instance types, and network settings. Your region should be whichever region you are planning to launch these in. Your EC2 key pair should be the one you just created. For OS, select Ubuntu 22.04<Is this right?>. For head node instance type, as it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. Note the head node does not have to be EFA capable. Select the structure of your queue as relevant to your use case. For the compute instance types you **must** select an EFA capable node. You can find these out by:
-```
-aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query InstanceTypes[].InstanceType
-```
-Furthermore you can find which EFA capable nodes that have GPU support by
-```
-aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query 'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
-```
-For the network settings, select as required for your workflow, or follow below.
+When creating a cluster you will be prompted for:
+- Region: Select whichever region you are planning to launch these in.
+- EC2 key pair: Select the one you just created, or plan on using to access the nodes.
+- Scheduler: You must select **slurm**
+- OS: **Ubuntu 2004** <Is this right?>**
+-  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. **Note** the head node does **not** have to be EFA capable.
+-  Structure of your queue should be selected as required by your use case.
+-  Compute instance types: You **must** select an EFA capable node. You can find these out by:
+  ```
+  aws ec2 describe-instance-types --filters "Name=processor-info.support-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query   InstanceTypes[].InstanceType
+  ```
+  Furthermore you can find which EFA capable nodes that have GPU support by
+  ```
+  aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query   'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
+  ```
+- For the network settings, select as required for your workflow, or follow the given options.
+- Automatic VPC: Unless you already have a VPC you plan on using, select yes. Warning that after creating many VPC's you might run into a limit, requiring you to delete older unused ones.
 
 
 To create the cluster-config.yaml file,
@@ -126,7 +133,7 @@ Allowed values for Operating System:
 3. ubuntu2004
 4. ubuntu2204
 Operating System [ubuntu2004]:
-Head node instance type [t2.micro]:
+Head node instance type [t3.large]:
 Number of queues [1]:
 Name of queue 1 [queue1]:
 Number of compute resources for queue1 [1]:
@@ -159,8 +166,8 @@ Image:
 Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
 ```
 HeadNode:
-      Dcv:
-            Enabled: true
+  Dcv:
+    Enabled: true
 ```
 
 ### Spinning up the cluster head node
@@ -196,10 +203,11 @@ This process will should return some JSON such as
   ]
 }
 ```
-This process will take a few minutes to finish. Progress can be viewed by performing `pcluster list-clusters`
+This process will take a few minutes to finish. View the progress by performing `pcluster list-clusters`. If it says creation has failed, a common issue is your pcluster version must be the same as the one that created the AMI. Make sure you installed the correct version.
+
 ### Accessing your cluster
-Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labled "Head Node". The in the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu".
-From there you should be able to launch jobs.
+Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labled "Head Node". In the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu", if not, then try to ssh using a conventional terminal, and it should respond with what the username is.
+From there you should be able to launch jobs using slurm.
 
 
 
