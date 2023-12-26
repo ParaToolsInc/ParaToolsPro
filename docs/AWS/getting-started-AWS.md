@@ -65,8 +65,7 @@ Default region name [us-east-1]: us-west-2
 Default output format [None]: json
 ```
 ### AWS EC2 Key Pair
-To perform cluster tasks, such as running and monitoring jobs, or managing users, you must be able to access the cluster head node. To verify you can access the head node instance using SSH, you must use an EC2 key pair. 
-
+To perform cluster tasks, such as running and monitoring jobs, or managing users, you must be able to access the cluster head node. To verify you can access the head node instance using SSH, you must use an EC2 key pair. If you do not already have a key pair you in the region you would like to use, follow [this][12] guide to quickly make a key 
 ### [AWS user policies][6]
 To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
 * Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
@@ -216,3 +215,4 @@ From there you should be able to launch jobs.
 [9]: https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html
 [10]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html
 [11]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
+[12]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html#create-a-key-pair
