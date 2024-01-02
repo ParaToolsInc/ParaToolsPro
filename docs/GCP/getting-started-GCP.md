@@ -75,7 +75,7 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 First install the dependencies of `ghpc`. Instructions to do this are included below.
 If you encounter trouble please check the latest instructions from Google,
-available [here]:[prereqs]. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.
+available [here][prereqs]. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.
 
 [prereqs]: https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies
 
