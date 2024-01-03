@@ -244,3 +244,10 @@ Once the cluster is deployed, ssh to the login node.
 2. `ssh`
 
 [blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
+### Deletion of the Cluster
+
+It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted by a different manner, see here. To delete your cluster correctly do
+
+```
+./ghpc destroy e4s-23-11-cluster-slurm-rocky8
+```
