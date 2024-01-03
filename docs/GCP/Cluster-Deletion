@@ -1,0 +1,9 @@
+## Proper Deletion
+It is very important that when you are done using the cluster you must use ghcp to destroy it. When a cluster is created, ghcp creates resources and adds project metadata tags, if improperly deleted, some of these will remain and you will be charged for them. To delete your cluster correctly, find the instructions in the folder created by ghpc, `CLUSTER-IMAGE/instructions.txt` and do   
+```
+./ghpc destroy CLUSTER-IMAGE/
+```
+
+## Improper Deletion
+### Case 1
+When the compute instances are deleted, but not the folder, you can run the command `./ghpc destroy CLUSTER-IMAGE/` and it should properly remove all the created resources. 
