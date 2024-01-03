@@ -6,4 +6,16 @@ It is very important that when you are done using the cluster you must use ghcp 
 
 ## Improper Deletion
 ### Case 1
-When the compute instances are deleted, but not the folder, you can run the command `./ghpc destroy CLUSTER-IMAGE/` and it should properly remove all the created resources. 
+When the compute instances are deleted, but not the folder, you can run the command `./ghpc destroy CLUSTER-IMAGE/` and it should properly remove all the created resources. You should also run `rm -rf CLUSTER-IMAGE/` to remove the file.
+### Case 2
+When the folder hasn't been deleted, and you attempt to create the cluster again, you may get the error
+```
+  Error: Failed to overwrite existing deployment.
+		
+		Use the -w command line argument to enable overwrite.
+		If overwrite is already enabled then this may be because you are attempting to remove a deployment group, which is not supported.
+    original error: the directory already exists: e4s-23-11-cluster-slurm-rocky8
+```
+In this case remove the folder as stated above.
+### Case 3
+If you are getting the below errors, it indicates ghpc is unable to recreate a cluster due to leftover resources. 
