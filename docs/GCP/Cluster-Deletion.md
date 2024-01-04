@@ -34,10 +34,11 @@ Error: key "e4s2311clu-slurm-compute-script-ghpc_startup_sh" already present in 
   on .terraform/modules/slurm_controller.slurm_controller_instance/terraform/slurm_cluster/modules/slurm_controller_instance/main.tf line 281, in resource "google_compute_project_metadata_item" "compute_startup_scripts":
  281: resource "google_compute_project_metadata_item" "compute_startup_scripts" {
 ```
-You must now go through the process of manually deleting each of the keys that are listed in the error list.  As shown https://cloud.google.com/sdk/gcloud/reference/compute/project-info/describe, we will use `gcloud compute project-info describe` to see the cloud metadata, and `gcloud compute project-info remove-metadata --keys="the key" --project=YOUR-PROJECT`. You can either run this command once using a list, such as 
+You must now go through the process of manually deleting each of the keys that are listed in the error list.  As shown [here](https://cloud.google.com/sdk/gcloud/reference/compute/project-info/describe), we will use `gcloud compute project-info describe` to see the cloud metadata, and `gcloud compute project-info remove-metadata --keys="the key" --project=YOUR-PROJECT`. You can either run this command once using a list, such as 
 ```
-gcloud compute project-info remove-metadata --keys==["CLUSTER-IMAGEclu-slurm-compute-script-ghpc_startup_sh","CLUSTER-IMAGEclu-slurm-controller-script-ghpc_startup_sh", … ] where you put in each relevant key. Bevery careful in this process that you only delete the relevant keys as this metadata info can affect all of you projects. 
-``` 
+gcloud compute project-info remove-metadata --keys==["CLUSTER-IMAGEclu-slurm-compute-script-ghpc_startup_sh","CLUSTER-IMAGEclu-slurm-controller-script-ghpc_startup_sh", … ]
+```
+where you put in each relevant key. Be very careful in this process that you only delete the relevant keys as this metadata info can affect all of you projects.  
 Or you can also do it one at a time,
 ```
 gcloud compute project-info remove-metadata --keys="CLUSTER-IMAgE-clu-slurm-controller-script-ghpc_startup_sh" for each  key listed in the error message.
@@ -52,8 +53,8 @@ I know that this is the filestore created by the instance I improperly deleted. 
 ![image](https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/6305427b-8740-4de6-a8b9-f767f3ad4684)
 By searching in your project you should be able to find the network resource page, 
 ![image](https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/c9c3ab74-1052-4767-94c7-3224f862720d)
-You must delete all resources that are listed in the `Error 409: The resource 'projects/YOUR-PROJECT/regions/us-central1/addresses/CLUSTER-IMAGE' already exists` errors. For network resources they often have to be deleted in a specfic order. It is likely that you should delete the nat gateway, then the subnetwork, and then the VPC network peering,  router, and then vpc, then release the IP address. If you can't delete a resource, it is in use by another. Find and delete the prerequisite resources first then delete it.
-Now you should run ./ghpc destroy CLUSTER-IMAGE/ and ./ghpc create CLUSTER-IMAGE If any stray resources still exist, delete them as shown above and rerun these two commands.
+You must delete all resources that are listed in the `Error 409: The resource 'projects/YOUR-PROJECT/regions/us-central1/addresses/CLUSTER-IMAGE' already exists` errors. For network resources they often have to be deleted in a specfic order. It is likely that you should delete the NAT gateway, then the subnetwork, and then the VPC network peering, router, and then VPC, then release the IP address. If you can't delete a resource, it is in use by another. Find and delete the prerequisite resources first, then delete it.
+Now you should run `./ghpc create CLUSTER-IMAGE/` If any stray resources still exist, delete them as shown above and rerun these two commands.
 
 
 
