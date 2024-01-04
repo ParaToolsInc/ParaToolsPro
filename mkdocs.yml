@@ -85,3 +85,4 @@ nav:
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
     - HPC Toolkit Blueprint: GCP/blueprint.md
+    - Cluster Deletion: GCP/Cluster-Deletion.md
