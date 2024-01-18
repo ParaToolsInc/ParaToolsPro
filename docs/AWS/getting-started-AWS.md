@@ -82,13 +82,14 @@ If it reports errors, replace the <AWS ACCOUNT ID> with your 12 digit account ID
 Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
 
 ### Find the ami
-**DO THIS**
+You will need to have the AMI (Amazon Machine Image) ready for this next step. Go to the E4S PRO marketplace listing for the image you want, click subscribe, then continue to configuration, select the correct region, and then copy the AMI that is listed. ![AMIPNG](https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5)
+
 ### Cluster configuration and creation
 When creating a cluster you will be prompted for:
 - Region: Select whichever region you are planning to launch these in.
 - EC2 key pair: Select the one you just created, or plan on using to access the nodes.
 - Scheduler: You must select **slurm**
-- OS: **Ubuntu 2004** <Is this right?>**
+- OS: **Ubuntu 2004**
 -  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. **Note** the head node does **not** have to be EFA capable.
 -  Structure of your queue should be selected as required by your use case.
 -  Compute instance types: You **must** select an EFA capable node. You can find these out by:
