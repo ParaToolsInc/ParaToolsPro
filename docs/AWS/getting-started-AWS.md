@@ -23,7 +23,7 @@ python3 -m virtualenv ~/apc-ve
 source ~/apc-ve/bin/activate
 ```
 
-Then install ParallelCluster. If the version of ParallelCluster does not match the version used to genearte the AMI then the cluster creation operation will fail. Currently E4S-Pro AMIs are built with version 3.8.0 but you can check the name of the image for the ParallelCluster version.
+Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing E4S Pro AMIs are built with ParallelCluster 3.8.0. Check the version string of your selected E4S Pro AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
 ```
 python3 -m pip install --upgrade "aws-parallelcluster"==3.8.0
 ```
@@ -207,7 +207,7 @@ This process will return some JSON such as
 This process will take a few minutes to finish. View the progress by performing `pcluster list-clusters`. If it says creation has failed, a common issue is your pcluster version mismatching the one that created the AMI. Make sure you installed the correct version.
 
 ### Accessing your cluster
-Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labled "Head Node". In the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu", if not, then try to ssh using a conventional terminal, and it should respond with what the username is.
+Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labeled "Head Node". In the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu", if not, then try to ssh using a conventional terminal, and it should respond with what the username is.
 
 Alternatively you can access your cluster from your local console by doing ```pcluster ssh -i /path/to/key/file -n name_of_cluster```
 
