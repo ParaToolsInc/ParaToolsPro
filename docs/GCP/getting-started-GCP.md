@@ -209,7 +209,7 @@ set deployment variables and create the deployment folder.
 !!! info "Create deployment folder"
 
     ``` bash
-    ./ghpc create E4S-Pro-Slurm-Cluster-Blueprint.yaml \
+    ./ghpc create e4s-23.11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8.yaml \
       --vars project_id=${PROJECT_ID} # (1)!
     ```
 
@@ -223,8 +223,6 @@ set deployment variables and create the deployment folder.
 
 ??? note inline end
     It may take a few minutes to finish provisioning your cluster.
-At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press `a` for accept once satisfied.
 Now the cluster can be deployed.
 Run the following command to deploy your E4S Pro cluster:
 
@@ -232,6 +230,8 @@ Run the following command to deploy your E4S Pro cluster:
     ``` bash
     ./ghpc deploy e4s-23-11-cluster-slurm-rocky8
     ```
+At this point you will be prompted to review or accept the proposed changes.
+You may review them if you like, but you should press `a` for accept once satisfied.
 
 ### Connect to the Cluster
 
@@ -241,13 +241,15 @@ Once the cluster is deployed, ssh to the login node.
 
     [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
 
-2. `ssh`
+2. Click on `ssh` for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
 [blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
 ### Deletion of the Cluster
 
-It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted by a different manner, see here. To delete your cluster correctly do
+It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted in a different manner, see here. To delete your cluster correctly do
 
 ```
 ./ghpc destroy e4s-23-11-cluster-slurm-rocky8
 ```
+At this point you will be prompted to review or accept the proposed changes.
+You may review them if you like, but you should press `a` for accept once satisfied and the deletion will proceed.
