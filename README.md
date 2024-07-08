@@ -1,2 +1,3 @@
-# E4S-Pro
-E4S Pro documentation, examples and tutorials
+# ParaTools Pro for E4S™
+
+ParaTools Pro for E4S™ documentation, examples and tutorials

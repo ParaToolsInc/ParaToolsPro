@@ -1,7 +1,7 @@
-site_name: E4S Pro Documentation
+site_name: ParaTools Pro for E4S™ Documentation
 theme:
   name: material
-  logo: assets/e4spro-440-220.png
+#  logo: assets/e4spro-440-220.png
   features:
     - navigation.instant
     - navigation.tracking
