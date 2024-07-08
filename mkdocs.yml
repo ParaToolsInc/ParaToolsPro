@@ -81,8 +81,10 @@ nav:
   - Home: index.md
   - AWS:
     - Getting Started: AWS/getting-started-AWS.md
-    - AWS Parallel Cluster Config: AWS/pcluster.md
+      #    - AWS Parallel Cluster Config: AWS/pcluster.md
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
     - HPC Toolkit Blueprint: GCP/blueprint.md
     - Cluster Deletion: GCP/Cluster-Deletion.md
+  - ODDC:
+    - Getting Started: ODDC/getting-started-ODDC.md
