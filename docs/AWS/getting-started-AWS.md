@@ -1,4 +1,4 @@
-# E4S Pro Getting Started with Amazon Web Services (AWS)
+# ParaTools Pro for E4S™ Getting Started with Amazon Web Services (AWS)
 
 ## General Background Information
 
@@ -23,7 +23,7 @@ python3 -m virtualenv ~/apc-ve
 source ~/apc-ve/bin/activate
 ```
 
-Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing E4S Pro AMIs are built with ParallelCluster 3.8.0. Check the version string of your selected E4S Pro AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
+Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.8.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
 ```
 python3 -m pip install --upgrade "aws-parallelcluster"==3.8.0
 ```
@@ -82,7 +82,7 @@ If it reports errors, replace the <AWS ACCOUNT ID> with your 12 digit account ID
 Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
 
 ### Find the AMI
-You will need to have the AMI (Amazon Machine Image) ready for this next step. Select the [E4S Pro marketplace listing][13] for the image you want, click subscribe, then continue to configuration, select the correct region, and then copy the AMI Id that is provided. ![AMIPNG](https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5)
+You will need to have the AMI (Amazon Machine Image) ready for this next step. Select the [ParaTools Pro for E4S™ marketplace listing][13] for the image you want, click subscribe, then continue to configuration, select the correct region, and then copy the AMI Id that is provided. ![AMIPNG](https://github.com/ParaToolsInc/ParaToolsPro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5)
 
 ### Cluster configuration and creation
 When creating a cluster you will be prompted for:
@@ -158,11 +158,11 @@ Do not leave the terminal until the process has finished.
 If there is an error regarding a failed authorization, there may have been an issue in setting up your policies, make sure you have created the 3 policies correctly.
 
 ### Final Cluster Configurations
-Opening cluster-config.yaml, add the line `CustomAmi: <E4S-Pro-ami-id>` under the Image section. Replacing <E4S-Pro-ami-id> with the AMI you obtained in the prior section.
+Opening cluster-config.yaml, add the line `CustomAmi: <ParaTools-Pro-ami-id>` under the Image section. Replacing <ParaTools-Pro-ami-id> with the AMI you obtained in the prior section.
 ```
 Image:
       Os: ubuntu2004
-      CustomAmi: <E4S-Pro-ami-id>
+      CustomAmi: <ParaTools-Pro-ami-id>
 ```
 Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
 ```
@@ -228,4 +228,4 @@ From there you should be able to launch jobs using slurm.
 [10]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html
 [11]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey
 [12]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html#create-a-key-pair
-[13]: https://aws.amazon.com/marketplace/search/results?searchTerms=e4s+pro&CREATOR=4790cdfc-e838-4372-a130-05ed1b70b62d&filters=CREATOR
+[13]: https://aws.amazon.com/marketplace/search/results?searchTerms=ParaTools+Pro&CREATOR=4790cdfc-e838-4372-a130-05ed1b70b62d&filters=CREATOR
