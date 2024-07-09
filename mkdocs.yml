@@ -71,7 +71,7 @@ extra:
       make our documentation better.
   social:
     - icon: fontawesome/brands/github
-      link: https://github.com/ParaToolsInc/E4S-Pro
+      link: https://github.com/ParaToolsInc/ParaToolsPro
 
 copyright: |
   &copy; 2023 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
