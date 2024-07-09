@@ -1,9 +1,9 @@
-blueprint_name: e4s-23-11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8
+blueprint_name: ppro-4-e4s-23-11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8
 
 vars:
-#  project_id:  "e4s-pro" #(1)
-  deployment_name: e4s-23-11-cluster-slurm-rocky8
-  image_family: e4s-23-11-slurm-gcp-5-9-hpc-rocky-linux-8 #(2)!
+#  project_id:  "paratools-pro" #(1)
+  deployment_name: ppro-4-e4s-23-11-cluster-slurm-rocky8
+  image_family: ppro-4-e4s-23-11-slurm-gcp-5-9-hpc-rocky-linux-8 #(2)!
   region: us-central1
   zone: us-central1-a
   disk_size_gb: 130
