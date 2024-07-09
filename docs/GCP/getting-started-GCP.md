@@ -1,4 +1,4 @@
-# E4S Pro Getting Started with Google Cloud Platform (GCP)
+# ParaTools Pro for E4S™ Getting Started with Google Cloud Platform (GCP)
 
 ## General Background Information
 
@@ -16,7 +16,7 @@ For the purposes of this tutorial, we make the following assumptions:
 - You have [enabled the Sevice Usage API][9].
 - You have [enabled the Secret Manager API][10].
 - You are aware of [the costs for running instances on GCP Compute Engine][11] and
-  of the costs of using the E4S Pro GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
+  of the costs of using the ParaTools Pro for E4S™ GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
 - You are comfortable using the [GCP Cloud Shell][12], or are running locally
     (which will match this tutorial) and are familiar with SSH, a terminal and have
     [installed][13] and [initialized the gcloud CLI][14]
@@ -169,16 +169,16 @@ gcloud compute project-info add-metadata \
 
 ### Deploy the Cluster
 
-Copy the [e4s-pro-slurm-cluster-blueprint-example][blueprint] from the
-E4S Pro documentation to your clipboard, then paste it into a file named
-`E4S-Pro-Slurm-Cluster-Blueprint.yaml`. After copying the text, in your terminal
+Copy the [ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] from the
+ParaTools Pro for E4S™ documentation to your clipboard, then paste it into a file named
+`ParaTools-Pro-Slurm-Cluster-Blueprint.yaml`. After copying the text, in your terminal
 do the following:
 
 ``` bash
-cat > E4S-Pro-Slurm-Cluster-Blueprint.yaml
+cat > ParaTools-Pro-Slurm-Cluster-Blueprint.yaml
 # paste the copied text # (1)
 # press Ctrl-d to add an end-of-file character
-cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
+cat ParaTools-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
 ```
 
 1. !!! note
@@ -189,13 +189,13 @@ cat E4S-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
 Using your favorite editor, select appropriate instance types for the compute partitions,
 and remove the h3 partition if you do not have access to h3 instances yet.
 See the expandable annotations and pay extra attention to the highlighted lines
-on the [e4s-pro-slurm-cluster-blueprint-example][blueprint] example.
+on the [ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] example.
 
 !!! Tip "Pay Attention"
     In particular:
 
     - Determine if you want to pass the `${PROJECT_ID}` on the command line or in the blueprint
-    - Verify that the `image_family` key matches the image for E4S Pro from the GCP marketplace
+    - Verify that the `image_family` key matches the image for ParaTools Pro for E4S™ from the GCP marketplace
     - Adjust the region and zone used, if desired
     - Limit the IP `ranges` to those you will be connecting from via SSH in the `ssh-login`
       `firewall_rules` rule, if in a production setting.
@@ -224,11 +224,11 @@ set deployment variables and create the deployment folder.
 ??? note inline end
     It may take a few minutes to finish provisioning your cluster.
 Now the cluster can be deployed.
-Run the following command to deploy your E4S Pro cluster:
+Run the following command to deploy your ParaTools Pro for E4S™ cluster:
 
 !!! info "Perform the deployment"
     ``` bash
-    ./ghpc deploy e4s-23-11-cluster-slurm-rocky8
+    ./ghpc deploy ppro-4-e4s-23-11-cluster-slurm-rocky8
     ```
 At this point you will be prompted to review or accept the proposed changes.
 You may review them if you like, but you should press `a` for accept once satisfied.
@@ -249,7 +249,7 @@ Once the cluster is deployed, ssh to the login node.
 It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted in a different manner, see here. To delete your cluster correctly do
 
 ```
-./ghpc destroy e4s-23-11-cluster-slurm-rocky8
+./ghpc destroy ppro-4-e4s-23-11-cluster-slurm-rocky8
 ```
 At this point you will be prompted to review or accept the proposed changes.
 You may review them if you like, but you should press `a` for accept once satisfied and the deletion will proceed.

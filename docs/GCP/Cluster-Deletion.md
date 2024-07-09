@@ -14,7 +14,7 @@ When the folder hasn't been deleted, and you attempt to create the cluster again
 		
 		Use the -w command line argument to enable overwrite.
 		If overwrite is already enabled then this may be because you are attempting to remove a deployment group, which is not supported.
-    original error: the directory already exists: e4s-23-11-cluster-slurm-rocky8
+    original error: the directory already exists: ppro-4-e4s-23-11-cluster-slurm-rocky8
 ```
 In this case remove the folder as stated above.
 ### Case 3
