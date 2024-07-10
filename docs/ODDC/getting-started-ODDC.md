@@ -8,7 +8,7 @@ This tutorial assumes you have access to a functioning ODDC server, installed an
 
 ## Tutorial
 
-### Login
+### Log In 
 Enter the URL for your ODDC web portal instance in a web browser and log in with the credentials you created during configuration. 
 
 ### Create/Launch Cluster
@@ -20,7 +20,7 @@ You can create or import a new cluster using the '+' button in the upper right. 
 
 Once your cluster has been launched you can create and issue jobs from the Job Manager, available via the menu on the right. 
 
-### Log In
+### SSH To Cluster
 
 To log into the cluster you can find the cluster's public IP address at the end of the startup log, available from the cluster's ellipsis menu while the cluster is active. 
 
