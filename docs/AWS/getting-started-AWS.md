@@ -213,6 +213,9 @@ Alternatively you can access your cluster from your local console by doing ```pc
 
 From there you should be able to launch jobs using slurm.
 
+### Runing Examples
+There is an `examples` directory with differents tests and exaples that you can run.
+For using NVIDIA NeMo™ please see `examples/nemo/ex2/text_classification/ex2.sbatch`.
 
 
 
