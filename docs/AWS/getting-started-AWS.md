@@ -89,7 +89,7 @@ When creating a cluster you will be prompted for:
 - Region: Select whichever region you are planning to launch these in.
 - EC2 key pair: Select the one you just created, or plan on using to access the nodes.
 - Scheduler: You must select **slurm**
-- OS: **Ubuntu 2204**
+- OS: **Ubuntu 22.04**
 -  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. **Note** the head node does **not** have to be EFA capable.
 -  Structure of your queue should be selected as required by your use case.
 -  Compute instance types: You **must** select an EFA capable node. You can find these out by:
@@ -133,7 +133,7 @@ Allowed values for Operating System:
 2. centos7
 3. ubuntu2004
 4. ubuntu2204
-Operating System [ubuntu2004]:
+Operating System [ubuntu2204]:
 Head node instance type [t3.large]:
 Number of queues [1]:
 Name of queue 1 [queue1]:
@@ -161,7 +161,7 @@ If there is an error regarding a failed authorization, there may have been an is
 Opening cluster-config.yaml, add the line `CustomAmi: <ParaTools-Pro-ami-id>` under the Image section. Replacing <ParaTools-Pro-ami-id> with the AMI you obtained in the prior section.
 ```
 Image:
-      Os: ubuntu2004
+      Os: ubuntu2204
       CustomAmi: <ParaTools-Pro-ami-id>
 ```
 Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
@@ -199,7 +199,7 @@ This process will return some JSON such as
     {
       "level": "WARNING",
       "type": "AmiOsCompatibleValidator",
-      "message": "Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2004 compatibility, please make sure they are compatible before cluster creation and update operations."
+      "message": "Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2204 compatibility, please make sure they are compatible before cluster creation and update operations."
     }
   ]
 }
@@ -214,7 +214,7 @@ Alternatively you can access your cluster from your local console by doing ```pc
 From there you should be able to launch jobs using slurm.
 
 ### Runing Examples
-There is an `examples` directory with different tests and exaples that you can run.
+There is an `examples` directory with different tests and examples that you can run.
 For using NVIDIA NeMo™ please see `examples/nemo/ex2/text_classification/ex2.sbatch`.
 
 
