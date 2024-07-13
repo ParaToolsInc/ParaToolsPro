@@ -23,9 +23,9 @@ python3 -m virtualenv ~/apc-ve
 source ~/apc-ve/bin/activate
 ```
 
-Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.8.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
+Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.10.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
 ```
-python3 -m pip install --upgrade "aws-parallelcluster"==3.8.0
+python3 -m pip install --upgrade "aws-parallelcluster"==3.10.0
 ```
 
 ParallelCluster needs node.js for CloudFormation, so
@@ -89,7 +89,7 @@ When creating a cluster you will be prompted for:
 - Region: Select whichever region you are planning to launch these in.
 - EC2 key pair: Select the one you just created, or plan on using to access the nodes.
 - Scheduler: You must select **slurm**
-- OS: **Ubuntu 2004**
+- OS: **Ubuntu 2204**
 -  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. **Note** the head node does **not** have to be EFA capable.
 -  Structure of your queue should be selected as required by your use case.
 -  Compute instance types: You **must** select an EFA capable node. You can find these out by:
