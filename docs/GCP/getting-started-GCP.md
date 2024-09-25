@@ -243,7 +243,7 @@ Once the cluster is deployed, ssh to the login node.
 
 2. Click on `ssh` for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
-[blueprint]: ./blueprint.md/#e4s-pro-slurm-cluster-blueprint-example
+[blueprint]: ./blueprint.md/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example
 ### Deletion of the Cluster
 
 It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted in a different manner, see here. To delete your cluster correctly do
