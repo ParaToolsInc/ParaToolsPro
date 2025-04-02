@@ -60,21 +60,25 @@ markdown_extensions:
   - pymdownx.details
   - pymdownx.mark
   - attr_list
+  - md_in_html
+  - pymdownx.blocks.caption
 
 extra:
-  consent:
-    title: Cookie consent
-    description: >-
-      We use cookies to recognize your repeated visits and preferences, as well
-      as to measure the effectiveness of our documentation and whether users
-      find what they're searching for. With your consent, you're helping us to
-      make our documentation better.
+  # We don't use cookies and so don't need the cookie consent.
+  # If we ever do start to use cookies, restore this.
+  # consent:
+  #   title: Cookie consent
+  #   description: >-
+  #     We use cookies to recognize your repeated visits and preferences, as well
+  #     as to measure the effectiveness of our documentation and whether users
+  #     find what they're searching for. With your consent, you're helping us to
+  #     make our documentation better.
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/ParaToolsInc/ParaToolsPro
 
 copyright: |
-  &copy; 2023 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
+  &copy; 2023-2025 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
 
 # Page tree
 nav:
@@ -88,4 +92,6 @@ nav:
     - Cluster Deletion: GCP/Cluster-Deletion.md
   - ODDC:
     - Getting Started: ODDC/getting-started-ODDC.md
+  - Azure:
+    - Getting Started: Azure/getting-started-Azure.md
   - Privacy Policy: privacy.md
