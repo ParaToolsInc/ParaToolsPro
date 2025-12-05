@@ -84,7 +84,8 @@ copyright: |
 nav:
   - Home: index.md
   - AWS:
-    - Getting Started: AWS/getting-started-AWS.md
+    - Getting Started with Parallel Cluster: AWS/getting-started-AWS.md
+    - Getting Started with Parallel Computing Service: AWS/getting-started-AWS-PCS.md
       #    - AWS Parallel Cluster Config: AWS/pcluster.md
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
