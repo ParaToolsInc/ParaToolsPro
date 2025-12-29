@@ -30,7 +30,7 @@ jobs:
       - name: Build documentation (strict)
         run: mkdocs build --strict
       - name: Check external links
-        run: mkdocs-linkcheck -r docs -m get --exclude "console.cloud.google.com" --exclude "\.md$" --exclude "\.yaml$""
+        run: mkdocs-linkcheck -r docs -m get --exclude "console.cloud.google.com" --exclude "\.md$" --exclude "\.yaml$"
       - name: Deploy to GitHub Pages
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         run: mkdocs gh-deploy --force
