@@ -1,8 +1,8 @@
-# ParaTools Pro for E4S™ Getting Started with Amazon Web Services (AWS)
+# ParaTools Pro for E4S™ Getting Started with AWS ParallelCluster
 
 ## General Background Information
 
-In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.
+In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster (PC) or AWS Parallel Computing Service (PCS) to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.
 
 For the purposes of this tutorial, we make the following assumptions:
 - You have created an [AWS account][5], and an [Administrative User][4]

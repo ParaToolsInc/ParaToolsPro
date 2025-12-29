@@ -1,0 +1,224 @@
+# original source: https://aws-hpc-recipes.s3.amazonaws.com/main/recipes/pcs/getting_started/assets/pcs-lt-efs-fsxl.yaml
+# has been modified
+
+AWSTemplateFormatVersion: 2010-09-09
+Description: EC2 launch templates for AWS PCS login and compute node groups.
+  This template creates EC2 launch templates for AWS PCS login and compute node groups. 
+  It demonstrates mounting EFS and FSx for Lustre file systems, configuring EC2 instance tags, enabling Instance Metadata Service Version 2 (IMDSv2), and setting up the cluster security group for communication with the AWS PCS controller. 
+  Additionally, it shows how to configure inbound SSH access to the login nodes. 
+  Use this template as a starting point to create custom launch templates tailored to your specific requirements.
+  Check the Outputs tab of this stack for useful details about resources created by this template.
+
+Metadata:
+  AWS::CloudFormation::Interface:
+    ParameterGroups:
+      - Label:
+          default: Security
+        Parameters:
+          - VpcDefaultSecurityGroupId
+          - ClusterSecurityGroupId
+          - SshSecurityGroupId
+          - EnableDcvAccess
+          - DcvSecurityGroupId
+          - SshKeyName
+      - Label:
+          default: Networking
+        Parameters:
+          - VpcId
+          - PlacementGroupName
+          - NodeGroupSubnetId
+      - Label:
+          default: File systems
+        Parameters:
+          - EfsFilesystemId
+          - FSxLustreFilesystemId
+          - FSxLustreFilesystemMountName
+
+Parameters:
+
+  VpcId:
+    Type: 'AWS::EC2::VPC::Id'
+    Description: Cluster VPC where EFA-enabled instances will be launched
+  NodeGroupSubnetId:
+    Type: AWS::EC2::Subnet::Id
+    Description: Subnet within cluster VPC where EFA-enabled instances will be launched
+  VpcDefaultSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Cluster VPC 'default' security group. Make sure you choose the one from your cluster VPC!
+  ClusterSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security group for PCS cluster controller and nodes.
+  SshSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security group for SSH into login nodes
+  EnableDcvAccess:
+    Type: String
+    Description: Enable DCV access to login nodes? When set to True, the DcvSecurityGroupId parameter below will be required.
+    Default: 'True'
+    AllowedValues:
+      - 'True'
+      - 'False'
+  DcvSecurityGroupId:
+    Type: AWS::EC2::SecurityGroup::Id
+    Description: Security group for DCV access to login nodes (only used if EnableDcvAccess is True)
+  SshKeyName:
+    Type: AWS::EC2::KeyPair::KeyName
+    Description: SSH key name for access to login nodes
+  EfsFilesystemId:
+    Type: String
+    Description: Amazon EFS file system Id
+  FSxLustreFilesystemId:
+    Type: String
+    Description: Amazon FSx for Lustre file system Id
+  FSxLustreFilesystemMountName:
+    Type: String
+    Description: Amazon FSx for Lustre mount name
+  PlacementGroupName:
+    Type: String
+    Description: Placement group name for compute nodes (leave blank to creaet a new one)
+    Default: "AWSPCS-PTPro-cluster"
+
+
+Conditions:
+  HasDcvAccess: !Equals [!Ref EnableDcvAccess, 'True']
+
+Resources:
+
+  EfaSecurityGroup:
+    Type: 'AWS::EC2::SecurityGroup'
+    Properties:
+      GroupDescription: Support EFA
+      GroupName: !Sub 'efa-${AWS::StackName}'
+      VpcId: !Ref VpcId
+  EfaSecurityGroupOutboundSelfRule:
+    Type: 'AWS::EC2::SecurityGroupEgress'
+    Properties:
+      IpProtocol: '-1'
+      GroupId: !Ref EfaSecurityGroup
+      Description: Allow outbound EFA traffic to SG members
+      DestinationSecurityGroupId: !Ref EfaSecurityGroup
+
+  EfaSecurityGroupInboundSelfRule:
+    Type: 'AWS::EC2::SecurityGroupIngress'
+    Properties:
+      IpProtocol: '-1'
+      GroupId: !Ref EfaSecurityGroup
+      Description: Allow inbound EFA traffic to SG members
+      SourceSecurityGroupId: !Ref EfaSecurityGroup
+
+  LoginLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub 'login-${AWS::StackName}'
+
+      LaunchTemplateData:
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: HPCRecipes
+                Value: "true"
+        MetadataOptions:
+          HttpEndpoint: enabled
+          HttpPutResponseHopLimit: 4
+          HttpTokens: required
+        KeyName: !Ref SshKeyName
+        SecurityGroupIds:
+          - !Ref ClusterSecurityGroupId
+          - !Ref SshSecurityGroupId
+          - !If [HasDcvAccess, !Ref DcvSecurityGroupId, !Ref "AWS::NoValue"]
+          - !Ref VpcDefaultSecurityGroupId
+        UserData:
+          Fn::Base64: !Sub |
+            MIME-Version: 1.0
+            Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
+
+            --==MYBOUNDARY==
+            Content-Type: text/cloud-config; charset="us-ascii"
+            MIME-Version: 1.0
+
+            packages:
+            - amazon-efs-utils
+            
+            runcmd:
+            # Mount EFS filesystem as /home
+            - mkdir -p /tmp/home
+            - rsync -aA /home/ /tmp/home
+            - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab
+            - mount -a -t efs defaults
+            - if [ "enabled" == "$(sestatus | awk '/^SELinux status:/{print $3}')" ]; then setsebool -P use_nfs_home_dirs 1; fi
+            - rsync -aA --ignore-existing /tmp/home/ /home
+            - rm -rf /tmp/home/
+            # If provided, mount FSxL filesystem as /shared
+            - if [ ! -z "${FSxLustreFilesystemId}" ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; chmod 777 /shared; fi
+
+            --==MYBOUNDARY==
+
+  ComputeLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub 'compute-${AWS::StackName}'
+      LaunchTemplateData:
+        TagSpecifications:
+          - ResourceType: instance
+            Tags:
+              - Key: HPCRecipes
+                Value: "true"
+        MetadataOptions:
+          HttpEndpoint: enabled
+          HttpPutResponseHopLimit: 4
+          HttpTokens: required
+        Placement:
+          GroupName: !Ref PlacementGroupName
+        NetworkInterfaces:
+          - Description: Primary network interface
+            DeviceIndex: 0
+            InterfaceType: efa
+            NetworkCardIndex: 0
+            SubnetId: !Ref NodeGroupSubnetId
+            Groups:
+            - !Ref EfaSecurityGroup
+            - !Ref ClusterSecurityGroupId
+            - !Ref VpcDefaultSecurityGroupId
+        KeyName: !Ref SshKeyName
+        UserData:
+          Fn::Base64: !Sub |
+            MIME-Version: 1.0
+            Content-Type: multipart/mixed; boundary="==MYBOUNDARY=="
+
+            --==MYBOUNDARY==
+            Content-Type: text/cloud-config; charset="us-ascii"
+            MIME-Version: 1.0
+
+            packages:
+            - amazon-efs-utils
+            
+            runcmd:
+            # Mount EFS filesystem as /home
+            - mkdir -p /tmp/home
+            - rsync -aA /home/ /tmp/home
+            - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab
+            - mount -a -t efs defaults
+            - if [ "enabled" == "$(sestatus | awk '/^SELinux status:/{print $3}')" ]; then setsebool -P use_nfs_home_dirs 1; fi
+            - rsync -aA --ignore-existing /tmp/home/ /home
+            - rm -rf /tmp/home/
+            # If provided, mount FSxL filesystem as /shared
+            - if [ ! -z "${FSxLustreFilesystemId}" ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; fi
+
+            --==MYBOUNDARY==
+
+Outputs:
+  LoginLaunchTemplateId:
+    Description: "Login nodes template ID"
+    Value: !Ref LoginLaunchTemplate
+  LoginLaunchTemplateName:
+    Description: "Login nodes template name"
+    Value: !Sub 'login-${AWS::StackName}'
+  ComputeLaunchTemplateId:
+    Description: "Compute nodes template ID"
+    Value: !Ref ComputeLaunchTemplate
+  ComputeLaunchTemplateName:
+    Description: "Compute nodes template name"
+    Value: !Sub 'compute-${AWS::StackName}'
+  EfaSecurityGroupId:
+    Description: Security group created to support EFA communications
+    Value: !Ref EfaSecurityGroup

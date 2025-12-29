@@ -1,0 +1,8 @@
+# MkDocs documentation generator
+mkdocs>=1.6.0,<2.0.0
+
+# Material theme for MkDocs
+mkdocs-material>=9.7.0,<10.0.0
+
+# Link checker for documentation
+mkdocs-linkcheck>=1.0.6,<2.0.0
