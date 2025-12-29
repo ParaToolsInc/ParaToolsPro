@@ -2,7 +2,7 @@
 
 # ParaTools Pro for E4S™
 
-![Marimo Interactive Notebooks](assets/images/gcluster/python-packages-and-viz-tools_thumb.jpg){ align=right width=600 }
+![Marimo Interactive Notebooks](assets/images/gcluster/python-packages-and-viz-tools.jpg){ align=right width=600 }
 
 The Extreme-scale Scientific Software Stack [(E4S™)][1] is a broad collection of HPC focused [software packages][2]. E4S provides a unified computing environment for deployment of open-source projects. E4S includes contributions from many organizations, including national laboratories, universities, and industry. E4S packages are deployed and managed via [Spack][3]. E4S was originally developed to provide a common software environment for the exascale leadership computing systems currently being deployed at DOE National Laboratories across the U.S.
 
