@@ -2,7 +2,8 @@ name: ci
 on:
   push:
     branches:
-      - main
+      - '**'
+  pull_request:
 permissions:
   contents: write
 jobs:
@@ -25,5 +26,11 @@ jobs:
           path: .cache
           restore-keys: |
             mkdocs-material-
-      - run: pip install mkdocs-material
-      - run: mkdocs gh-deploy --force
+      - run: pip install mkdocs-material mkdocs-linkcheck
+      - name: Build documentation (strict)
+        run: mkdocs build --strict
+      - name: Check external links
+        run: mkdocs-linkcheck -r docs -m get
+      - name: Deploy to GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        run: mkdocs gh-deploy --force
