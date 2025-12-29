@@ -2,49 +2,107 @@
 
 ## General Background Information
 
-In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS Parallel Computing Service (PCS) to create a cluster. This will use a number of .yaml files that describe the stack and AWS Cloud Formation. We will then launch a GPU accelerated head-node that can spawn EC2 compute node instances that are linked with EFA networking capabilities.
+In this tutorial we will show you how to set up and launch an HPC cluster using AWS Parallel Computing Service (PCS).
+You will use the command line tools, [AWS CLI](https://aws.amazon.com/cli/), and AWS console to create a cluster.
+This will use a number of `.yaml` files that describe the stack and are inputs for AWS CloudFormation.
+We will then launch a GPU-accelerated head node that can spawn EC2 compute node instances linked with EFA networking capabilities.
 
 For the purposes of this tutorial, we make the following assumptions:
 
-- You have created an [AWS account][5], and an [Administrative User][4]
+- You have created an [AWS account][5], and an are [Administrative User][4].
 
 ## Tutorial
 
 Please reference the official [AWS PCS Getting Started](https://docs.aws.amazon.com/pcs/latest/userguide/getting-started.html) guide for more information.
+This tutorial follows the official tutorial linked above, with a few minor changes.
+If something is unclear, please check the official tutorial.
 
 ### 1. Create VPC and Subnets
 
-Using CloudFormation, create a new stack for the VPC and Subnets using the following template:
+??? tip "You can skip this step by reusing previously created resources"
+    If you have already created the VPC and subnets, you can reuse them, and skip this step. Use this [link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringText=PTPro&filteringStatus=active&viewNested=true) to search for VPC stacks in us-east-1 that contain the text "PTPro".
 
-- 0-pcs-cluster-cloudformation-vpc-and-subnets.yaml
+To create a new stack for the cluster's VPC and Subnets [using the CloudFormation console][1], please use the following template:
 
-Use the default options and give the stack a name.
+[`0-pcs-cluster-cloudformation-vpc-and-subnets.yaml`](../assets/aws/pcs/0-pcs-cluster-cloudformation-vpc-and-subnets.yaml)
+
+??? note "Show template contents (click to expand)"
+
+    ```yaml
+    --8<-- "assets/aws/pcs/0-pcs-cluster-cloudformation-vpc-and-subnets.yaml"
+    ```
+
+Use the default options and give the stack a name, like `AWSPCS-PTPro-cluster`.
+You can leave the options as the defaults.
+
+!!! tip "Use this AWS Cloud Formation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T124707.749Zt1m-0-pcs-cluster-cloudformation-vpc-and-subnets.yaml&stackName=AWSPCS-PTPro-cluster&param_CidrPublicSubnetA=10.3.0.0%2F20&param_ProvisionSubnetsC=False&param_CidrBlock=10.3.0.0%2F16&param_CidrPrivateSubnetB=10.3.144.0%2F20&param_CidrPrivateSubnetC=10.3.160.0%2F20&param_CidrPublicSubnetC=10.3.32.0%2F20&param_CidrPublicSubnetB=10.3.16.0%2F20&param_CidrPrivateSubnetA=10.3.128.0%2F20) to quickly provision these resources with default settings."
+
+Under Capabilities: Check the box for I acknowledge that AWS CloudFormation might create IAM resources.
+
+Once you have created this new VPC, find its VPC ID and note it by searching for it in the [Amazon VPC Console](https://console.aws.amazon.com/vpc) by selecting "VPCs" and then searching for the name you picked above.
+If you chose the stack name we suggested, you would search for `PTPro`, and if you are deploying this in `us-east-1` you can use this [link](https://us-east-1.console.aws.amazon.com/vpcconsole/home?region=us-east-1#vpcs:search=PTPro).
+Make a note of the VPC ID once you have found it.
 
 ### 2. Create Security Groups
 
-Using CloudFormation, create a new stack for the security groups using the following template:
+???+ summary
+    In this section we will create three security groups:
 
-- 1-pcs-cluster-cloudformation-security-groups.yaml
+    - A cluster security group enabling comms between the compute nodes, login node and AWS PCS controller
+    - An inbound ssh group that can optionally be enabled to allow ssh logins on the login node
+    - An DCV group that can optionally be enabled to allow DCV remote desktop connections to the login node
 
-Use the VPC shown in Outputs section of stack created in [step 1](#1-create-vpc-and-subnets)
+!!! tip "If you have already created these security groups you can reuse them and skip this step."
+
+Using [CloudFormation][1], create a new stack for the security groups using the following template:
+
+[`1-pcs-cluster-cloudformation-security-groups.yaml`](../assets/aws/pcs/1-pcs-cluster-cloudformation-security-groups.yaml)
+
+??? note "Show template contents (click to expand)"
+
+    ```yaml
+    --8<-- "assets/aws/pcs/1-pcs-cluster-cloudformation-security-groups.yaml"
+    ```
+
+- Under stack name use something like `AWSPCS-PTPro-sg`.
+- Select the VPC ID noted in [step 1].
+- Enable ssh, and optionally enable DCV access.
+
+??? warning "Use a Quick create link"
+
+    You can use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T134612.678Zi9c-1-pcs-cluster-cloudformation-security-groups.yaml&stackName=AWSPCS-PTPro-sg&param_CreateInboundDcvSecurityGroup=True&param_VpcId=vpc-0c6a46e761800dead&param_CreateInboundSshSecurityGroup=True&param_ClientIpCidr=0.0.0.0%2F0) to provision these security groups in `us-east-1`, however, __*you must ensure that you change the VPC ID*__ to the one created in [step 1].
 
 ### 3. Create PCS Cluster
 
-Go to the PCS console and create a new cluster.
+!!! tip "If you have already created a cluster in this manner you can skip this step"
 
-- Under Cluster setup, choose a name and set the controller size to small.
+Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) and create a new cluster.
+
+- Under Cluster setup, choose a name like `AWSPCS-PTPro-cluster`
+- Set the controller size to small.
+- Use the version of slurm compatible with the ParaTools Pro for E4S(TM) image. This is usually the latest version available, 25.05 as of december 2025.
 - Under Networking:
-  - use the VPC ID created in [step 1](#1-create-vpc-and-subnets)
-  - Use the subnet labeled as PrivateSubnetA created in [step 1](#1-create-vpc-and-subnets)
-  - Use the security group `cluster-*-sg` created in [step 2](#2-create-security-groups)
+    - use the VPC ID created in [step 1]. (e.g., `AWSPCS-PTPro-cluster...`)
+    - Use the subnet labeled as PrivateSubnetA created in [step 1].
+    - Under "Security groups" choose "Select an existing security group"
+        - Use the security group `cluster-*-sg` created in [step 2](#2-create-security-groups) (e.g., `cluster-AWSPCS-PTPro-sg`)
+- Click "Create Cluster" to begin creating the cluster.
 
 ### 4. Create shared filesystem using EFS
 
-Go to EFS console and create a new filesystem using the VPC created in [step 1](#1-create-vpc-and-subnets). Note the FS ID.
+- Go to [EFS console](https://console.aws.amazon.com/efs) and create a new filesystem.
+- Ensure it is in the same region as the PCS cluster you are setting up.
+- Create a file system
+    - For the name choose something like `AWSPCS-PTPro-fs`.
+    - Under "Virtual Private Cloud", use the VPC ID created in [step 1](#1-create-vpc-and-subnets).
+    - Click "Create File System"
+    - Note the FS ID.
 
 ### 5. Create an Instance Profile
 
-Go to IAM console. Under Access Management -> Policies, create a new policy and specify the permissions using the JSON editor as the following:
+Go to the [IAM console]. Under Access Management -> Policies
+Check if a policy matching this one already exists, try searching for pcs.
+If no such policy exists, then create a new one and specify the permissions using the JSON editor as the following:
 
 ``` json
 {
@@ -61,31 +119,65 @@ Go to IAM console. Under Access Management -> Policies, create a new policy and 
 }
 ```
 
-Note the name of the new policy.
+Name the new policy, something like `AWS-PCS-polilcy` and note the name that you chose.
 
-Next, under IAM Console -> Access Management -> Roles, create a new role.
+???+ note "Additional optional steps to enable DCV remote desktop access"
 
-- Select Trusted Entity Type = AWS Service
-- Service or use case = EC2
-- Use Case = EC2
+    If you plan to access the login node you will need to create an adaditional policy to access the DCV license server.
+    If a matching policy exists you can reuse it, try searching for DCV to check.
+    If no policy exists, then create a new one, specifying the permissions with the JSON editor as follows:
+
+    ``` json
+    {
+        "Version": "2012-10-17",
+        "Statement": [
+            {
+                "Effect": "Allow",
+                "Action": "s3:GetObject",
+                "Resource": "arn:aws:s3:::dcv-license.region/us-*"
+            }
+        ]
+    }
+    ```
+
+    Give it a name like `EC2AccessDCVLicenseS3`.
+
+Next, in the [IAM Console] to to Access Management -> Roles check if a role starting with `AWS_PCS-` exists with the following policies attached.
+If not follow these instructions to create it.
+
+- Select "Create Role"
+- Select Trusted Entity Type: "AWS Service"
+- Service or use case: "EC2"
+- Use Case: "EC2"
 - Click Next
 - Add permissions
-  - Add the policy created earlier in [step 5](#5-create-an-instance-profile).
-  - add AmazonSSMManagedInstanceCore
+    - Add the policy created earlier in [step 5](#5-create-an-instance-profile).
+    - If planning to use DCV to access the login node, also add the `EC2AccessDCVLicenseS3` policy.
+    - Add the `AmazonSSMManagedInstanceCore` policy.
 - Click Next
 - Give the role a name that starts with `AWSPCS-` (It must start with `AWSPCS-`)
 
 ### 6. Create EFA Placement Group
 
-Under EC2 Console -> Network & Security -> Placement Groups -> "Create placement group"
+!!! note "If such a placement group already exists you may simply reuse it."
 
+Under the [EC2 Console], navigate to Network & Security -> Placement Groups -> "Create placement group"
+
+- Name it something like `AWSPCS-PTPro-cluster`
 - Set strategy = "cluster"
+- Click "Create group"
 
 ### 7. Create node Launch Template
 
-Using CloudFormation, create a new stack for the node launch templates using the following template:
+[Using CloudFormation][1], create a new stack for the node launch templates using the following template:
 
-- 2-pcs-cluster-cloudformation-launch-templates.yaml
+[`2-pcs-cluster-cloudformation-launch-templates.yaml`](../assets/aws/pcs/2-pcs-cluster-cloudformation-launch-templates.yaml)
+
+??? note "Show template contents (click to expand)"
+
+    ```yaml
+    --8<-- "assets/aws/pcs/2-pcs-cluster-cloudformation-launch-templates.yaml"
+    ```
 
 Set the following values:
 
@@ -93,13 +185,10 @@ Set the following values:
 - ClusterSecurityGroupId = get value from output of [step 2](#2-create-security-groups) key = "ClusterSecurityGroupId"
 - SshSecurityGroupId = get value from output of [step 2](#2-create-security-groups) key = "InboundSshSecurityGroupId"
 - SshKeyName = pick a key
-- NumberOfNetworkCards = 1
 - VpcId = get value from output of [step 1](#1-create-vpc-and-subnets) key = "VPC"
 - PlacementGroupName = use name chosen in [step 6](#6-create-efa-placement-group)
 - NodeGroupSubnetId = select the subnet labeled with PrivateSubnetA created in [step 1](#1-create-vpc-and-subnets)
 - EfsFilesystemId = EFS ID of FS created in [step 4](#4-create-shared-filesystem-using-efs)
-
-[quick create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-02T162137.854Zrw0-2-pcs-cluster-cloudformation-launch-templates.yaml&stackName=PPro-PCS-launch-template&param_SshKeyName=Zaak-e4s-for-clouds&param_NodeGroupSubnetId=subnet-0ad8b185bf2442f8a&param_FSxLustreFilesystemMountName=&param_PlacementGroupName=PPro-PCS-EFA-placement-group&param_VpcId=vpc-011d7692cc7337ce2&param_SshSecurityGroupId=sg-056df816a182fd17b&param_VpcDefaultSecurityGroupId=sg-00e2bae45c867ce07&param_ClusterSecurityGroupId=sg-0ab58303be1f0f7fd&param_FSxLustreFilesystemId=&param_EfsFilesystemId=fs-06e054d9e1aba4819&param_NumberOfNetworkCards=1)
 
 ### 8. Create node groups
 
@@ -165,5 +254,9 @@ In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster
 2. Delete the login node group by gong to "Compute node groups" and deleting the node group created in [step 8.2](#8-create-node-groups)
 3. Delete the compute node group by going to "Compute node groups" and deleting the node group created in [step 8.1](#8-create-node-groups)
 
+[1]: https://console.aws.amazon.com/cloudformation/
 [4]: https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html#create-an-admin
 [5]: https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html
+[step 1]: #1-create-vpc-and-subnets
+[IAM Console]: https://console.aws.amazon.com/iam
+[EC2 Console]: https://console.aws.amazon.com/ec2
