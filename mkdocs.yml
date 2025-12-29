@@ -91,8 +91,8 @@ nav:
     - Getting Started: GCP/getting-started-GCP.md
     - HPC Toolkit Blueprint: GCP/blueprint.md
     - Cluster Deletion: GCP/Cluster-Deletion.md
-  - ODDC:
-    - Getting Started: ODDC/getting-started-ODDC.md
+  - Heidi:
+    - Getting Started: Heidi/getting-started-Heidi.md
   - Azure:
     - Getting Started: Azure/getting-started-Azure.md
   - Privacy Policy: privacy.md

@@ -1,15 +1,19 @@
-# E4S Pro Getting Started with Adaptive On-Demand Data Center (ODDC)
+# E4S Pro Getting Started with Heidi
 
 ## General Background Information
 
-In this tutorial we will show you how to launch an HPC cluster on ODDC using the ODDC web interface.
+[Heidi][heidi] is Adaptive Computing's AI supercomputing platform that provides on-demand access to high-performance computing resources.
 
-This tutorial assumes you have access to a functioning ODDC server, installed and configured as described in the [ODDC Documentation][1].
+In this tutorial we will show you how to launch an HPC cluster on Heidi using the Heidi web interface.
+
+This tutorial assumes you have access to a functioning Heidi server, installed and configured as described in the [Heidi Documentation][1].
+
+[heidi]: https://adaptivecomputing.com/heidi-ai-supercomputing/
 
 ## Tutorial
 
 ### Log In 
-Enter the URL for your ODDC web portal instance in a web browser and log in with the credentials you created during configuration. 
+Enter the URL for your Heidi web portal instance in a web browser and log in with the credentials you created during configuration. 
 
 ### Create/Launch Cluster
 Mouse over the menu on the left and select [Cluster Manager][2].
@@ -24,7 +28,7 @@ Once your cluster has been launched you can create and issue jobs from the Job M
 
 To log into the cluster you can find the cluster's public IP address at the end of the startup log, available from the cluster's ellipsis menu while the cluster is active. 
 
-Alternatively you can ssh to the ODDC server and use the ODDC CLI to log in. To do this you must first configure a VPN to access the ODDC server. We recommend [WireGuard][3]. Once WireGuard is installed and configured with your authentication credentials and the address of the ODDC server you can ssh to the server. From the ODDC server you can log in to your cluster like `oddc cluster:ssh <cluster-name>` Add the `--admin` flag for access to sudo privileges on the cluster.
+Alternatively you can ssh to the Heidi server and use the Heidi CLI to log in. To do this you must first configure a VPN to access the Heidi server. We recommend [WireGuard][3]. Once WireGuard is installed and configured with your authentication credentials and the address of the Heidi server you can ssh to the server. From the Heidi server you can log in to your cluster like `oddc cluster:ssh <cluster-name>` Add the `--admin` flag for access to sudo privileges on the cluster.
 
 ### Cleanup
 
