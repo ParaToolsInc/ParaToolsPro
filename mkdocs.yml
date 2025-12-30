@@ -35,7 +35,10 @@ theme:
       primary: white
       accent: blue
 
-# plugins:
+plugins:
+  - redirects:
+      redirect_maps:
+        'ODDC/getting-started-ODDC.md': 'Heidi/getting-started-Heidi.md'
 #   - privacy:
 #       enabled: !ENV [CI, false]
 

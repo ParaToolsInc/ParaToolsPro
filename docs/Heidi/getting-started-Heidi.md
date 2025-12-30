@@ -12,17 +12,19 @@ This tutorial assumes you have access to a functioning Heidi server, installed a
 
 ## Tutorial
 
-### Log In 
-Enter the URL for your Heidi web portal instance in a web browser and log in with the credentials you created during configuration. 
+### Log In
+
+Enter the URL for your Heidi web portal instance in a web browser and log in with the credentials you created during configuration.
 
 ### Create/Launch Cluster
+
 Mouse over the menu on the left and select [Cluster Manager][2].
 
 You can create or import a new cluster using the '+' button in the upper right. Once your cluster is configured hit the ellipsis '...' on the right side of your cluster entry and select the deploy option. The portal will display the progress of the cluster initialization and let you know when the cluster is available.
 
 ### Launch Jobs
 
-Once your cluster has been launched you can create and issue jobs from the Job Manager, available via the menu on the right. 
+Once your cluster has been launched you can create and issue jobs from the Job Manager, available via the menu on the right.
 
 ### SSH To Cluster
 

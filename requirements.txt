@@ -6,3 +6,6 @@ mkdocs-material>=9.7.0,<10.0.0
 
 # Link checker for documentation
 mkdocs-linkcheck>=1.0.6,<2.0.0
+
+# Redirects plugin for URL aliasing
+mkdocs-redirects>=1.2.0,<2.0.0

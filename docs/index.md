@@ -67,7 +67,7 @@ Browse screenshots showcasing the features and capabilities of ParaTools Pro for
     <img src="assets/images/gcluster/e4s_desktop_thumb.jpg" alt="E4S Desktop" style="max-width: 100%; height: auto; cursor: pointer;">
   </a>
   <p><strong>E4S Desktop Environment</strong></p>
-  <p style="font-size: 0.9em; color: #666;">Remote desktop interface with DCV</p>
+  <p style="font-size: 0.9em; color: #666;">Remote desktop interface with VNC</p>
 </div>
 
 <div style="text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
