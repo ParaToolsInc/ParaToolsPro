@@ -118,4 +118,12 @@ Browse screenshots showcasing the features and capabilities of ParaTools Pro for
   <p style="font-size: 0.9em; color: #666;">Automated cluster deployment</p>
 </div>
 
+<div style="text-align: center; border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+  <a href="assets/images/gcluster/e4s_25_11_packages.jpg" target="_blank">
+    <img src="assets/images/gcluster/e4s_25_11_packages_thumb.jpg" alt="AI/ML Packages" style="max-width: 100%; height: auto; cursor: pointer;">
+  </a>
+  <p><strong>AI/ML Package Library</strong></p>
+  <p style="font-size: 0.9em; color: #666;">Select (not exhaustive) listing of AI and machine learning packages</p>
+</div>
+
 </div>
