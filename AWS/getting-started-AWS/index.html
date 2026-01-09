@@ -1,0 +1,1339 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="Step-by-step guide to deploy E4S HPC clusters on AWS ParallelCluster">
+      
+      
+      
+        <link rel="canonical" href="https://docs.paratoolspro.com/AWS/getting-started-AWS/">
+      
+      
+        <link rel="prev" href="../..">
+      
+      
+        <link rel="next" href="../getting-started-AWS-PCS/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
+    
+    
+      
+        <title>Getting Started with AWS ParallelCluster - ParaTools Pro for E4S™ Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="blue">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#paratools-pro-for-e4stm-getting-started-with-aws-parallelcluster" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="ParaTools Pro for E4S™ Documentation" class="md-header__button md-logo" aria-label="ParaTools Pro for E4S™ Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            ParaTools Pro for E4S™ Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Getting Started with AWS ParallelCluster
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="grey" data-md-color-accent="blue"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 6H7c-3.31 0-6 2.69-6 6s2.69 6 6 6h10c3.31 0 6-2.69 6-6s-2.69-6-6-6m0 10H7c-2.21 0-4-1.79-4-4s1.79-4 4-4h10c2.21 0 4 1.79 4 4s-1.79 4-4 4M7 9c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="white" data-md-color-accent="blue"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M17 7H7a5 5 0 0 0-5 5 5 5 0 0 0 5 5h10a5 5 0 0 0 5-5 5 5 0 0 0-5-5m0 8a3 3 0 0 1-3-3 3 3 0 0 1 3-3 3 3 0 0 1 3 3 3 3 0 0 1-3 3"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+            
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="./" class="md-tabs__link">
+          
+  
+  
+  AWS
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../GCP/getting-started-GCP/" class="md-tabs__link">
+          
+  
+  
+  GCP
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../Heidi/getting-started-Heidi/" class="md-tabs__link">
+          
+  
+  
+  Heidi
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../Azure/getting-started-Azure/" class="md-tabs__link">
+          
+  
+  
+  Azure
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../EULA/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  EULA
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../privacy/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Privacy Policy
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+  
+
+<nav class="md-nav md-nav--primary md-nav--lifted md-nav--integrated" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="ParaTools Pro for E4S™ Documentation" class="md-nav__button md-logo" aria-label="ParaTools Pro for E4S™ Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    ParaTools Pro for E4S™ Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AWS
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    AWS
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with Parallel Cluster
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with Parallel Cluster
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#general-background-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        General Background Information
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tutorial" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tutorial
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tutorial">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#install-aws-parallelcluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install AWS ParallelCluster
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#install-aws-command-line-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Install AWS Command Line Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aws-security-credentials-and-cli-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWS Security Credentials and CLI Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aws-ec2-key-pair" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWS EC2 Key Pair
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#aws-user-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        AWS user policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#find-the-ami" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Find the AMI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#cluster-configuration-and-creation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Cluster configuration and creation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#final-cluster-configurations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Final Cluster Configurations
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#spinning-up-the-cluster-head-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Spinning up the cluster head node
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#accessing-your-cluster" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Accessing your cluster
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#runing-examples" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Runing Examples
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started-AWS-PCS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with Parallel Computing Service
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    GCP
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    GCP
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GCP/getting-started-GCP/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GCP/blueprint/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    HPC Toolkit Blueprint
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../GCP/Cluster-Deletion/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Cluster Deletion
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Heidi
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Heidi
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Heidi/getting-started-Heidi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Azure
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Azure
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../Azure/getting-started-Azure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../EULA/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    EULA
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../privacy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Privacy Policy
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="paratools-pro-for-e4stm-getting-started-with-aws-parallelcluster">ParaTools Pro for E4S™ Getting Started with AWS ParallelCluster<a class="headerlink" href="#paratools-pro-for-e4stm-getting-started-with-aws-parallelcluster" title="Permanent link">&para;</a></h1>
+<h2 id="general-background-information">General Background Information<a class="headerlink" href="#general-background-information" title="Permanent link">&para;</a></h2>
+<p>In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster (PC) or AWS Parallel Computing Service (PCS) to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.</p>
+<p>For the purposes of this tutorial, we make the following assumptions:
+- You have created an <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html">AWS account</a>, and an <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html#create-an-admin">Administrative User</a></p>
+<h2 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h2>
+<h3 id="install-aws-parallelcluster">Install <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3.html">AWS ParallelCluster</a><a class="headerlink" href="#install-aws-parallelcluster" title="Permanent link">&para;</a></h3>
+<p>To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.  For this section we essentially follow <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3.html">"Setting Up AWS ParallelCluster"</a>, if you have any issues look there.</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--upgrade<span class="w"> </span>pip
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a>python3<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--user<span class="w"> </span>--upgrade<span class="w"> </span>virtualenv
+</code></pre></div></td></tr></table></div>
+<p>Then create and source the virtual environment:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>python3 -m virtualenv ~/apc-ve
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>source ~/apc-ve/bin/activate
+</code></pre></div></p>
+<p>Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.10.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python3 -m pip install --upgrade &quot;aws-parallelcluster&quot;==3.10.0
+</code></pre></div></p>
+<p>ParallelCluster needs node.js for CloudFormation, so
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>chmod ug+x ~/.nvm/nvm.sh
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a>source ~/.nvm/nvm.sh
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>nvm install --lts
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a>node --version
+</code></pre></div></p>
+<h3 id="install-aws-command-line-interface">Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS Command Line Interface</a><a class="headerlink" href="#install-aws-command-line-interface" title="Permanent link">&para;</a></h3>
+<p>Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster. For this section we follow <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">"Installing AWS CLI"</a>, if you have any issues look there. 
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl &quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot; -o &quot;awscliv2.zip&quot;
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>unzip awscliv2.zip
+<a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>sudo ./aws/install
+</code></pre></div>
+Note, if you do not have sudo user rights, you must select the install and bin, with the flags <code>-i</code> and <code>-b</code>, as shown below
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>./aws/install -i ~.local/aws-cli -b ~/.local/bin
+</code></pre></div></p>
+<h3 id="aws-security-credentials-and-cli-configuration">AWS Security Credentials and CLI Configuration<a class="headerlink" href="#aws-security-credentials-and-cli-configuration" title="Permanent link">&para;</a></h3>
+<p>For this section we follow <a href="https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey">Creating Access Keys</a> and <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3-configuring.html">Configuring AWS CLI</a>, if you have any issues look there. 
+If you do not already have a secure access key, you must create one. From the <strong>IAM</strong> page, on the left side of the page select <strong>User</strong>s, then select the <strong>user</strong> you would like to grant access credentials to, then select the <strong>Security credentials</strong>, and scroll down to <strong>Create access key</strong>. Create a key for <strong>CLI</strong> activities. Make sure to save these very securely. </p>
+<p>Now we can configure AWS with those security credentials.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>aws configure
+</code></pre></div>
+And then enter the respective information,
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
+<a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a>AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+<a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>Default region name [us-east-1]: us-west-2
+<a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a>Default output format [None]: json
+</code></pre></div></p>
+<h3 id="aws-ec2-key-pair">AWS EC2 Key Pair<a class="headerlink" href="#aws-ec2-key-pair" title="Permanent link">&para;</a></h3>
+<p>To perform cluster tasks, such as running and monitoring jobs, or managing users, you must be able to access the cluster head node. To verify you can access the head node instance using SSH, you must use an EC2 key pair. If you do not already have a key pair you in the region you would like to use, follow <a href="https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/get-set-up-for-amazon-ec2.html#create-a-key-pair">this</a> guide to quickly make a key </p>
+<h3 id="aws-user-policies"><a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html">AWS user policies</a><a class="headerlink" href="#aws-user-policies" title="Permanent link">&para;</a></h3>
+<p>To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
+* Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
+* Permissions that the cluster resources require to perform cluster actions.<br />
+The policies described here are supersets of the required permissions to create clusters. If you know what you are doing you can remove permissions as you feel fit. To make the policies, open the <strong>IAM</strong> page, select <strong>Policies</strong> on the left, and <strong>Create Policy</strong>, then select the <strong>JSON</strong> editor. Copy and paste the policy found <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-base-user-policy">here</a>. Unless you plan to use AWS secrets, you must remove the final section from the JSON.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>      {
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>          &quot;Action&quot;: &quot;secretsmanager:DescribeSecret&quot;,
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>          &quot;Resource&quot;: &quot;arn:aws:secretsmanager:&lt;REGION&gt;:&lt;AWS ACCOUNT ID&gt;:secret:&lt;SECRET NAME&gt;&quot;,
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>          &quot;Effect&quot;: &quot;Allow&quot;
+<a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>      }
+</code></pre></div>
+If it reports errors, replace the <AWS ACCOUNT ID> with your 12 digit account ID.
+Then create and name the policy "ClusterPolicy1". Create another policy, with this <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-privileged-iam-access">JSON</a>, naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open <strong>ClusterPolicy1</strong> and click <strong>Entities attached</strong>,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.</p>
+<h3 id="find-the-ami">Find the AMI<a class="headerlink" href="#find-the-ami" title="Permanent link">&para;</a></h3>
+<p>You will need to have the AMI (Amazon Machine Image) ready for this next step. Select the <a href="https://aws.amazon.com/marketplace/search/results?searchTerms=ParaTools+Pro&amp;CREATOR=4790cdfc-e838-4372-a130-05ed1b70b62d&amp;filters=CREATOR">ParaTools Pro for E4S™ marketplace listing</a> for the image you want, click subscribe, then continue to configuration, select the correct region, and then copy the AMI Id that is provided. <img alt="AMIPNG" src="https://github.com/ParaToolsInc/ParaToolsPro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5" /></p>
+<h3 id="cluster-configuration-and-creation">Cluster configuration and creation<a class="headerlink" href="#cluster-configuration-and-creation" title="Permanent link">&para;</a></h3>
+<p>When creating a cluster you will be prompted for:
+- Region: Select whichever region you are planning to launch these in.
+- EC2 key pair: Select the one you just created, or plan on using to access the nodes.
+- Scheduler: You must select <strong>slurm</strong>
+- OS: <strong>Ubuntu 22.04</strong>
+-  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. <strong>Note</strong> the head node does <strong>not</strong> have to be EFA capable.
+-  Structure of your queue should be selected as required by your use case.
+-  Compute instance types: You <strong>must</strong> select an EFA capable node. You can find these out by:
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws ec2 describe-instance-types --filters &quot;Name=processor-info.supported-architecture,Values=x86_64*&quot; &quot;Name=network-info.efa-supported,Values=true&quot; --query   InstanceTypes[].InstanceType
+</code></pre></div>
+  Furthermore you can find which EFA capable nodes that have GPU support by
+  <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aws ec2 describe-instance-types --filters &quot;Name=processor-info.supported-architecture,Values=x86_64&quot; &quot;Name=network-info.efa-supported,Values=true&quot; --query   &#39;InstanceTypes[?GpuInfo.Gpus!=null].InstanceType&#39;
+</code></pre></div>
+- For the network settings, select as required for your workflow, or follow the given options.
+- Automatic VPC: Unless you already have a VPC you plan on using, select yes. Be aware that after creating many VPC's you might run into a limit, requiring you to delete older unused ones.</p>
+<p>To create the cluster-config.yaml file,
+<div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>     `pcluster configure --config cluster-config.yaml`
+</code></pre></div></p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a>INFO: Configuration file cluster-config.yaml will be written.
+<a id="__codelineno-12-2" name="__codelineno-12-2" href="#__codelineno-12-2"></a>Press CTRL-C to interrupt the procedure.
+<a id="__codelineno-12-3" name="__codelineno-12-3" href="#__codelineno-12-3"></a>
+<a id="__codelineno-12-4" name="__codelineno-12-4" href="#__codelineno-12-4"></a>Allowed values for AWS Region ID:
+<a id="__codelineno-12-5" name="__codelineno-12-5" href="#__codelineno-12-5"></a>1. ap-northeast-1
+<a id="__codelineno-12-6" name="__codelineno-12-6" href="#__codelineno-12-6"></a>2. ap-northeast-2
+<a id="__codelineno-12-7" name="__codelineno-12-7" href="#__codelineno-12-7"></a>...
+<a id="__codelineno-12-8" name="__codelineno-12-8" href="#__codelineno-12-8"></a>15. us-west-1
+<a id="__codelineno-12-9" name="__codelineno-12-9" href="#__codelineno-12-9"></a>16. us-west-2
+<a id="__codelineno-12-10" name="__codelineno-12-10" href="#__codelineno-12-10"></a>AWS Region ID [us-west-2]:
+<a id="__codelineno-12-11" name="__codelineno-12-11" href="#__codelineno-12-11"></a>Allowed values for EC2 Key Pair Name:
+<a id="__codelineno-12-12" name="__codelineno-12-12" href="#__codelineno-12-12"></a>1. Your-EC2-key
+<a id="__codelineno-12-13" name="__codelineno-12-13" href="#__codelineno-12-13"></a>
+<a id="__codelineno-12-14" name="__codelineno-12-14" href="#__codelineno-12-14"></a>EC2 Key Pair Name [Your-EC2-key]: 1
+<a id="__codelineno-12-15" name="__codelineno-12-15" href="#__codelineno-12-15"></a>Allowed values for Scheduler:
+<a id="__codelineno-12-16" name="__codelineno-12-16" href="#__codelineno-12-16"></a>1. slurm
+<a id="__codelineno-12-17" name="__codelineno-12-17" href="#__codelineno-12-17"></a>2. awsbatch
+<a id="__codelineno-12-18" name="__codelineno-12-18" href="#__codelineno-12-18"></a>Scheduler [slurm]: 1
+<a id="__codelineno-12-19" name="__codelineno-12-19" href="#__codelineno-12-19"></a>Allowed values for Operating System: 
+<a id="__codelineno-12-20" name="__codelineno-12-20" href="#__codelineno-12-20"></a>1. alinux2
+<a id="__codelineno-12-21" name="__codelineno-12-21" href="#__codelineno-12-21"></a>2. centos7
+<a id="__codelineno-12-22" name="__codelineno-12-22" href="#__codelineno-12-22"></a>3. ubuntu2004
+<a id="__codelineno-12-23" name="__codelineno-12-23" href="#__codelineno-12-23"></a>4. ubuntu2204
+<a id="__codelineno-12-24" name="__codelineno-12-24" href="#__codelineno-12-24"></a>Operating System [ubuntu2204]:
+<a id="__codelineno-12-25" name="__codelineno-12-25" href="#__codelineno-12-25"></a>Head node instance type [t3.large]:
+<a id="__codelineno-12-26" name="__codelineno-12-26" href="#__codelineno-12-26"></a>Number of queues [1]:
+<a id="__codelineno-12-27" name="__codelineno-12-27" href="#__codelineno-12-27"></a>Name of queue 1 [queue1]:
+<a id="__codelineno-12-28" name="__codelineno-12-28" href="#__codelineno-12-28"></a>Number of compute resources for queue1 [1]:
+<a id="__codelineno-12-29" name="__codelineno-12-29" href="#__codelineno-12-29"></a>Compute instance type for compute resource 1 in queue1 [t3.micro]: t3.micro
+<a id="__codelineno-12-30" name="__codelineno-12-30" href="#__codelineno-12-30"></a>Maximum instance count [10]:
+<a id="__codelineno-12-31" name="__codelineno-12-31" href="#__codelineno-12-31"></a>Automate VPC creation? (y/n) [n]: y
+<a id="__codelineno-12-32" name="__codelineno-12-32" href="#__codelineno-12-32"></a>Allowed values for Availability Zone:
+<a id="__codelineno-12-33" name="__codelineno-12-33" href="#__codelineno-12-33"></a>1. us-west-2a
+<a id="__codelineno-12-34" name="__codelineno-12-34" href="#__codelineno-12-34"></a>2. us-west-2b
+<a id="__codelineno-12-35" name="__codelineno-12-35" href="#__codelineno-12-35"></a>3. us-west-2c
+<a id="__codelineno-12-36" name="__codelineno-12-36" href="#__codelineno-12-36"></a>Availability Zone [us-west-2a]: 1
+<a id="__codelineno-12-37" name="__codelineno-12-37" href="#__codelineno-12-37"></a>Allowed values for Network Configuration:
+<a id="__codelineno-12-38" name="__codelineno-12-38" href="#__codelineno-12-38"></a>1. Head node in a public subnet and compute fleet in a private subnet
+<a id="__codelineno-12-39" name="__codelineno-12-39" href="#__codelineno-12-39"></a>2. Head node and compute fleet in the same public subnet 
+<a id="__codelineno-12-40" name="__codelineno-12-40" href="#__codelineno-12-40"></a>Network Configuration [Head node in a public subnet and compute fleet in a private subnet]: 
+<a id="__codelineno-12-41" name="__codelineno-12-41" href="#__codelineno-12-41"></a>Beginning VPC creation. Please do not leave the terminal until the creation is finalized
+<a id="__codelineno-12-42" name="__codelineno-12-42" href="#__codelineno-12-42"></a>Creating CloudFormation stack...
+<a id="__codelineno-12-43" name="__codelineno-12-43" href="#__codelineno-12-43"></a>Do not leave the terminal until the process has finished.
+</code></pre></div>
+<p>If there is an error regarding a failed authorization, there may have been an issue in setting up your policies, make sure you have created the 3 policies correctly.</p>
+<h3 id="final-cluster-configurations">Final Cluster Configurations<a class="headerlink" href="#final-cluster-configurations" title="Permanent link">&para;</a></h3>
+<p>Opening cluster-config.yaml, add the line <code>CustomAmi: &lt;ParaTools-Pro-ami-id&gt;</code> under the Image section. Replacing <ParaTools-Pro-ami-id> with the AMI you obtained in the prior section.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>Image:
+<a id="__codelineno-13-2" name="__codelineno-13-2" href="#__codelineno-13-2"></a>      Os: ubuntu2204
+<a id="__codelineno-13-3" name="__codelineno-13-3" href="#__codelineno-13-3"></a>      CustomAmi: &lt;ParaTools-Pro-ami-id&gt;
+</code></pre></div>
+Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>HeadNode:
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>  Dcv:
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a>    Enabled: true
+</code></pre></div></p>
+<h3 id="spinning-up-the-cluster-head-node">Spinning up the cluster head node<a class="headerlink" href="#spinning-up-the-cluster-head-node" title="Permanent link">&para;</a></h3>
+<p>Now that all configuration is complete,
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>pcluster create-cluster -c cluster.yaml -n name_of_cluster
+</code></pre></div>
+This process will return some JSON such as
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>{
+<a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a>  &quot;cluster&quot;: {
+<a id="__codelineno-16-3" name="__codelineno-16-3" href="#__codelineno-16-3"></a>    &quot;clusterName&quot;: &quot;name_of_cluster&quot;,
+<a id="__codelineno-16-4" name="__codelineno-16-4" href="#__codelineno-16-4"></a>    &quot;cloudformationStackStatus&quot;: &quot;CREATE_IN_PROGRESS&quot;,
+<a id="__codelineno-16-5" name="__codelineno-16-5" href="#__codelineno-16-5"></a>    &quot;cloudformationStackArn&quot;: &quot;arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster&quot;,
+<a id="__codelineno-16-6" name="__codelineno-16-6" href="#__codelineno-16-6"></a>    &quot;region&quot;: &quot;us-west-2&quot;,
+<a id="__codelineno-16-7" name="__codelineno-16-7" href="#__codelineno-16-7"></a>    &quot;version&quot;: &quot;3.5.1&quot;,
+<a id="__codelineno-16-8" name="__codelineno-16-8" href="#__codelineno-16-8"></a>    &quot;clusterStatus&quot;: &quot;CREATE_IN_PROGRESS&quot;,
+<a id="__codelineno-16-9" name="__codelineno-16-9" href="#__codelineno-16-9"></a>    &quot;scheduler&quot;: {
+<a id="__codelineno-16-10" name="__codelineno-16-10" href="#__codelineno-16-10"></a>      &quot;type&quot;: &quot;slurm&quot;
+<a id="__codelineno-16-11" name="__codelineno-16-11" href="#__codelineno-16-11"></a>    }
+<a id="__codelineno-16-12" name="__codelineno-16-12" href="#__codelineno-16-12"></a>  },
+<a id="__codelineno-16-13" name="__codelineno-16-13" href="#__codelineno-16-13"></a>  &quot;validationMessages&quot;: [
+<a id="__codelineno-16-14" name="__codelineno-16-14" href="#__codelineno-16-14"></a>    {
+<a id="__codelineno-16-15" name="__codelineno-16-15" href="#__codelineno-16-15"></a>      &quot;level&quot;: &quot;WARNING&quot;,
+<a id="__codelineno-16-16" name="__codelineno-16-16" href="#__codelineno-16-16"></a>      &quot;type&quot;: &quot;CustomAmiTagValidator&quot;,
+<a id="__codelineno-16-17" name="__codelineno-16-17" href="#__codelineno-16-17"></a>      &quot;message&quot;: &quot;The custom AMI may not have been created by pcluster. You can ignore this warning if the AMI is shared or copied from another pcluster AMI. If the AMI is indeed not created by pcluster, cluster creation will fail. If the cluster creation fails, please go to https://docs.aws.amazon.com/parallelcluster/latest/ug/troubleshooting.html#troubleshooting-stack-creation-failures for troubleshooting.&quot;
+<a id="__codelineno-16-18" name="__codelineno-16-18" href="#__codelineno-16-18"></a>    },
+<a id="__codelineno-16-19" name="__codelineno-16-19" href="#__codelineno-16-19"></a>    {
+<a id="__codelineno-16-20" name="__codelineno-16-20" href="#__codelineno-16-20"></a>      &quot;level&quot;: &quot;WARNING&quot;,
+<a id="__codelineno-16-21" name="__codelineno-16-21" href="#__codelineno-16-21"></a>      &quot;type&quot;: &quot;AmiOsCompatibleValidator&quot;,
+<a id="__codelineno-16-22" name="__codelineno-16-22" href="#__codelineno-16-22"></a>      &quot;message&quot;: &quot;Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2204 compatibility, please make sure they are compatible before cluster creation and update operations.&quot;
+<a id="__codelineno-16-23" name="__codelineno-16-23" href="#__codelineno-16-23"></a>    }
+<a id="__codelineno-16-24" name="__codelineno-16-24" href="#__codelineno-16-24"></a>  ]
+<a id="__codelineno-16-25" name="__codelineno-16-25" href="#__codelineno-16-25"></a>}
+</code></pre></div>
+This process will take a few minutes to finish. View the progress by performing <code>pcluster list-clusters</code>. If it says creation has failed, a common issue is your pcluster version mismatching the one that created the AMI. Make sure you installed the correct version.</p>
+<h3 id="accessing-your-cluster">Accessing your cluster<a class="headerlink" href="#accessing-your-cluster" title="Permanent link">&para;</a></h3>
+<p>Once your cluster is finished launching, enter the <strong>EC2</strong> page, and select <strong>Instances</strong>. Then select the newly created node, which should be labeled "Head Node". In the upper right select <strong>Connect</strong> and select your method of connection. Note for ssh, the username is likely to be "ubuntu", if not, then try to ssh using a conventional terminal, and it should respond with what the username is.</p>
+<p>Alternatively you can access your cluster from your local console by doing <code>pcluster ssh -i /path/to/key/file -n name_of_cluster</code></p>
+<p>From there you should be able to launch jobs using slurm.</p>
+<h3 id="runing-examples">Runing Examples<a class="headerlink" href="#runing-examples" title="Permanent link">&para;</a></h3>
+<p>There is an <code>examples</code> directory with different tests and examples that you can run.
+For using NVIDIA NeMo™ please see <code>examples/nemo/ex2/text_classification/ex2.sbatch</code>.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      &copy; 2023-2026 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
+
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/ParaToolsInc/ParaToolsPro" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M173.9 397.4c0 2-2.3 3.6-5.2 3.6-3.3.3-5.6-1.3-5.6-3.6 0-2 2.3-3.6 5.2-3.6 3-.3 5.6 1.3 5.6 3.6m-31.1-4.5c-.7 2 1.3 4.3 4.3 4.9 2.6 1 5.6 0 6.2-2s-1.3-4.3-4.3-5.2c-2.6-.7-5.5.3-6.2 2.3m44.2-1.7c-2.9.7-4.9 2.6-4.6 4.9.3 2 2.9 3.3 5.9 2.6 2.9-.7 4.9-2.6 4.6-4.6-.3-1.9-3-3.2-5.9-2.9M252.8 8C114.1 8 8 113.3 8 252c0 110.9 69.8 205.8 169.5 239.2 12.8 2.3 17.3-5.6 17.3-12.1 0-6.2-.3-40.4-.3-61.4 0 0-70 15-84.7-29.8 0 0-11.4-29.1-27.8-36.6 0 0-22.9-15.7 1.6-15.4 0 0 24.9 2 38.6 25.8 21.9 38.6 58.6 27.5 72.9 20.9 2.3-16 8.8-27.1 16-33.7-55.9-6.2-112.3-14.3-112.3-110.5 0-27.5 7.6-41.3 23.6-58.9-2.6-6.5-11.1-33.3 2.6-67.9 20.9-6.5 69 27 69 27 20-5.6 41.5-8.5 62.8-8.5s42.8 2.9 62.8 8.5c0 0 48.1-33.6 69-27 13.7 34.7 5.2 61.4 2.6 67.9 16 17.7 25.8 31.5 25.8 58.9 0 96.5-58.9 104.2-114.8 110.5 9.2 7.9 17 22.9 17 46.4 0 33.7-.3 75.4-.3 83.6 0 6.5 4.6 14.4 17.3 12.1C436.2 457.8 504 362.9 504 252 504 113.3 391.5 8 252.8 8M105.2 352.9c-1.3 1-1 3.3.7 5.2 1.6 1.6 3.9 2.3 5.2 1 1.3-1 1-3.3-.7-5.2-1.6-1.6-3.9-2.3-5.2-1m-10.8-8.1c-.7 1.3.3 2.9 2.3 3.9 1.6 1 3.6.7 4.3-.7.7-1.3-.3-2.9-2.3-3.9-2-.6-3.6-.3-4.3.7m32.4 35.6c-1.6 1.3-1 4.3 1.3 6.2 2.3 2.3 5.2 2.6 6.5 1 1.3-1.3.7-4.3-1.3-6.2-2.2-2.3-5.2-2.6-6.5-1m-11.4-14.7c-1.6 1-1.6 3.6 0 5.9s4.3 3.3 5.6 2.3c1.6-1.3 1.6-3.9 0-6.2-1.4-2.3-4-3.3-5.6-2"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.breadcrumbs", "toc.follow", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "contgent.tabs.link", "content.code.annotation", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

@@ -1,0 +1,41 @@
+# robots.txt for ParaTools Pro for E4S™ Documentation
+# Allows all crawlers including search engines and AI training bots
+
+User-agent: *
+Allow: /
+Disallow: /search/
+Disallow: /.git/
+
+# Friendly to major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+# Allow beneficial AI crawlers for training and indexing
+User-agent: GPTBot
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+User-agent: Anthropic-Caller
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: Perplexity
+Allow: /
+
+# Disallow harmful/aggressive crawlers
+User-agent: MJ12bot
+Disallow: /
+
+User-agent: AhrefsBot
+Disallow: /
+
+# Sitemap location for search engine discovery
+Sitemap: https://docs.paratoolspro.com/sitemap.xml
+Sitemap: https://docs.paratoolspro.com/site-structure.json
