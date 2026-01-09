@@ -1,3 +1,11 @@
+---
+title: Proper Cluster Deletion on GCP
+description: Correctly destroy HPC clusters created with ghpc to avoid lingering resources and charges
+canonical_url: https://docs.paratoolspro.com/GCP/Cluster-Deletion/
+image: assets/images/gcluster/e4s_desktop_thumb.jpg
+twitter_card: summary_large_image
+---
+
 ## Proper Deletion
 It is very important that when you are done using the cluster you must use ghcp to destroy it. When a cluster is created, ghcp creates resources and adds project metadata tags, if improperly deleted, some of these will remain and you will be charged for them. To delete your cluster correctly, find the instructions in the folder created by ghpc, `CLUSTER-IMAGE/instructions.txt` and do   
 ```

@@ -1,3 +1,11 @@
+---
+title: Getting Started with Google Cluster Toolkit (GCP)
+description: Guide for deploying E4S on Google Cloud using the HPC Toolkit
+canonical_url: https://docs.paratoolspro.com/GCP/getting-started-GCP/
+image: assets/images/gcluster/e4s_desktop_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # ParaTools Pro for E4S™ Getting Started with Google Cloud Platform (GCP)
 
 ## General Background Information

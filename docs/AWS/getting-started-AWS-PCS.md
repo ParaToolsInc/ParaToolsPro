@@ -1,3 +1,11 @@
+---
+title: Getting Started with AWS Parallel Computing Service (PCS)
+description: Step-by-step tutorial for deploying E4S HPC clusters on AWS PCS with CloudFormation templates, security groups, and Slurm integration
+canonical_url: https://docs.paratoolspro.com/AWS/getting-started-AWS-PCS/
+image: assets/images/gcluster/e4s_heidi_infra_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # ParaTools Pro for E4S™ Getting Started with AWS Parallel Computing Service
 
 ## General Background Information

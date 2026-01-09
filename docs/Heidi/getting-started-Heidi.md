@@ -1,3 +1,11 @@
+---
+title: Getting Started with Heidi
+description: Deploy and manage E4S workloads on Adaptive Computing's Heidi AI Supercomputing platform
+canonical_url: https://docs.paratoolspro.com/Heidi/getting-started-Heidi/
+image: assets/images/gcluster/e4s_heidi_infra_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # E4S Pro Getting Started with Heidi
 
 ## General Background Information

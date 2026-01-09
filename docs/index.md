@@ -1,8 +1,16 @@
+---
+title: ParaTools Pro for E4S™ Documentation
+description: ParaTools Pro for E4S™ - HPC documentation, tutorials, and cloud deployment guides for AWS, GCP, Azure, and Heidi
+canonical_url: https://docs.paratoolspro.com/
+image: assets/images/gcluster/e4s_desktop_thumb.jpg
+twitter_card: summary_large_image
+---
+
 <!--- --8<-- "README.md" --->
 
 # ParaTools Pro for E4S™
 
-![Marimo Interactive Notebooks](assets/images/gcluster/python-packages-and-viz-tools.jpg){ align=right width=600 }
+![Curated selection of AI and machine learning packages available in E4S including TensorFlow, PyTorch, and scientific computing libraries](assets/images/gcluster/python-packages-and-viz-tools.jpg){ align=right width=600 }
 
 The Extreme-scale Scientific Software Stack [(E4S™)][1] is a broad collection of HPC focused [software packages][2]. E4S provides a unified computing environment for deployment of open-source projects. E4S includes contributions from many organizations, including national laboratories, universities, and industry. E4S packages are deployed and managed via [Spack][3]. E4S was originally developed to provide a common software environment for the exascale leadership computing systems currently being deployed at DOE National Laboratories across the U.S.
 

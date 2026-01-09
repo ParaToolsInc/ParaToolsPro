@@ -1,4 +1,6 @@
 site_name: ParaTools Pro for E4S™ Documentation
+site_url: https://docs.paratoolspro.com/
+site_description: ParaTools Pro for E4S™ - HPC documentation, tutorials, and cloud deployment guides for AWS, GCP, Azure, and Heidi
 theme:
   name: material
 #  logo: assets/e4spro-440-220.png
@@ -7,6 +9,7 @@ theme:
     - navigation.tracking
     - navigation.tabs
     - navigation.sections
+    - navigation.breadcrumbs
     - toc.follow
     - toc.integrate
     - navigation.top

@@ -1,3 +1,11 @@
+---
+title: SLURM Scheduler Cluster Blueprint for GCP
+description: Example blueprint for deploying ParaTools Pro for E4S™ on GCP with HPC Toolkit
+canonical_url: https://docs.paratoolspro.com/GCP/blueprint/
+image: assets/images/gcluster/e4s_spack_find_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # SLURM Scheduler Cluster Blueprint for GCP
 
 ## General Info

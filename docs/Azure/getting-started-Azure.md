@@ -1,3 +1,11 @@
+---
+title: Getting Started with Microsoft Azure
+description: Launch E4S HPC clusters on Azure using CycleCloud and InfiniBand networking
+canonical_url: https://docs.paratoolspro.com/Azure/getting-started-Azure/
+image: assets/images/gcluster/e4s_desktop_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # ParaTools Pro for E4S™ Getting Started with Microsoft Azure
 
 ## General Background Information

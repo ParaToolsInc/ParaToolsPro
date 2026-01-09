@@ -1,3 +1,11 @@
+---
+title: Getting Started with AWS ParallelCluster
+description: Step-by-step guide to deploy E4S HPC clusters on AWS ParallelCluster
+canonical_url: https://docs.paratoolspro.com/AWS/getting-started-AWS/
+image: assets/images/gcluster/e4s_desktop_thumb.jpg
+twitter_card: summary_large_image
+---
+
 # ParaTools Pro for E4S™ Getting Started with AWS ParallelCluster
 
 ## General Background Information
