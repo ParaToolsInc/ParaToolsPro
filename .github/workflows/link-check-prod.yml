@@ -105,46 +105,98 @@ jobs:
             Base branch: ${{ github.event.repository.default_branch }}.
             Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
-            Your task:
+            Workflow file: .github/workflows/link-check-prod.yml
+            Muffet docs: https://raviqqe.com/muffet/usage
 
-            1. Read ${{ env.REPORT_PATH }}.
-            2. For each broken link, inspect source markdown in `docs/**/*.md` and the
-               mkdocs-redirects config in `properdocs.yml` (or `mkdocs.yml`).
-            3. Fix ONLY obvious cases:
-                 - http -> https
-                 - missing/extra trailing slash
-                 - typo in URL you are 100% certain about
-                 - internal page rename with clear redirect target (add redirect entry
-                   to mkdocs-redirects plugin config)
-                 - clear moved target (e.g. vendor moved docs to new path on same host)
-            4. DO NOT fix if:
-                 - 404 target genuinely gone with no clear replacement
-                 - Ambiguous which fix is right
-                 - Requires judgment about author intent
-                 - External deprecated/abandoned site
-                 - Rate limited (429), auth required (401), forbidden (403) --
-                   these are warnings, not fixes
-            5. DO NOT silence checks, add ignore directives, or delete broken links
-               silently.
+            Your task: triage each reported error into one of three categories.
 
-            After attempting fixes:
+            =========================================================================
+            A. REAL broken link with OBVIOUS fix -> fix the docs
+            =========================================================================
+            Criteria:
+              - HTTP 404/410/5xx on full URL
+              - AND fix is unambiguous:
+                  - http -> https
+                  - missing/extra trailing slash
+                  - typo you are 100% certain about
+                  - internal page rename with clear redirect target (add entry to
+                    mkdocs-redirects config in `properdocs.yml` or `mkdocs.yml`)
+                  - clear moved target (vendor moved docs to new path, same host)
 
-            - If you made any fixes: stage, commit with a message whose subject is
-              "docs: auto-fix broken links (weekly crawl)" and whose body
-              ends with the trailer:
+            Action: edit source markdown in `docs/**/*.md` (or redirect config).
+            Commit subject: "docs: auto-fix broken links (weekly crawl)"
+            Commit body trailer: Co-authored-by: Claude <noreply@anthropic.com>
+            Push branch, open PR via `gh pr create`:
+              - title: "docs: auto-fix broken links detected by muffet"
+              - body: contents of ${{ env.REPORT_PATH }}
+              - labels: docs, broken-links, automated
 
-                Co-authored-by: Claude <noreply@anthropic.com>
+            =========================================================================
+            B. SUSPECTED FALSE POSITIVE with OBVIOUS workflow fix
+            =========================================================================
+            Signals an error is likely a false positive (not a real broken link):
+              - Error is about missing fragment/anchor on a known SPA (AWS console,
+                AWS docs, GitHub READMEs rendering `user-content-` prefixed anchors,
+                Google Cloud console) -- these use JS-rendered or router-hash URLs
+                that muffet cannot validate from raw HTML
+              - 401 / 403 / 429 status (auth required / bot-detection / rate limit)
+              - Timeout / connection reset / TLS / buffer-size errors
+              - Host is known to be flaky or block automated crawlers
+              - URL manifestly resolves in a normal browser
 
-              The commit author is configured to be zbeekman. Push the branch, then
-              open a PR via `gh pr create` with title
-              "docs: auto-fix broken links detected by muffet" and
-              the link report as the body. Apply labels: docs, broken-links, automated.
-            - If you made NO fixes (either no broken links were simple enough OR no
-              fixes possible): DO NOT commit. Instead open a GitHub issue via
-              `gh issue create` with title
-              "Broken links detected on ${{ env.SITE_URL }}",
-              body = contents of ${{ env.REPORT_PATH }} plus a link to this workflow
-              run, labels: docs, broken-links.
+            If the workflow can be tuned so this class of error stops appearing,
+            apply the tuning. Examples of OBVIOUS workflow fixes:
+              - Add `--exclude=<regex>` to the muffet invocation to skip a specific
+                host or URL pattern that is a confirmed false positive
+              - Bump `--buffer-size` if buffer errors persist
+              - Bump `--timeout` if timeouts are network-blip pattern
+              - Add `--header="..."` to pass through a header a host requires
+              - Add a status code to `--accepted-status-codes` IF and only if the
+                code is a clear warning (e.g. 429 already accepted; 418 teapot)
+
+            DO NOT:
+              - Add blanket excludes that would suppress real errors
+              - Remove `--accepted-status-codes` entries
+              - Disable fragment checking (already set via `--ignore-fragments`)
+
+            Action: edit `.github/workflows/link-check-prod.yml`.
+            Commit subject: "ci(link-check): suppress known false-positive links"
+            Commit body: explain which pattern/host and why it's a false positive;
+              end with Co-authored-by: Claude <noreply@anthropic.com>
+            Push branch, open PR via `gh pr create`:
+              - title: "ci(link-check): reduce false positives from <host or reason>"
+              - body: include the relevant excerpt of ${{ env.REPORT_PATH }},
+                explain the fix, and note what remains for human triage (if any)
+              - labels: ci, broken-links, automated
+
+            =========================================================================
+            C. AMBIGUOUS / non-obvious -> open an issue
+            =========================================================================
+            Use this when you can neither fix the doc confidently nor tune the
+            workflow confidently. Open a GitHub issue via `gh issue create`:
+              - title: "Broken links detected on ${{ env.SITE_URL }}"
+              - body: full contents of ${{ env.REPORT_PATH }}, a link to the
+                workflow run, and YOUR TRIAGE NOTES for each error:
+                  * classification (real / suspected-false-positive / unsure)
+                  * brief reason
+                  * suggested manual next step
+                If any errors are suspected false positives, call that out
+                explicitly in the issue body ("note: N of M errors appear to be
+                false positives; see triage notes").
+              - labels: docs, broken-links
+                (add `false-positive-suspected` label if applicable; create the
+                label first via `gh label create` if it doesn't exist.)
+
+            =========================================================================
+            RULES (all categories)
+            =========================================================================
+            - Pick exactly ONE category per run. If you fix any docs (A), do NOT
+              also tune the workflow (B) in the same commit/PR -- open a separate
+              issue (C) to flag the workflow tuning need. One concern per PR.
+            - Prefer A over B when a doc fix resolves the error directly.
+            - DO NOT silence checks, delete broken links silently, or hide evidence.
+            - The commit author is configured to be zbeekman. Local git identity is
+              already set.
 
             Output a one-line summary of action taken (PR URL or issue URL).
         env:
