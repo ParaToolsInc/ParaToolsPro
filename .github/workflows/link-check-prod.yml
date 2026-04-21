@@ -20,8 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://docs.paratoolspro.com
-      REPORT_PATH: lychee-report.md
-      DISABLE_MKDOCS_2_WARNING: 'true'
+      REPORT_PATH: link-report.md
     steps:
       - uses: actions/checkout@v6
         with:
@@ -32,47 +31,55 @@ jobs:
           git config --global user.email "279612+zbeekman@users.noreply.github.com"
           git config --global user.name "zbeekman"
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+      - name: Set up Go
+        uses: actions/setup-go@v5
         with:
-          enable-cache: true
-          cache-dependency-glob: requirements.txt
+          go-version: stable
 
-      - name: Build documentation
-        run: ./docs.sh build --strict
+      - name: Install muffet
+        run: go install github.com/raviqqe/muffet/v2@latest
 
-      - name: Check links in rendered site
-        id: lychee
-        uses: lycheeverse/lychee-action@v2
-        with:
-          args: >-
-            --verbose
-            --no-progress
-            --accept 200..=204,206,301,302,304,401,403,405,418,429
-            --cache
-            --max-cache-age 1d
-            --max-retries 3
-            --retry-wait-time 5
-            --timeout 30
-            --base ${{ env.SITE_URL }}
-            'site/**/*.html'
-          format: markdown
-          output: ${{ env.REPORT_PATH }}
-          debug: true
-          jobSummary: true
-          fail: false
+      - name: Crawl site
+        id: muffet
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set +e
+          muffet \
+            --buffer-size=8192 \
+            --max-connections=10 \
+            --rate-limit=5 \
+            --timeout=30 \
+            --header="User-Agent: ParaToolsProLinkChecker/1.0 (+https://github.com/ParaToolsInc/ParaToolsPro)" \
+            --accepted-status-codes=200,204,206,301,302,304,401,403,405,418,429 \
+            "$SITE_URL" > muffet.out 2>&1
+          EXIT=$?
+          set -e
+          {
+            echo '# Broken links report'
+            echo
+            echo "- Site: $SITE_URL"
+            echo "- Run: $RUN_URL"
+            echo "- muffet exit code: $EXIT"
+            echo
+            echo '```'
+            cat muffet.out
+            echo '```'
+          } > "$REPORT_PATH"
+          cat muffet.out
+          echo "exit_code=$EXIT" >> "$GITHUB_OUTPUT"
 
-      - name: Upload lychee report
-        if: steps.lychee.outputs.exit_code != 0
+      - name: Upload link report
+        if: steps.muffet.outputs.exit_code != 0
         uses: actions/upload-artifact@v7
         with:
-          name: lychee-report
+          name: link-report
           path: ${{ env.REPORT_PATH }}
           retention-days: 7
 
       - name: Create fix branch
         id: branch
-        if: steps.lychee.outputs.exit_code != 0
+        if: steps.muffet.outputs.exit_code != 0
         env:
           RUN_ID: ${{ github.run_id }}
         run: |
@@ -82,7 +89,7 @@ jobs:
 
       - name: Attempt auto-fix with Claude Code
         id: claude
-        if: steps.lychee.outputs.exit_code != 0
+        if: steps.muffet.outputs.exit_code != 0
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
@@ -90,7 +97,7 @@ jobs:
           bot_name: zbeekman
           claude_args: "--allowedTools 'Edit,MultiEdit,Read,Glob,Grep,LS,Bash(git:*),Bash(gh:*)'"
           prompt: |
-            Broken links detected by lychee on ${{ env.SITE_URL }}.
+            Broken links detected by muffet on ${{ env.SITE_URL }}.
             Report: ${{ env.REPORT_PATH }} (at repo root).
             Branch: ${{ steps.branch.outputs.branch_name }} (already checked out).
             Base branch: ${{ github.event.repository.default_branch }}.
@@ -121,15 +128,15 @@ jobs:
             After attempting fixes:
 
             - If you made any fixes: stage, commit with a message whose subject is
-              "docs: auto-fix broken links (lychee weekly crawl)" and whose body
+              "docs: auto-fix broken links (weekly crawl)" and whose body
               ends with the trailer:
 
                 Co-authored-by: Claude <noreply@anthropic.com>
 
               The commit author is configured to be zbeekman. Push the branch, then
               open a PR via `gh pr create` with title
-              "docs: auto-fix broken links detected by lychee" and
-              the lychee report as the body. Apply labels: docs, broken-links, automated.
+              "docs: auto-fix broken links detected by muffet" and
+              the link report as the body. Apply labels: docs, broken-links, automated.
             - If you made NO fixes (either no broken links were simple enough OR no
               fixes possible): DO NOT commit. Instead open a GitHub issue via
               `gh issue create` with title
@@ -142,7 +149,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Fail if broken links remain
-        if: steps.lychee.outputs.exit_code != 0
+        if: steps.muffet.outputs.exit_code != 0
         run: |
-          echo "::error::Broken links detected on ${SITE_URL}. See artifact 'lychee-report' and the opened PR or issue."
+          echo "::error::Broken links detected on ${SITE_URL}. See artifact 'link-report' and the opened PR or issue."
           exit 1
