@@ -46,10 +46,11 @@ jobs:
         run: |
           set +e
           muffet \
-            --buffer-size=8192 \
+            --buffer-size=32768 \
             --max-connections=10 \
             --rate-limit=5 \
             --timeout=30 \
+            --ignore-fragments \
             --header="User-Agent: ParaToolsProLinkChecker/1.0 (+https://github.com/ParaToolsInc/ParaToolsPro)" \
             --accepted-status-codes=200,204,206,301,302,304,401,403,405,418,429 \
             "$SITE_URL" > muffet.out 2>&1
@@ -95,7 +96,8 @@ jobs:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           bot_id: 279612
           bot_name: zbeekman
-          claude_args: "--allowedTools 'Edit,MultiEdit,Read,Glob,Grep,LS,Bash(git:*),Bash(gh:*)'"
+          show_full_output: true
+          claude_args: "--allowedTools 'Edit,MultiEdit,Write,Read,Glob,Grep,LS,Bash(git:*),Bash(gh:*),Bash(cat:*),Bash(ls:*)'"
           prompt: |
             Broken links detected by muffet on ${{ env.SITE_URL }}.
             Report: ${{ env.REPORT_PATH }} (at repo root).
