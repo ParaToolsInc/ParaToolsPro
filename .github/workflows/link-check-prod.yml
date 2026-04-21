@@ -1,0 +1,128 @@
+name: link-check-prod
+
+on:
+  schedule:
+    - cron: '37 8 * * 3'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+  issues: write
+
+concurrency:
+  group: link-check-prod
+  cancel-in-progress: false
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    env:
+      SITE_URL: https://docs.paratoolspro.com
+      SITEMAP_URL: https://docs.paratoolspro.com/sitemap.xml
+      REPORT_PATH: lychee-report.md
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup git identity
+        run: |
+          git config --global user.email "claude[bot]@users.noreply.github.com"
+          git config --global user.name "claude[bot]"
+
+      - name: Crawl ${{ env.SITE_URL }}
+        id: lychee
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: >-
+            --verbose
+            --no-progress
+            --accept 200..=204,206,301,302,304,401,403,405,418,429
+            --cache
+            --max-cache-age 1d
+            --max-retries 3
+            --retry-wait-time 5
+            --timeout 30
+            --format markdown
+            --output ${{ env.REPORT_PATH }}
+            ${{ env.SITEMAP_URL }}
+          fail: false
+
+      - name: Upload lychee report
+        if: steps.lychee.outputs.exit_code != 0
+        uses: actions/upload-artifact@v7
+        with:
+          name: lychee-report
+          path: ${{ env.REPORT_PATH }}
+          retention-days: 7
+
+      - name: Create fix branch
+        id: branch
+        if: steps.lychee.outputs.exit_code != 0
+        env:
+          RUN_ID: ${{ github.run_id }}
+        run: |
+          BRANCH_NAME="claude/link-fixes-${RUN_ID}"
+          git checkout -b "$BRANCH_NAME"
+          echo "branch_name=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
+
+      - name: Attempt auto-fix with Claude Code
+        id: claude
+        if: steps.lychee.outputs.exit_code != 0
+        uses: anthropics/claude-code-action@v1
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_args: "--allowedTools 'Edit,MultiEdit,Read,Glob,Grep,LS,Bash(git:*),Bash(gh:*)'"
+          prompt: |
+            Broken links detected by lychee on ${{ env.SITE_URL }}.
+            Report: ${{ env.REPORT_PATH }} (at repo root).
+            Branch: ${{ steps.branch.outputs.branch_name }} (already checked out).
+            Base branch: ${{ github.event.repository.default_branch }}.
+            Run URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            Your task:
+
+            1. Read ${{ env.REPORT_PATH }}.
+            2. For each broken link, inspect source markdown in `docs/**/*.md` and the
+               mkdocs-redirects config in `properdocs.yml` (or `mkdocs.yml`).
+            3. Fix ONLY obvious cases:
+                 - http -> https
+                 - missing/extra trailing slash
+                 - typo in URL you are 100% certain about
+                 - internal page rename with clear redirect target (add redirect entry
+                   to mkdocs-redirects plugin config)
+                 - clear moved target (e.g. vendor moved docs to new path on same host)
+            4. DO NOT fix if:
+                 - 404 target genuinely gone with no clear replacement
+                 - Ambiguous which fix is right
+                 - Requires judgment about author intent
+                 - External deprecated/abandoned site
+                 - Rate limited (429), auth required (401), forbidden (403) --
+                   these are warnings, not fixes
+            5. DO NOT silence checks, add ignore directives, or delete broken links
+               silently.
+
+            After attempting fixes:
+
+            - If you made any fixes: stage, commit with message
+              "docs: auto-fix broken links (lychee weekly crawl)", push branch, then
+              open a PR via `gh pr create` with title
+              "docs: auto-fix broken links detected by lychee" and
+              the lychee report as the body. Apply labels: docs, broken-links, automated.
+            - If you made NO fixes (either no broken links were simple enough OR no
+              fixes possible): DO NOT commit. Instead open a GitHub issue via
+              `gh issue create` with title
+              "Broken links detected on ${{ env.SITE_URL }}",
+              body = contents of ${{ env.REPORT_PATH }} plus a link to this workflow
+              run, labels: docs, broken-links.
+
+            Output a one-line summary of action taken (PR URL or issue URL).
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Fail if broken links remain
+        if: steps.lychee.outputs.exit_code != 0
+        run: |
+          echo "::error::Broken links detected on ${SITE_URL}. See artifact 'lychee-report' and the opened PR or issue."
+          exit 1
