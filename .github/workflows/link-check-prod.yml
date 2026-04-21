@@ -134,30 +134,34 @@ jobs:
             =========================================================================
             B. SUSPECTED FALSE POSITIVE with OBVIOUS workflow fix
             =========================================================================
-            Signals an error is likely a false positive (not a real broken link):
-              - Error is about missing fragment/anchor on a known SPA (AWS console,
-                AWS docs, GitHub READMEs rendering `user-content-` prefixed anchors,
-                Google Cloud console) -- these use JS-rendered or router-hash URLs
-                that muffet cannot validate from raw HTML
+            Current workflow already enables `--ignore-fragments` globally, so
+            anchor/fragment errors should never appear in the report. Remaining
+            false-positive classes:
               - 401 / 403 / 429 status (auth required / bot-detection / rate limit)
-              - Timeout / connection reset / TLS / buffer-size errors
-              - Host is known to be flaky or block automated crawlers
-              - URL manifestly resolves in a normal browser
+              - Timeout / connection reset / TLS handshake errors
+              - Buffer-size errors (large response headers from a host)
+              - Host that blocks automated crawlers regardless of UA (e.g. serves
+                different content to bots)
+              - URL manifestly resolves in a normal browser (spot-check suspicious
+                reports if uncertain)
 
             If the workflow can be tuned so this class of error stops appearing,
             apply the tuning. Examples of OBVIOUS workflow fixes:
               - Add `--exclude=<regex>` to the muffet invocation to skip a specific
-                host or URL pattern that is a confirmed false positive
+                host or URL pattern that is a confirmed false positive. Prefer the
+                narrowest pattern that eliminates the noise (host-specific, not
+                wildcard).
               - Bump `--buffer-size` if buffer errors persist
-              - Bump `--timeout` if timeouts are network-blip pattern
+              - Bump `--timeout` if timeouts look like network-blip pattern
               - Add `--header="..."` to pass through a header a host requires
               - Add a status code to `--accepted-status-codes` IF and only if the
-                code is a clear warning (e.g. 429 already accepted; 418 teapot)
+                code is a clear warning (e.g. 418 teapot)
 
             DO NOT:
               - Add blanket excludes that would suppress real errors
-              - Remove `--accepted-status-codes` entries
-              - Disable fragment checking (already set via `--ignore-fragments`)
+              - Remove `--accepted-status-codes` entries already present
+              - Remove `--ignore-fragments` (intentional: fragment checks against
+                raw HTML produce too many false positives on JS-rendered sites)
 
             Action: edit `.github/workflows/link-check-prod.yml`.
             Commit subject: "ci(link-check): suppress known false-positive links"
