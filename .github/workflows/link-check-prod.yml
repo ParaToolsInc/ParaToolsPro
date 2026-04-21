@@ -1,4 +1,4 @@
-name: link-check-prod
+name: Docs Link Audit
 
 on:
   schedule:
