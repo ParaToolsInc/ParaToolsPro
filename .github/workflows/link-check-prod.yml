@@ -31,6 +31,17 @@ jobs:
           git config --global user.email "279612+zbeekman@users.noreply.github.com"
           git config --global user.name "zbeekman"
 
+      - name: Extract URL list from sitemap
+        env:
+          SITEMAP: ${{ env.SITEMAP_URL }}
+        run: |
+          curl -fsSL "$SITEMAP" \
+            | grep -oE '<loc>[^<]+</loc>' \
+            | sed -E 's|<loc>(.*)</loc>|\1|' \
+            > sitemap-urls.txt
+          echo "Found $(wc -l < sitemap-urls.txt) URLs in sitemap."
+          test -s sitemap-urls.txt
+
       - name: Crawl ${{ env.SITE_URL }}
         id: lychee
         uses: lycheeverse/lychee-action@v2
@@ -44,7 +55,7 @@ jobs:
             --max-retries 3
             --retry-wait-time 5
             --timeout 30
-            ${{ env.SITEMAP_URL }}
+            sitemap-urls.txt
           format: markdown
           output: ${{ env.REPORT_PATH }}
           fail: false
