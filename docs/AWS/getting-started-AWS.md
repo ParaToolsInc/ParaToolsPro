@@ -8,17 +8,27 @@ twitter_card: summary_large_image
 
 # ParaTools Pro for E4S™ Getting Started with AWS ParallelCluster
 
+!!! info "Looking for AWS Parallel Computing Service (PCS)?"
+    This guide covers **AWS ParallelCluster (PC)**, the open-source self-managed orchestrator. For the managed-service alternative, see [Getting Started with AWS Parallel Computing Service (PCS)](getting-started-AWS-PCS.md).
+
 ## General Background Information
 
-In this tutorial we will show you how to launch an HPC cluster on AWS. You will use the command line tools, AWS CLI, and AWS ParallelCluster (PC) or AWS Parallel Computing Service (PCS) to create a .yaml file that describes your head-node, and the cluster-nodes. It will then launch a head-node that can spawn EC2 instances that are linked with EFA networking capabilities.
+This tutorial configures AWS ParallelCluster (PC) with the matching **ParaTools Pro for E4S™ on ParallelCluster** AMI from the AWS Marketplace:
 
-For the purposes of this tutorial, we make the following assumptions:
-- You have created an [AWS account][5], and an [Administrative User][4]
-  
+| Architecture | AWS Marketplace product |
+|---|---|
+| `x86_64` | [ParaTools Pro for E4S™ on ParallelCluster (x86)](https://aws.amazon.com/marketplace/pp/prodview-xprkx44kyqgp6) |
+| `arm64` (Graviton) | [ParaTools Pro for E4S™ on ParallelCluster (arm64)](https://aws.amazon.com/marketplace/pp/prodview-ozpychswxmldi) |
+
+You will use the command line tools, AWS CLI, and AWS ParallelCluster to create a `.yaml` file that describes your head node and the cluster nodes. It will then launch a head node that can spawn EC2 instances linked with EFA networking capabilities.
+
+This tutorial assumes that you have already created an [AWS account][5] and an [Administrative User][4].
+
 ## Tutorial
 
 ### Install [AWS ParallelCluster][1]
-To install Pcluster, upgrade pip, and install virtualenv if not installed. Note amazon recommends installing pcluster in a virtual environment.  For this section we essentially follow ["Setting Up AWS ParallelCluster"][1], if you have any issues look there.
+
+To install ParallelCluster, upgrade `pip` and install `virtualenv` if it is not already installed. Amazon recommends installing ParallelCluster in a virtual environment. This section follows ["Setting Up AWS ParallelCluster"][1]; refer to it if you run into issues.
 
 ``` bash linenums="1"
 python3 -m pip install --upgrade pip
@@ -26,17 +36,20 @@ python3 -m pip install --user --upgrade virtualenv
 ```
 
 Then create and source the virtual environment:
+
 ```
 python3 -m virtualenv ~/apc-ve
 source ~/apc-ve/bin/activate
 ```
 
-Then install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI then the cluster creation operation will fail. As of this writing ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.10.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
+Install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI, the cluster creation operation will fail. At the time of writing, ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.10.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.
+
 ```
 python3 -m pip install --upgrade "aws-parallelcluster"==3.10.0
 ```
 
-ParallelCluster needs node.js for CloudFormation, so
+ParallelCluster requires Node.js for CloudFormation. Install it with:
+
 ```
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
 chmod ug+x ~/.nvm/nvm.sh
@@ -46,39 +59,54 @@ node --version
 ```
 
 ### Install [AWS Command Line Interface][3]
-Now we must install AWS CLI, which will handle authenticating your information every time you create a cluster. For this section we follow ["Installing AWS CLI"][9], if you have any issues look there. 
+
+Install the AWS CLI, which handles authentication every time you create a cluster. This section follows ["Installing AWS CLI"][9]; refer to it if you run into issues.
+
 ```
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 unzip awscliv2.zip
 sudo ./aws/install
 ```
-Note, if you do not have sudo user rights, you must select the install and bin, with the flags `-i` and `-b`, as shown below
+
+If you do not have `sudo` privileges, specify install and binary locations with the `-i` and `-b` flags:
+
 ```
-./aws/install -i ~.local/aws-cli -b ~/.local/bin
+./aws/install -i ~/.local/aws-cli -b ~/.local/bin
 ```
 
-### AWS Security Credentials and CLI Configuration 
-For this section we follow [Creating Access Keys][11] and [Configuring AWS CLI][10], if you have any issues look there. 
-If you do not already have a secure access key, you must create one. From the **IAM** page, on the left side of the page select **User**s, then select the **user** you would like to grant access credentials to, then select the **Security credentials**, and scroll down to **Create access key**. Create a key for **CLI** activities. Make sure to save these very securely. 
+### AWS Security Credentials and CLI Configuration
 
-Now we can configure AWS with those security credentials.
+This section follows [Creating Access Keys][11] and [Configuring AWS CLI][10]; refer to them if you run into issues.
+
+If you do not already have an access key, create one. From the **IAM** page, select **Users** on the left, choose the user to grant access credentials to, open the **Security credentials** tab, and scroll down to **Create access key**. Create a key for **CLI** activities, and store it securely.
+
+Configure the AWS CLI with those credentials:
+
 ```
 aws configure
 ```
-And then enter the respective information,
+
+Enter the requested information:
+
 ```
 AWS Access Key ID [None]: AKIAIOSFODNN7EXAMPLE
 AWS Secret Access Key [None]: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 Default region name [us-east-1]: us-west-2
 Default output format [None]: json
 ```
+
 ### AWS EC2 Key Pair
-To perform cluster tasks, such as running and monitoring jobs, or managing users, you must be able to access the cluster head node. To verify you can access the head node instance using SSH, you must use an EC2 key pair. If you do not already have a key pair you in the region you would like to use, follow [this][12] guide to quickly make a key 
+
+Cluster tasks such as running jobs, monitoring jobs, and managing users require access to the cluster head node. Access over SSH requires an EC2 key pair. If none exists in the target region, follow [this guide][12] to create one.
+
 ### [AWS user policies][6]
+
 To create and manage clusters in an AWS account, AWS ParallelCluster requires permissions at two levels:
-* Permissions that the pcluster user requires to invoke the pcluster CLI commands for creating and managing clusters.
-* Permissions that the cluster resources require to perform cluster actions.  
-The policies described here are supersets of the required permissions to create clusters. If you know what you are doing you can remove permissions as you feel fit. To make the policies, open the **IAM** page, select **Policies** on the left, and **Create Policy**, then select the **JSON** editor. Copy and paste the policy found [here][7]. Unless you plan to use AWS secrets, you must remove the final section from the JSON.
+
+* Permissions that the `pcluster` user requires to invoke the `pcluster` CLI commands for creating and managing clusters.
+* Permissions that the cluster resources require to perform cluster actions.
+
+The policies described here are supersets of the required permissions; trim them down as needed. To create the policies, open the **IAM** page, select **Policies** on the left, click **Create Policy**, and select the **JSON** editor. Copy and paste the policy found [here][7]. Unless AWS Secrets Manager is in use, remove the final section from the JSON:
 ```
       {
           "Action": "secretsmanager:DescribeSecret",
@@ -86,35 +114,45 @@ The policies described here are supersets of the required permissions to create 
           "Effect": "Allow"
       }
 ```
-If it reports errors, replace the <AWS ACCOUNT ID> with your 12 digit account ID.
-Then create and name the policy "ClusterPolicy1". Create another policy, with this [JSON][8], naming it "ClusterPolicy2", similarly replacing account id where it prompts you to. From the policies menu, find and open **ClusterPolicy1** and click **Entities attached**,  and attach the users you would like to be able to create clusters. Repeat this process for "ClusterPolicy2". Similarly, in the policies list, find the policy "AmazonVPCFullAccess" and attach the users to this. This will allow them to create VPC's if necessary. We have now granted the required permissions to users to create clusters.
+If the editor reports errors, replace `<AWS ACCOUNT ID>` with your 12-digit account ID.
+
+Create the policy and name it `ClusterPolicy1`. Create another policy using this [JSON][8], naming it `ClusterPolicy2` and replacing the account ID placeholder as before. From the policies menu, open **ClusterPolicy1**, click **Entities attached**, and attach the users who will create clusters. Repeat for `ClusterPolicy2`. In the policies list, find `AmazonVPCFullAccess` and attach it to the same users. This allows them to create VPCs when needed.
 
 ### Find the AMI
-You will need to have the AMI (Amazon Machine Image) ready for this next step. Select the [ParaTools Pro for E4S™ marketplace listing][13] for the image you want, click subscribe, then continue to configuration, select the correct region, and then copy the AMI Id that is provided. ![AMIPNG](https://github.com/ParaToolsInc/ParaToolsPro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5)
+
+Prepare the AMI (Amazon Machine Image) for the next step. Open the [ParaTools Pro for E4S™ marketplace listing][13] for the image you want, click **Subscribe**, click **Continue to Configuration**, select the correct region, and copy the AMI ID that is displayed.
+
+![AMIPNG](https://github.com/ParaToolsInc/ParaToolsPro/assets/81718016/2904fc9f-a07c-4570-89d0-1d5c5f87dfe5)
 
 ### Cluster configuration and creation
-When creating a cluster you will be prompted for:
-- Region: Select whichever region you are planning to launch these in.
-- EC2 key pair: Select the one you just created, or plan on using to access the nodes.
-- Scheduler: You must select **slurm**
-- OS: **Ubuntu 22.04**
--  Head node instance type: As it only controls the nodes it does not require much compute capabilities. A t3.large will often suffice. **Note** the head node does **not** have to be EFA capable.
--  Structure of your queue should be selected as required by your use case.
--  Compute instance types: You **must** select an EFA capable node. You can find these out by:
-  ```
-  aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query   InstanceTypes[].InstanceType
-  ```
-  Furthermore you can find which EFA capable nodes that have GPU support by
-  ```
-  aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query   'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
-  ```
-- For the network settings, select as required for your workflow, or follow the given options.
-- Automatic VPC: Unless you already have a VPC you plan on using, select yes. Be aware that after creating many VPC's you might run into a limit, requiring you to delete older unused ones.
 
+Cluster creation prompts for the following:
 
-To create the cluster-config.yaml file,
+- **Region**: the region in which to launch the cluster.
+- **EC2 key pair**: the key pair you created earlier, or one you intend to use to access the nodes.
+- **Scheduler**: select **slurm**.
+- **OS**: **Ubuntu 22.04**.
+- **Head node instance type**: the head node only manages the compute fleet, so it does not require much compute capacity. A `t3.large` is usually sufficient. The head node does **not** need to be EFA-capable.
+- **Queue structure**: select as required by your use case.
+- **Compute instance types**: select an EFA-capable instance. To list EFA-capable instance types:
+
+  ```
+  aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query InstanceTypes[].InstanceType
+  ```
+
+  To list EFA-capable instances that also have GPU support:
+
+  ```
+  aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query 'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
+  ```
+
+- **Network settings**: select as required for your workflow, or accept the defaults.
+- **Automatic VPC**: unless you already have a VPC to reuse, select yes. Note that AWS imposes per-account VPC limits, so unused VPCs should be deleted periodically.
+
+Create the `cluster-config.yaml` file:
+
 ```
-     `pcluster configure --config cluster-config.yaml`
+pcluster configure --config cluster-config.yaml
 ```
 
 ```
@@ -157,22 +195,26 @@ Availability Zone [us-west-2a]: 1
 Allowed values for Network Configuration:
 1. Head node in a public subnet and compute fleet in a private subnet
 2. Head node and compute fleet in the same public subnet 
-Network Configuration [Head node in a public subnet and compute fleet in a private subnet]: 
+Network Configuration [Head node in a public subnet and compute fleet in a private subnet]:
 Beginning VPC creation. Please do not leave the terminal until the creation is finalized
 Creating CloudFormation stack...
 Do not leave the terminal until the process has finished.
 ```
 
-If there is an error regarding a failed authorization, there may have been an issue in setting up your policies, make sure you have created the 3 policies correctly.
+If the command reports an authorization failure, one of the policies was likely misconfigured. Verify that all three policies were created correctly.
 
 ### Final Cluster Configurations
-Opening cluster-config.yaml, add the line `CustomAmi: <ParaTools-Pro-ami-id>` under the Image section. Replacing <ParaTools-Pro-ami-id> with the AMI you obtained in the prior section.
+
+Open `cluster-config.yaml` and add `CustomAmi: <ParaTools-Pro-ami-id>` under the `Image` section, replacing `<ParaTools-Pro-ami-id>` with the AMI ID obtained in the prior section:
+
 ```
 Image:
       Os: ubuntu2204
       CustomAmi: <ParaTools-Pro-ami-id>
 ```
-Furthermore, if you want to be able to RDP/DCV into the head node, then add the "DCV enabled" section as shown:
+
+To enable RDP/DCV access to the head node, add the following `Dcv` block:
+
 ```
 HeadNode:
   Dcv:
@@ -180,11 +222,15 @@ HeadNode:
 ```
 
 ### Spinning up the cluster head node
-Now that all configuration is complete,
+
+Once configuration is complete, launch the cluster:
+
 ```
 pcluster create-cluster -c cluster.yaml -n name_of_cluster
 ```
-This process will return some JSON such as
+
+The command returns JSON similar to:
+
 ```
 {
   "cluster": {
@@ -212,20 +258,24 @@ This process will return some JSON such as
   ]
 }
 ```
-This process will take a few minutes to finish. View the progress by performing `pcluster list-clusters`. If it says creation has failed, a common issue is your pcluster version mismatching the one that created the AMI. Make sure you installed the correct version.
+
+Cluster creation takes a few minutes. Monitor progress with `pcluster list-clusters`. If creation fails, a common cause is a ParallelCluster version mismatch between the CLI and the AMI. Verify that the installed version matches the AMI.
 
 ### Accessing your cluster
-Once your cluster is finished launching, enter the **EC2** page, and select **Instances**. Then select the newly created node, which should be labeled "Head Node". In the upper right select **Connect** and select your method of connection. Note for ssh, the username is likely to be "ubuntu", if not, then try to ssh using a conventional terminal, and it should respond with what the username is.
 
-Alternatively you can access your cluster from your local console by doing ```pcluster ssh -i /path/to/key/file -n name_of_cluster```
+Once the cluster finishes launching, open the **EC2** page and select **Instances**. Select the newly created instance labeled "Head Node". Click **Connect** in the upper right and choose your connection method. For SSH, the default username is typically `ubuntu`; if it is not, connect with a standard SSH client and the server will report the expected username.
 
-From there you should be able to launch jobs using slurm.
+Alternatively, connect from your local terminal with:
 
-### Runing Examples
-There is an `examples` directory with different tests and examples that you can run.
-For using NVIDIA NeMo™ please see `examples/nemo/ex2/text_classification/ex2.sbatch`.
+```
+pcluster ssh -i /path/to/key/file -n name_of_cluster
+```
 
+From the head node, you can submit jobs using Slurm.
 
+### Running Examples
+
+The head node contains an `examples` directory with tests and example workloads. For NVIDIA NeMo™, see `examples/nemo/ex2/text_classification/ex2.sbatch`.
 
 [1]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3.html
 [2]: https://aws.amazon.com/hpc/parallelcluster/

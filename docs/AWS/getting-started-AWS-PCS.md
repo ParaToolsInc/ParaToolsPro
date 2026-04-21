@@ -8,29 +8,32 @@ twitter_card: summary_large_image
 
 # ParaTools Pro for E4S™ Getting Started with AWS Parallel Computing Service
 
+!!! info "Looking for AWS ParallelCluster (PC)?"
+    This guide covers **AWS Parallel Computing Service (PCS)**, the AWS-managed Slurm service. For the open-source self-managed alternative, see [Getting Started with AWS ParallelCluster](getting-started-AWS.md).
+
 ## General Background Information
 
-In this tutorial we will show you how to set up and launch an HPC cluster using AWS Parallel Computing Service (PCS).
-You will use the command line tools, [AWS CLI](https://aws.amazon.com/cli/), and AWS console to create a cluster.
-This will use a number of `.yaml` files that describe the stack and are inputs for AWS CloudFormation.
-We will then launch a GPU-accelerated head node that can spawn EC2 compute node instances linked with EFA networking capabilities.
+This tutorial configures AWS Parallel Computing Service (PCS) with the matching **ParaTools Pro for E4S™ on AWS PCS** AMI from the AWS Marketplace:
 
-For the purposes of this tutorial, we make the following assumptions:
+| Architecture | AWS Marketplace product |
+|---|---|
+| `x86_64` | [ParaTools Pro for E4S™ on AWS PCS (x86)](https://aws.amazon.com/marketplace/pp/prodview-wryfn3vd5c63k) |
+| `arm64` (Graviton) | [ParaTools Pro for E4S™ on AWS PCS (ARM64)](https://aws.amazon.com/marketplace/pp/prodview-lge7nswatwzkm) |
 
-- You have created an [AWS account][5], and an are [Administrative User][4].
+Use the command line tools, [AWS CLI](https://aws.amazon.com/cli/), and the AWS console to create a cluster. The workflow uses several `.yaml` files that describe the stack and serve as inputs for AWS CloudFormation. The result is a GPU-accelerated head node that can spawn EC2 compute node instances linked with EFA networking.
+
+For the purposes of this tutorial, you have already created an [AWS account][5] and are an [Administrative User][4].
 
 ## Tutorial
 
-Please reference the official [AWS PCS Getting Started](https://docs.aws.amazon.com/pcs/latest/userguide/getting-started.html) guide for more information.
-This tutorial follows the official tutorial linked above, with a few minor changes.
-If something is unclear, please check the official tutorial.
+For additional context, see the official [AWS PCS Getting Started](https://docs.aws.amazon.com/pcs/latest/userguide/getting-started.html) guide. This tutorial follows the official guide with a few minor changes; refer to it if anything is unclear.
 
 ### 1. Create VPC and Subnets
 
-??? tip "You can skip this step by reusing previously created resources"
-    If you have already created the VPC and subnets, you can reuse them, and skip this step. Use this [link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringText=PTPro&filteringStatus=active&viewNested=true) to search for VPC stacks in us-east-1 that contain the text "PTPro".
+??? tip "It is possible to reuse existing VPC and subnets"
+    If a compatible VPC and subnets already exist, skip this step and use them in place of the `VpcId`, `PrivateSubnetA`, and `PublicSubnetA` references in later steps. Search for existing PTPro VPC stacks in `us-east-1` with this [link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks?filteringText=PTPro&filteringStatus=active&viewNested=true).
 
-To create a new stack for the cluster's VPC and Subnets [using the CloudFormation console][1], please use the following template:
+Create a new stack for the cluster's VPC and subnets [using the CloudFormation console][1] with the following template:
 
 [`0-pcs-cluster-cloudformation-vpc-and-subnets.yaml`](../assets/aws/pcs/0-pcs-cluster-cloudformation-vpc-and-subnets.yaml)
 
@@ -40,29 +43,27 @@ To create a new stack for the cluster's VPC and Subnets [using the CloudFormatio
     --8<-- "assets/aws/pcs/0-pcs-cluster-cloudformation-vpc-and-subnets.yaml"
     ```
 
-Use the default options and give the stack a name, like `AWSPCS-PTPro-cluster`.
-You can leave the options as the defaults.
+Give the stack a name like `AWSPCS-PTPro-cluster` and leave the options at their defaults.
 
-!!! tip "Use this AWS Cloud Formation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T124707.749Zt1m-0-pcs-cluster-cloudformation-vpc-and-subnets.yaml&stackName=AWSPCS-PTPro-cluster&param_CidrPublicSubnetA=10.3.0.0%2F20&param_ProvisionSubnetsC=False&param_CidrBlock=10.3.0.0%2F16&param_CidrPrivateSubnetB=10.3.144.0%2F20&param_CidrPrivateSubnetC=10.3.160.0%2F20&param_CidrPublicSubnetC=10.3.32.0%2F20&param_CidrPublicSubnetB=10.3.16.0%2F20&param_CidrPrivateSubnetA=10.3.128.0%2F20) to quickly provision these resources with default settings."
+!!! tip "Use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T124707.749Zt1m-0-pcs-cluster-cloudformation-vpc-and-subnets.yaml&stackName=AWSPCS-PTPro-cluster&param_CidrPublicSubnetA=10.3.0.0%2F20&param_ProvisionSubnetsC=False&param_CidrBlock=10.3.0.0%2F16&param_CidrPrivateSubnetB=10.3.144.0%2F20&param_CidrPrivateSubnetC=10.3.160.0%2F20&param_CidrPublicSubnetC=10.3.32.0%2F20&param_CidrPublicSubnetB=10.3.16.0%2F20&param_CidrPrivateSubnetA=10.3.128.0%2F20) to quickly provision these resources with default settings"
 
-Under Capabilities: Check the box for I acknowledge that AWS CloudFormation might create IAM resources.
+Under "Capabilities", check the box for "I acknowledge that AWS CloudFormation might create IAM resources".
 
-Once you have created this new VPC, find its VPC ID and note it by searching for it in the [Amazon VPC Console](https://console.aws.amazon.com/vpc) by selecting "VPCs" and then searching for the name you picked above.
-If you chose the stack name we suggested, you would search for `PTPro`, and if you are deploying this in `us-east-1` you can use this [link](https://us-east-1.console.aws.amazon.com/vpcconsole/home?region=us-east-1#vpcs:search=PTPro).
-Make a note of the VPC ID once you have found it.
+After the VPC is created, find its ID in the [Amazon VPC Console](https://console.aws.amazon.com/vpc) by selecting "VPCs" and searching for the stack name. If the suggested stack name was used, search for `PTPro`. For deployments in `us-east-1`, use this [link](https://us-east-1.console.aws.amazon.com/vpcconsole/home?region=us-east-1#vpcs:search=PTPro). Note the VPC ID for use in later steps.
 
 ### 2. Create Security Groups
 
 ???+ summary
-    In this section we will create three security groups:
+    In this section, you will create three security groups:
 
-    - A cluster security group enabling comms between the compute nodes, login node and AWS PCS controller
-    - An inbound ssh group that can optionally be enabled to allow ssh logins on the login node
-    - An DCV group that can optionally be enabled to allow DCV remote desktop connections to the login node
+    - A cluster security group enabling communication between the compute nodes, login node, and AWS PCS controller.
+    - An inbound SSH group that can optionally be enabled to allow SSH logins on the login node.
+    - A DCV group that can optionally be enabled to allow DCV remote desktop connections to the login node.
 
-!!! tip "If you have already created these security groups you can reuse them and skip this step."
+??? tip "It is possible to reuse existing security groups"
+    If compatible security groups already exist, skip this step and substitute their IDs for the `cluster-*-sg`, `InboundSshSecurityGroupId`, and `InboundDcvSecurityGroupId` references in later steps.
 
-Using [CloudFormation][1], create a new stack for the security groups using the following template:
+Using [CloudFormation][1], create a new stack for the security groups with the following template:
 
 [`1-pcs-cluster-cloudformation-security-groups.yaml`](../assets/aws/pcs/1-pcs-cluster-cloudformation-security-groups.yaml)
 
@@ -72,39 +73,39 @@ Using [CloudFormation][1], create a new stack for the security groups using the 
     --8<-- "assets/aws/pcs/1-pcs-cluster-cloudformation-security-groups.yaml"
     ```
 
-- Under stack name use something like `AWSPCS-PTPro-sg`.
-- Select the VPC ID noted in [step 1].
-- Enable ssh, and optionally enable DCV access.
+- Under "Stack name", use something like `AWSPCS-PTPro-sg`.
+- Set "VpcId" to the VPC ID noted in [step 1].
+- Enable SSH, and optionally enable DCV access.
 
 ??? warning "Use a Quick create link"
 
-    You can use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T134612.678Zi9c-1-pcs-cluster-cloudformation-security-groups.yaml&stackName=AWSPCS-PTPro-sg&param_CreateInboundDcvSecurityGroup=True&param_VpcId=vpc-0c6a46e761800dead&param_CreateInboundSshSecurityGroup=True&param_ClientIpCidr=0.0.0.0%2F0) to provision these security groups in `us-east-1`, however, __*you must ensure that you change the VPC ID*__ to the one created in [step 1].
+    Use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T134612.678Zi9c-1-pcs-cluster-cloudformation-security-groups.yaml&stackName=AWSPCS-PTPro-sg&param_CreateInboundDcvSecurityGroup=True&param_VpcId=vpc-0c6a46e761800dead&param_CreateInboundSshSecurityGroup=True&param_ClientIpCidr=0.0.0.0%2F0) to provision these security groups in `us-east-1`. __*Change the VPC ID*__ to the one created in [step 1].
 
 ### 3. Create PCS Cluster
 
-!!! tip "If you have already created a cluster in this manner you can skip this step"
+??? tip "It is possible to reuse an existing PCS cluster"
+    If a compatible PCS cluster already exists, skip this step and reference its name in later steps.
 
 Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) and create a new cluster.
 
-- Under Cluster setup, choose a name like `AWSPCS-PTPro-cluster`
-- Set the controller size to small.
-- Use the version of slurm compatible with the ParaTools Pro for E4S(TM) image. This is usually the latest version available, 25.05 as of december 2025.
-- Under Networking:
-    - use the VPC ID created in [step 1]. (e.g., `AWSPCS-PTPro-cluster...`)
-    - Use the subnet labeled as PrivateSubnetA created in [step 1].
-    - Under "Security groups" choose "Select an existing security group"
-        - Use the security group `cluster-*-sg` created in [step 2](#2-create-security-groups) (e.g., `cluster-AWSPCS-PTPro-sg`)
+- Under "Cluster setup", choose a name like `AWSPCS-PTPro-cluster`.
+- Set the "Controller size" to "Small".
+- Use the version of Slurm compatible with the ParaTools Pro for E4S™ image. This is usually the latest version available (`25.05` as of December 2025).
+- Under "Networking":
+    - Use the VPC ID created in [step 1] (e.g., `AWSPCS-PTPro-cluster...`).
+    - Select the subnet labeled `PrivateSubnetA` created in [step 1].
+    - Under "Security groups" choose "Select an existing security group".
+        - Use the security group `cluster-*-sg` created in [step 2](#2-create-security-groups) (e.g., `cluster-AWSPCS-PTPro-sg`).
 - Click "Create Cluster" to begin creating the cluster.
 
 ### 4. Create shared filesystem using EFS
 
-- Go to [EFS console](https://console.aws.amazon.com/efs) and create a new filesystem.
-- Ensure it is in the same region as the PCS cluster you are setting up.
-- Create a file system
-    - For the name choose something like `AWSPCS-PTPro-fs`.
-    - Under "Virtual Private Cloud", use the VPC ID created in [step 1](#1-create-vpc-and-subnets).
-    - Click "Create File System"
-    - Note the FS ID.
+- Go to the [EFS console](https://console.aws.amazon.com/efs) and ensure the region matches the region where the PCS cluster is being set up.
+- Click "Create file system":
+    - **Name**: something like `AWSPCS-PTPro-fs`.
+    - **Virtual Private Cloud (VPC)**: the VPC ID from [step 1](#1-create-vpc-and-subnets).
+- Click "Create".
+- Note the "File system ID" (e.g., `fs-0123456789abcdef0`); it is needed in [step 7](#7-create-node-launch-templates).
 
 ### 5. Create an Instance Profile
 
@@ -125,13 +126,12 @@ Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) a
     - `RoleNameSuffix` (default `PCS-cluster`) -- final role and instance-profile name is `AWSPCS-<RoleNameSuffix>`. The `AWSPCS-` prefix is required by AWS PCS.
     - `EnableDcvLicenseAccess` (default `true`) -- attach the DCV license read policy for remote-desktop use.
 
-    After the stack completes, the `InstanceProfileName` output is what you reference in the node launch template in [step 7](#7-create-node-launch-template). Skip to [step 6](#6-create-efa-placement-group).
+    After the stack completes, reference the `InstanceProfileName` output in the node launch template in [step 7](#7-create-node-launch-templates). Skip to [step 6](#6-create-efa-placement-group).
 
-If you prefer to create the policy and role manually via the IAM console, follow the rest of this section.
+To create the policy and role manually via the IAM console, follow the rest of this section.
 
-Go to the [IAM console]. Under Access Management -> Policies
-Check if a policy matching this one already exists, try searching for pcs.
-If no such policy exists, then create a new one and specify the permissions using the JSON editor as the following:
+Go to the [IAM console]. Under "Access Management" → "Policies", check whether a policy matching this one already exists (search for `pcs`).
+If none exists, create a new one and specify the permissions using the JSON editor as follows:
 
 ``` json
 {
@@ -148,13 +148,13 @@ If no such policy exists, then create a new one and specify the permissions usin
 }
 ```
 
-Name the new policy, something like `AWS-PCS-polilcy` and note the name that you chose.
+Name the new policy something like `AWS-PCS-policy` and note the name you chose.
 
 ???+ note "Additional optional steps to enable DCV remote desktop access"
 
-    If you plan to access the login node you will need to create an adaditional policy to access the DCV license server.
-    If a matching policy exists you can reuse it, try searching for DCV to check.
-    If no policy exists, then create a new one, specifying the permissions with the JSON editor as follows:
+    To access the login node via DCV, create an additional policy granting read access to the DCV license server.
+    If a matching policy already exists, reuse it (search for `DCV`).
+    Otherwise, create a new one, specifying the permissions with the JSON editor as follows:
 
     ``` json
     {
@@ -171,8 +171,8 @@ Name the new policy, something like `AWS-PCS-polilcy` and note the name that you
 
     Give it a name like `EC2AccessDCVLicenseS3`.
 
-    !!! note "Tighter region scope (optional)"
-        The wildcard `dcv-license.*` matches only AWS-owned DCV license buckets (bucket name is reserved by AWS), so it is safe. If you prefer an explicit allowlist, enumerate the regions you deploy in, for example:
+    ??? note "Tighter region scope (optional)"
+        The wildcard `dcv-license.*` matches only AWS-owned DCV license buckets (bucket name is reserved by AWS), so it is safe. For an explicit allowlist, enumerate the regions you deploy in, for example:
 
         ``` json
         "Resource": [
@@ -185,34 +185,36 @@ Name the new policy, something like `AWS-PCS-polilcy` and note the name that you
 
         In a CloudFormation template the policy Resource can be parameterized with `!Sub 'arn:${AWS::Partition}:s3:::dcv-license.${AWS::Region}/*'` so it substitutes the stack's region automatically. IAM policy JSON itself has no built-in variable for the EC2 instance's region.
 
-Next, in the [IAM Console] to to Access Management -> Roles check if a role starting with `AWS_PCS-` exists with the following policies attached.
-If not follow these instructions to create it.
+Next, in the [IAM Console] go to "Access Management" → "Roles" and check whether a role starting with `AWSPCS-` already exists with the required policies attached.
+Otherwise, create it as follows:
 
-- Select "Create Role"
-- Select Trusted Entity Type: "AWS Service"
-- Service or use case: "EC2"
-- Use Case: "EC2"
-- Click Next
-- Add permissions
+- Select "Create Role".
+- For "Trusted Entity Type", choose "AWS Service".
+- For "Service or use case", choose "EC2"; for "Use Case", choose "EC2".
+- Click "Next".
+- Under "Add permissions":
     - Add the policy created earlier in [step 5](#5-create-an-instance-profile).
     - If planning to use DCV to access the login node, also add the `EC2AccessDCVLicenseS3` policy.
     - Add the `AmazonSSMManagedInstanceCore` policy.
-- Click Next
-- Give the role a name that starts with `AWSPCS-` (It must start with `AWSPCS-`)
+- Click "Next".
+- Give the role a name that **must** start with `AWSPCS-` (e.g., `AWSPCS-PTPro-role`).
 
 ### 6. Create EFA Placement Group
 
-!!! note "If such a placement group already exists you may simply reuse it."
+??? tip "It is possible to reuse an existing placement group"
+    If a compatible cluster placement group already exists, skip this step and reference its name in later steps.
 
-Under the [EC2 Console], navigate to Network & Security -> Placement Groups -> "Create placement group"
+Under the [EC2 Console], navigate to "Network & Security" → "Placement Groups" → "Create placement group".
 
-- Name it something like `AWSPCS-PTPro-cluster`
-- Set strategy = "cluster"
-- Click "Create group"
+- **Name**: something like `AWSPCS-PTPro-cluster`.
+- **Placement strategy**: "Cluster".
+- Click "Create group".
 
-### 7. Create node Launch Template
+### 7. Create node Launch Templates
 
-[Using CloudFormation][1], create a new stack for the node launch templates using the following template:
+This step creates two EC2 launch templates -- one for the login node and one for compute nodes -- both wired up for EFA networking and the shared EFS filesystem.
+
+[Using CloudFormation][1], create a new stack using the following template:
 
 [`2-pcs-cluster-cloudformation-launch-templates.yaml`](../assets/aws/pcs/2-pcs-cluster-cloudformation-launch-templates.yaml)
 
@@ -222,88 +224,188 @@ Under the [EC2 Console], navigate to Network & Security -> Placement Groups -> "
     --8<-- "assets/aws/pcs/2-pcs-cluster-cloudformation-launch-templates.yaml"
     ```
 
-Set the following values:
+Give the stack a name (e.g., `AWSPCS-PTPro-lt`). Populate the parameters as follows:
 
-- VpcDefaultSecurityGroupId = value of "default" security group obtained in [step 1](#1-create-vpc-and-subnets)
-- ClusterSecurityGroupId = get value from output of [step 2](#2-create-security-groups) key = "ClusterSecurityGroupId"
-- SshSecurityGroupId = get value from output of [step 2](#2-create-security-groups) key = "InboundSshSecurityGroupId"
-- SshKeyName = pick a key
-- VpcId = get value from output of [step 1](#1-create-vpc-and-subnets) key = "VPC"
-- PlacementGroupName = use name chosen in [step 6](#6-create-efa-placement-group)
-- NodeGroupSubnetId = select the subnet labeled with PrivateSubnetA created in [step 1](#1-create-vpc-and-subnets)
-- EfsFilesystemId = EFS ID of FS created in [step 4](#4-create-shared-filesystem-using-efs)
+| Parameter | Value |
+|---|---|
+| `VpcId` | Output `VPC` from [step 1](#1-create-vpc-and-subnets) |
+| `VpcDefaultSecurityGroupId` | The "default" security group of the VPC created in [step 1](#1-create-vpc-and-subnets) |
+| `ClusterSecurityGroupId` | Output `ClusterSecurityGroupId` from [step 2](#2-create-security-groups) |
+| `SshSecurityGroupId` | Output `InboundSshSecurityGroupId` from [step 2](#2-create-security-groups) |
+| `SshKeyName` | An existing EC2 key pair you control |
+| `PlacementGroupName` | Name chosen in [step 6](#6-create-efa-placement-group) |
+| `NodeGroupSubnetId` | `PrivateSubnetA` from [step 1](#1-create-vpc-and-subnets) |
+| `EfsFilesystemId` | EFS filesystem ID from [step 4](#4-create-shared-filesystem-using-efs) |
+
+After the stack reaches `CREATE_COMPLETE`, note the launch template names from the stack outputs. They will be named `login-<stack-name>` and `compute-<stack-name>`, and are referenced in [step 8](#8-create-node-groups).
 
 ### 8. Create node groups
 
-In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster)
+A cluster requires at least two compute node groups: one for interactive login nodes (statically scaled) and one for elastic compute nodes that run jobs.
 
-1. Create one node group for compute nodes
-   - Compute node groups -> Create compute node group
-   - Group name = compute-1
-   - EC2 Launch Template = `compute-<name>` where `<name>` is the stack name chosen in [step 7](#7-create-node-launch-template)
-   - Subnets = PrivateSubnetA from [step 1](#1-create-vpc-and-subnets)
-   - Instance types = g4dn.8xlarge (or other EFA-capable instance type)
-   - min count = 0, max count = 2
-   - AMI ID = Select a PCS-compatible AMI
-2. Create one node group for the login node
-   - Compute node groups -> Create compute node group
-   - Group name = login
-   - EC2 Launch Template = `login-<name>` where `<name>` is the stack name chosen in [step 7](#7-create-node-launch-template)
-   - Subnets = PublicSubnetA from [step 1](#1-create-vpc-and-subnets)
-   - Instance types = g4dn.4xlarge (or other instance type)
-   - min count = 1, max count = 1
-   - AMI ID = Select a PCS-compatible AMI
+In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), select the cluster created in [step 3](#3-create-pcs-cluster), navigate to "Compute node groups", and click "Create".
+
+!!! note "AMI selection"
+    For the "AMI ID" field, use a ParaTools Pro for E4S™ PCS-compatible AMI from the AWS Marketplace. Use the same AMI for both node groups so the login and compute environments stay in sync. Pick the product matching your cluster's target architecture:
+
+    | Architecture | AWS Marketplace product |
+    |---|---|
+    | `x86_64` | [ParaTools Pro for E4S™ on AWS PCS (x86)](https://aws.amazon.com/marketplace/pp/prodview-wryfn3vd5c63k) |
+    | `arm64` (Graviton) | [ParaTools Pro for E4S™ on AWS PCS (ARM64)](https://aws.amazon.com/marketplace/pp/prodview-lge7nswatwzkm) |
+
+    **Obtaining the AMI ID after subscribing:**
+
+    1. Open the marketplace product page above and click "View purchase options" / "Continue to Subscribe".
+    2. Accept the terms and wait for the subscription to be processed.
+    3. Click "Continue to Configuration".
+    4. Select the delivery method, software version, and AWS region matching your cluster.
+    5. Copy the AMI ID shown on the configuration page (format: `ami-0123456789abcdef0`). Use this value in the "AMI ID" field when creating the compute node groups below.
+
+    Alternatively, after subscribing, find the AMI in the [EC2 console](https://console.aws.amazon.com/ec2) under "Images" → "AMIs", filtered by "Owner alias = `aws-marketplace`" and searching for `ParaTools`.
+
+??? tip "Recommended instance types"
+    Choose instance types that match the AMI architecture. EFA is required for tightly-coupled MPI on compute nodes; GPU login nodes enable DCV/interactive visualization without EFA.
+
+    | Role | `x86_64` | `arm64` |
+    |---|---|---|
+    | Compute node group | `g4dn.8xlarge` (NVIDIA T4, EFA) | `hpc7g.8xlarge` (Graviton3E, 200 Gbps EFA, no GPU) |
+    | Login node group (`~4xlarge`) | `g4dn.4xlarge` (NVIDIA T4) | `g5g.4xlarge` (Graviton2 + NVIDIA T4G) |
+
+    `g5g` has no EFA and is suited only for login / interactive visualization, not for compute.
+
+#### 8.1 Compute node group (`compute-1`)
+
+This is a **dynamic node group**: instances are launched when jobs are submitted and terminated after the configured idle time, scaling down to zero when the queue is empty.
+
+- Under "Compute node group details":
+    - **Compute node group name**: `compute-1`.
+- Under "Compute configuration":
+    - **EC2 launch template**: `compute-<stack-name>` from [step 7](#7-create-node-launch-templates).
+    - **Version**: select the latest version of the launch template.
+    - **IAM instance profile**: select the "Use an existing profile" radio, then under **Selected profile** choose the `AWSPCS-*` role created in [step 5](#5-create-an-instance-profile).
+    - **Subnets**: `PrivateSubnetA` from [step 1](#1-create-vpc-and-subnets).
+    - **Instance types**: `g4dn.8xlarge` (for `arm64` clusters, see the "Recommended instance types" tip above).
+    - **Scaling configuration**: select the "Dynamic node group" radio. Set **Minimum instance count** to `0` and **Maximum instance count** to `2`.
+    - **AMI ID**: select the "Custom AMI" radio, then paste the ParaTools Pro for E4S™ AMI ID obtained from the marketplace subscription (see the "AMI selection" note above).
+- Leave "Capacity purchase option" at its default (`On-Demand`). Skip "Scheduler configuration" and "Tags".
+- Click "Create compute node group" and wait for the "Status" field to show "Active" before proceeding.
+
+#### 8.2 Login node group (`login`)
+
+This is a **static node group**: a single long-running instance you SSH into (or access via Session Manager) to submit jobs.
+
+- Navigate back to "Compute node groups" and click "Create".
+- Under "Compute node group details":
+    - **Compute node group name**: `login`.
+- Under "Compute configuration":
+    - **EC2 launch template**: `login-<stack-name>` from [step 7](#7-create-node-launch-templates).
+    - **Version**: select the latest version of the launch template.
+    - **IAM instance profile**: select the "Use an existing profile" radio, then under **Selected profile** choose the same `AWSPCS-*` role used for `compute-1`.
+    - **Subnets**: `PublicSubnetA` from [step 1](#1-create-vpc-and-subnets).
+    - **Instance types**: `g4dn.4xlarge` (for `arm64` clusters, see the "Recommended instance types" tip above).
+    - **Scaling configuration**: select the "Static node group" radio. Set both **Minimum instance count** and **Maximum instance count** to `1`.
+    - **AMI ID**: select the "Custom AMI" radio and paste the same ParaTools Pro for E4S™ AMI ID used for `compute-1`.
+- Leave "Capacity purchase option", "Scheduler configuration", and "Tags" at their defaults.
+- Click "Create compute node group".
+
+!!! tip "Wait for Active status"
+    Wait for the `login` group to reach "Active" before attempting to connect in [step 10](#10-connect-to-login-node). The login instance needs several minutes after activation for cloud-init and slurm configuration to complete.
 
 ### 9. Create queue
 
-In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster)
+A queue exposes a compute node group to Slurm as a partition. Jobs submitted with `sbatch -p <queue-name>` will land on the attached compute node group.
 
-- Queues -> Create queue
-  - name = compute-1
-  - Add the compute node group created in [step 8.1](#8-create-node-groups)
+Before creating the queue, ensure the `compute-1` group from [step 8.1](#81-compute-node-group-compute-1) has reached "Active" status.
+
+In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), select the cluster created in [step 3](#3-create-pcs-cluster), navigate to "Queues", and click "Create queue".
+
+- Under "Queue configuration":
+    - **Queue name**: `compute-1` (this becomes the Slurm partition name).
+    - **Compute node groups**: select `compute-1` from [step 8.1](#81-compute-node-group-compute-1).
+- Click "Create queue" and wait for the "Status" field to show "Active".
 
 ### 10. Connect to login node
 
-In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster)
+Once the `login` compute node group has reached "Active", locate its EC2 instance and connect.
 
-- Compute node groups -> select login node group created in [step 8.2](#8-create-node-groups)
-  - Copy the "compute node group ID"
-- Go to EC2 console -> Instances
-  - In the search bar "Find instances by attribute or tag (case sensitive)" search for the "compute node group ID"
-  - Select the resulting instance -- this is the login node
-  - Copy "Public IPv4 Address"
-  - SSH to that IP (should allow the login node to prepare itself for at least 5 minutes before SSHing)
-    - username = "ubuntu" (for our ubuntu-based images; username will vary depending on image type)
-    - ssh key = use the key chosen in [step 7](#7-create-node-launch-template)
+1. **Find the login instance.**
+    - In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), select the cluster from [step 3](#3-create-pcs-cluster).
+    - Go to "Compute node groups" and select the `login` group from [step 8.2](#82-login-node-group-login).
+    - Copy the "Compute node group ID" (e.g., `cng-abc123def456...`).
+2. **Locate the instance in EC2.**
+    - In the [EC2 Console], choose "Instances".
+    - In the "Find instances by attribute or tag (case sensitive)" search bar, filter by the PCS tag:
 
-### 11. Run sample job
+        ```text
+        tag:aws:pcs:compute-node-group-id = <compute-node-group-id>
+        ```
 
-Once connected to the login node, run `sinfo` to see slurm queue information.
-You should see the queue created in [step 9](#9-create-queue)
-Submit a job: `sbatch -p <queue-name> script.sbatch`
-Since compute nodes are launched on demand, the first job submitted to a queue will cause the nodes to be spun up.
+        There should be exactly one running instance matching the login group's ID.
+    - Select the instance and copy its "Public IPv4 address".
 
-- `squeue` will show the job state as `CF` while the nodes are provisioned
+3. **Connect.** Use either SSH or AWS Systems Manager Session Manager.
 
-Compute nodes will be brought down automatically after a period of inactivity called `ScaledownIdletime`
+    === "SSH"
 
-- This can be configured in [step 3](#3-create-pcs-cluster) during cluster creation by changing the "Slurm configuration" settings.
+        Use the key pair specified in [step 7](#7-create-node-launch-templates). For the ParaTools Pro for E4S™ Ubuntu-based AMIs, the default user is `ubuntu`:
 
-### 12. (Optional) Run additional examples from ParaTools E4S Cloud Examples
+        ```bash
+        ssh -i <path-to-key.pem> ubuntu@<public-ipv4-address>
+        ```
 
-!!! tip "This step is optional"
-    The examples below are not pre-populated in the cluster home directory. Because AWS PCS mounts a shared EFS filesystem over `/home`, any examples baked into the AMI are masked at runtime. If you want to explore more MPI/HPC examples beyond the sample job in [step 11](#11-run-sample-job), clone the [ParaTools E4S Cloud Examples][e4s-cloud-examples] repository into your home directory on the login node.
+    === "Session Manager"
 
-From the login node (see [step 10](#10-connect-to-login-node)):
+        - In the EC2 console, select the instance and click "Connect".
+        - Choose the "Session Manager" tab and click "Connect".
+        - An interactive browser-based terminal opens as user `ssm-user`.
+        - Switch to the default user to pick up the cluster environment:
+
+            ```bash
+            sudo -i -u ubuntu
+            ```
+
+!!! warning "Allow time for cluster bootstrap"
+    Wait about 2 minutes after the login node reaches "Active" before connecting, so cloud-init can finish.
+
+### 11. Verify the Slurm environment
+
+Once connected to the login node, confirm Slurm can see the queue and partition you created:
 
 ```bash
-git clone https://github.com/ParaToolsInc/e4s-cloud-examples.git ~/examples
+sinfo
+```
+
+`sinfo` lists the Slurm partitions, their node states, and the compute node groups backing them. You should see the queue from [step 9](#9-create-queue) listed as a partition in the `idle~` state (the `~` suffix indicates dynamically-provisioned nodes that are currently powered down).
+
+Compute nodes are automatically terminated after a period of inactivity governed by the `ScaledownIdletime` parameter. This can be configured in [step 3](#3-create-pcs-cluster) during cluster creation by adjusting the "Slurm configuration" settings.
+
+### 12. Run sample jobs from ParaTools E4S Cloud Examples
+
+The ParaTools Pro for E4S™ AMI ships with a set of MPI/HPC example programs pre-copied into your home directory at `~/examples`.
+
+??? question "Examples missing from `~/examples`?"
+    If `~/examples` is empty or missing, first check `/opt/demo` -- the source copies live there and may not have been propagated to your home directory:
+
+    ```bash
+    ls /opt/demo
+    cp -R /opt/demo ~/examples
+    ```
+
+    If neither exists (for instance, on a fresh EFS mount that masked the AMI's `/home` contents), clone the [ParaTools E4S Cloud Examples][e4s-cloud-examples] repository directly from GitHub:
+
+    ```bash
+    git clone https://github.com/ParaToolsInc/e4s-cloud-examples.git ~/examples
+    ```
+
+Move into the examples directory:
+
+```bash
 cd ~/examples
 ```
 
 #### 12.1 Run the `mpi-procname` example
 
-Builds a tiny MPI program that prints the rank and hostname of each process, then submits it to the `compute-1` partition:
+`mpi-procname` is a tiny MPI program that prints the rank and hostname of each process. It is a quick sanity check that MPI launches and that EFA is reachable between nodes.
 
 ```bash
 cd ~/examples/mpi-procname
@@ -312,12 +414,15 @@ cd ~/examples/mpi-procname
 sbatch -p compute-1 mpiprocname.sbatch
 ```
 
-Monitor the queue and node states:
+Because compute nodes in this partition are provisioned on demand, the first `sbatch` submission will trigger an EC2 launch. Expect a few minutes of delay before the job starts; subsequent jobs on the same warm nodes will start almost immediately.
+
+Monitor the job state with:
 
 ```bash
 squeue
-sinfo -N -l
 ```
+
+`squeue` lists the pending and running jobs. While nodes are being provisioned, the state column shows `CF` (configuring); once the nodes are up, it transitions to `R` (running), and the job disappears from the list when it completes. For node-level detail, run `sinfo -N -l`.
 
 Once the job completes, the output file (e.g., `slurm-<jobid>.out`) will contain one line per MPI rank, showing rank/host placement.
 
@@ -333,22 +438,22 @@ sbatch -p compute-1 bw.sbatch
 sbatch -p compute-1 bibw.sbatch
 ```
 
-Track progress:
-
-```bash
-squeue
-sinfo -N -l
-```
+Since the compute nodes were warmed up by the `mpi-procname` run, these three jobs should start back-to-back without further provisioning delay. Track them with `squeue` as before.
 
 Each job writes to its own log file (`osu-latency.log`, `osu-bw.log`, `osu-bibw.log`) in the current directory.
 
 ### 13. Shut nodes down
 
-In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster)
+To stop incurring EC2 charges, tear down the queue and node groups. The cluster, VPC, and CloudFormation stacks can be kept around for future use.
 
-1. Delete the queue by going to "Queues" and deleting the queue created in [step 9](#9-create-queue)
-2. Delete the login node group by gong to "Compute node groups" and deleting the node group created in [step 8.2](#8-create-node-groups)
-3. Delete the compute node group by going to "Compute node groups" and deleting the node group created in [step 8.1](#8-create-node-groups)
+In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), select the cluster created in [step 3](#3-create-pcs-cluster) and, in order:
+
+1. Delete the queue created in [step 9](#9-create-queue) ("Queues" → select queue → "Delete").
+2. Delete the `login` node group from [step 8.2](#82-login-node-group-login) ("Compute node groups" → select group → "Delete").
+3. Delete the `compute-1` node group from [step 8.1](#81-compute-node-group-compute-1) ("Compute node groups" → select group → "Delete").
+
+!!! tip "Deletion order matters"
+    The queue must be deleted before its attached compute node group, otherwise the node group delete will fail.
 
 [1]: https://console.aws.amazon.com/cloudformation/
 [4]: https://docs.aws.amazon.com/parallelcluster/latest/ug/setting-up.html#create-an-admin
