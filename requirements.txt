@@ -1,11 +1,12 @@
-# MkDocs documentation generator
-mkdocs>=1.6.0,<2.0.0
+# ProperDocs — community-maintained continuation of MkDocs 1.x
+# (drop-in replacement; https://properdocs.org)
+properdocs>=1.6.7,<2.0.0
 
-# Material theme for MkDocs
+# Material theme (works with ProperDocs via mkdocs.* import alias shim)
 mkdocs-material>=9.7.0,<10.0.0
 
-# Link checker for documentation
+# Link checker (standalone, no mkdocs dependency)
 mkdocs-linkcheck>=1.0.6,<2.0.0
 
-# Redirects plugin for URL aliasing
-mkdocs-redirects>=1.2.0,<2.0.0
+# Redirects plugin for URL aliasing (ProperDocs-aware)
+mkdocs-redirects>=1.2.3,<2.0.0

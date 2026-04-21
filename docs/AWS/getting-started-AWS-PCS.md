@@ -108,6 +108,27 @@ Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) a
 
 ### 5. Create an Instance Profile
 
+!!! tip "Recommended: use the CloudFormation template"
+
+    The fastest and least error-prone path is to deploy the CloudFormation template below, which creates the policy, role, and instance profile in one step, including the DCV license policy correctly parameterized for the stack's region.
+
+    [`3-pcs-cluster-cloudformation-iam.yaml`](../assets/aws/pcs/3-pcs-cluster-cloudformation-iam.yaml)
+
+    ??? note "Show template contents (click to expand)"
+
+        ```yaml
+        --8<-- "assets/aws/pcs/3-pcs-cluster-cloudformation-iam.yaml"
+        ```
+
+    Parameters:
+
+    - `RoleNameSuffix` (default `PCS-cluster`) -- final role and instance-profile name is `AWSPCS-<RoleNameSuffix>`. The `AWSPCS-` prefix is required by AWS PCS.
+    - `EnableDcvLicenseAccess` (default `true`) -- attach the DCV license read policy for remote-desktop use.
+
+    After the stack completes, the `InstanceProfileName` output is what you reference in the node launch template in [step 7](#7-create-node-launch-template). Skip to [step 6](#6-create-efa-placement-group).
+
+If you prefer to create the policy and role manually via the IAM console, follow the rest of this section.
+
 Go to the [IAM console]. Under Access Management -> Policies
 Check if a policy matching this one already exists, try searching for pcs.
 If no such policy exists, then create a new one and specify the permissions using the JSON editor as the following:
@@ -142,13 +163,27 @@ Name the new policy, something like `AWS-PCS-polilcy` and note the name that you
             {
                 "Effect": "Allow",
                 "Action": "s3:GetObject",
-                "Resource": "arn:aws:s3:::dcv-license.region/us-*"
+                "Resource": "arn:aws:s3:::dcv-license.*/*"
             }
         ]
     }
     ```
 
     Give it a name like `EC2AccessDCVLicenseS3`.
+
+    !!! note "Tighter region scope (optional)"
+        The wildcard `dcv-license.*` matches only AWS-owned DCV license buckets (bucket name is reserved by AWS), so it is safe. If you prefer an explicit allowlist, enumerate the regions you deploy in, for example:
+
+        ``` json
+        "Resource": [
+            "arn:aws:s3:::dcv-license.us-east-1/*",
+            "arn:aws:s3:::dcv-license.us-east-2/*",
+            "arn:aws:s3:::dcv-license.us-west-1/*",
+            "arn:aws:s3:::dcv-license.us-west-2/*"
+        ]
+        ```
+
+        In a CloudFormation template the policy Resource can be parameterized with `!Sub 'arn:${AWS::Partition}:s3:::dcv-license.${AWS::Region}/*'` so it substitutes the stack's region automatically. IAM policy JSON itself has no built-in variable for the EC2 instance's region.
 
 Next, in the [IAM Console] to to Access Management -> Roles check if a role starting with `AWS_PCS-` exists with the following policies attached.
 If not follow these instructions to create it.
@@ -254,7 +289,60 @@ Compute nodes will be brought down automatically after a period of inactivity ca
 
 - This can be configured in [step 3](#3-create-pcs-cluster) during cluster creation by changing the "Slurm configuration" settings.
 
-### 12. Shut nodes down
+### 12. (Optional) Run additional examples from ParaTools E4S Cloud Examples
+
+!!! tip "This step is optional"
+    The examples below are not pre-populated in the cluster home directory. Because AWS PCS mounts a shared EFS filesystem over `/home`, any examples baked into the AMI are masked at runtime. If you want to explore more MPI/HPC examples beyond the sample job in [step 11](#11-run-sample-job), clone the [ParaTools E4S Cloud Examples][e4s-cloud-examples] repository into your home directory on the login node.
+
+From the login node (see [step 10](#10-connect-to-login-node)):
+
+```bash
+git clone https://github.com/ParaToolsInc/e4s-cloud-examples.git ~/examples
+cd ~/examples
+```
+
+#### 12.1 Run the `mpi-procname` example
+
+Builds a tiny MPI program that prints the rank and hostname of each process, then submits it to the `compute-1` partition:
+
+```bash
+cd ~/examples/mpi-procname
+./clean.sh
+./compile.sh
+sbatch -p compute-1 mpiprocname.sbatch
+```
+
+Monitor the queue and node states:
+
+```bash
+squeue
+sinfo -N -l
+```
+
+Once the job completes, the output file (e.g., `slurm-<jobid>.out`) will contain one line per MPI rank, showing rank/host placement.
+
+#### 12.2 Run the OSU Micro-Benchmarks
+
+The [OSU Micro-Benchmarks](https://mvapich.cse.ohio-state.edu/benchmarks/) measure point-to-point MPI performance over EFA. The `latency`, `bw` (bandwidth), and `bibw` (bi-directional bandwidth) benchmarks are pre-built in the image and driven by the sbatch scripts in `osu-benchmarks/`:
+
+```bash
+cd ~/examples/osu-benchmarks
+./clean.sh
+sbatch -p compute-1 latency.sbatch
+sbatch -p compute-1 bw.sbatch
+sbatch -p compute-1 bibw.sbatch
+```
+
+Track progress:
+
+```bash
+squeue
+sinfo -N -l
+```
+
+Each job writes to its own log file (`osu-latency.log`, `osu-bw.log`, `osu-bibw.log`) in the current directory.
+
+### 13. Shut nodes down
 
 In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster)
 
@@ -268,3 +356,4 @@ In the PCS console, select the cluster created in [step 3](#3-create-pcs-cluster
 [step 1]: #1-create-vpc-and-subnets
 [IAM Console]: https://console.aws.amazon.com/iam
 [EC2 Console]: https://console.aws.amazon.com/ec2
+[e4s-cloud-examples]: https://github.com/ParaToolsInc/e4s-cloud-examples
