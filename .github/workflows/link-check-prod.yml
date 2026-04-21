@@ -19,8 +19,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       SITE_URL: https://docs.paratoolspro.com
-      SITEMAP_URL: https://docs.paratoolspro.com/sitemap.xml
       REPORT_PATH: lychee-report.md
+      DISABLE_MKDOCS_2_WARNING: 'true'
     steps:
       - uses: actions/checkout@v6
         with:
@@ -31,18 +31,16 @@ jobs:
           git config --global user.email "279612+zbeekman@users.noreply.github.com"
           git config --global user.name "zbeekman"
 
-      - name: Extract URL list from sitemap
-        env:
-          SITEMAP: ${{ env.SITEMAP_URL }}
-        run: |
-          curl -fsSL "$SITEMAP" \
-            | grep -oE '<loc>[^<]+</loc>' \
-            | sed -E 's|<loc>(.*)</loc>|\1|' \
-            > sitemap-urls.txt
-          echo "Found $(wc -l < sitemap-urls.txt) URLs in sitemap."
-          test -s sitemap-urls.txt
+      - name: Install uv
+        uses: astral-sh/setup-uv@08807647e7069bb48b6ef5acd8ec9567f424441b # v8.1.0
+        with:
+          enable-cache: true
+          cache-dependency-glob: requirements.txt
 
-      - name: Crawl ${{ env.SITE_URL }}
+      - name: Build documentation
+        run: ./docs.sh build --strict
+
+      - name: Check links in rendered site
         id: lychee
         uses: lycheeverse/lychee-action@v2
         with:
@@ -55,9 +53,12 @@ jobs:
             --max-retries 3
             --retry-wait-time 5
             --timeout 30
-            sitemap-urls.txt
+            --base ${{ env.SITE_URL }}
+            'site/**/*.html'
           format: markdown
           output: ${{ env.REPORT_PATH }}
+          debug: true
+          jobSummary: true
           fail: false
 
       - name: Upload lychee report
