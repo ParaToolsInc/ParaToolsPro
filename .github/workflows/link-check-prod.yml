@@ -28,8 +28,8 @@ jobs:
 
       - name: Setup git identity
         run: |
-          git config --global user.email "claude[bot]@users.noreply.github.com"
-          git config --global user.name "claude[bot]"
+          git config --global user.email "279612+zbeekman@users.noreply.github.com"
+          git config --global user.name "zbeekman"
 
       - name: Crawl ${{ env.SITE_URL }}
         id: lychee
@@ -73,6 +73,8 @@ jobs:
         uses: anthropics/claude-code-action@v1
         with:
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          bot_id: 279612
+          bot_name: zbeekman
           claude_args: "--allowedTools 'Edit,MultiEdit,Read,Glob,Grep,LS,Bash(git:*),Bash(gh:*)'"
           prompt: |
             Broken links detected by lychee on ${{ env.SITE_URL }}.
@@ -105,8 +107,13 @@ jobs:
 
             After attempting fixes:
 
-            - If you made any fixes: stage, commit with message
-              "docs: auto-fix broken links (lychee weekly crawl)", push branch, then
+            - If you made any fixes: stage, commit with a message whose subject is
+              "docs: auto-fix broken links (lychee weekly crawl)" and whose body
+              ends with the trailer:
+
+                Co-authored-by: Claude <noreply@anthropic.com>
+
+              The commit author is configured to be zbeekman. Push the branch, then
               open a PR via `gh pr create` with title
               "docs: auto-fix broken links detected by lychee" and
               the lychee report as the body. Apply labels: docs, broken-links, automated.
