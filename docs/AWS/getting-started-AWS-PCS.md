@@ -236,6 +236,7 @@ Give the stack a name (e.g., `AWSPCS-PTPro-lt`). Populate the parameters as foll
 | `PlacementGroupName` | Name chosen in [step 6](#6-create-efa-placement-group) |
 | `NodeGroupSubnetId` | `PrivateSubnetA` from [step 1](#1-create-vpc-and-subnets) |
 | `EfsFilesystemId` | EFS filesystem ID from [step 4](#4-create-shared-filesystem-using-efs) |
+| `DcvUbuntuPassword` | Optional initial password for the `ubuntu` user, used to sign in to DCV web sessions (see [DCV remote desktop](#dcv-remote-desktop-optional) in step 10). Leave blank to skip and set a password manually later. Marked `NoEcho` so it is not shown in the console or stack events. |
 
 After the stack reaches `CREATE_COMPLETE`, note the launch template names from the stack outputs. They will be named `login-<stack-name>` and `compute-<stack-name>`, and are referenced in [step 8](#8-create-node-groups).
 
@@ -367,6 +368,40 @@ Once the `login` compute node group has reached "Active", locate its EC2 instanc
 !!! warning "Allow time for cluster bootstrap"
     Wait about 2 minutes after the login node reaches "Active" before connecting, so cloud-init can finish.
 
+#### DCV remote desktop (optional)
+
+The ParaTools Pro for E4S™ AMI ships with [NICE DCV][dcv] configured to serve a GPU-accelerated Linux desktop on TCP `8443`. The DCV license is granted to the node via the IAM policy from [step 5](#5-create-an-instance-profile), and inbound access is allowed by the DCV security group from [step 2](#2-create-security-groups).
+
+1. **Open the DCV URL.** Browse to the login node's public IPv4 (located via the same steps used to SSH in above):
+
+    ```text
+    https://<login-public-ipv4>:8443/
+    ```
+
+    The browser warns about a self-signed certificate; accept to continue.
+
+    !!! tip "Shortcut: grab the URL from the MOTD"
+        The login node's cloud-init installs a MOTD drop-in that prints the fully-resolved DCV URL on every SSH / Session Manager login, e.g.:
+
+        ```text
+        DCV remote desktop: https://54.81.250.30:8443/  (user: ubuntu)
+        ```
+
+        Copy-paste that URL into your browser instead of hunting for the instance IP in the EC2 console.
+
+2. **Sign in.**
+    - **Username:** `ubuntu`.
+    - **Password:** the value supplied for `DcvUbuntuPassword` when creating the launch-template stack in [step 7](#7-create-node-launch-templates).
+
+    If `DcvUbuntuPassword` was left blank, set a password on the login node before connecting:
+
+    ```bash
+    sudo passwd ubuntu
+    ```
+
+!!! tip "Rotate or set the password later"
+    `DcvUbuntuPassword` is only consumed once during cloud-init on first boot. To change the password later (or to set one when the parameter was left blank), SSH into the login node and run `sudo passwd ubuntu`.
+
 ### 11. Verify the Slurm environment
 
 Once connected to the login node, confirm Slurm can see the queue and partition you created:
@@ -462,3 +497,4 @@ In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), sel
 [IAM Console]: https://console.aws.amazon.com/iam
 [EC2 Console]: https://console.aws.amazon.com/ec2
 [e4s-cloud-examples]: https://github.com/ParaToolsInc/e4s-cloud-examples
+[dcv]: https://aws.amazon.com/hpc/dcv/

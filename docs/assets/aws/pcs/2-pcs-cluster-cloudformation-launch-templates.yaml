@@ -3,9 +3,9 @@
 
 AWSTemplateFormatVersion: 2010-09-09
 Description: EC2 launch templates for AWS PCS login and compute node groups.
-  This template creates EC2 launch templates for AWS PCS login and compute node groups. 
-  It demonstrates mounting EFS and FSx for Lustre file systems, configuring EC2 instance tags, enabling Instance Metadata Service Version 2 (IMDSv2), and setting up the cluster security group for communication with the AWS PCS controller. 
-  Additionally, it shows how to configure inbound SSH access to the login nodes. 
+  This template creates EC2 launch templates for AWS PCS login and compute node groups.
+  It demonstrates mounting EFS and FSx for Lustre file systems, configuring EC2 instance tags, enabling Instance Metadata Service Version 2 (IMDSv2), and setting up the cluster security group for communication with the AWS PCS controller.
+  Additionally, it shows how to configure inbound SSH access to the login nodes, and optionally sets an initial password for the `ubuntu` user so DCV web sessions can sign in out of the box.
   Use this template as a starting point to create custom launch templates tailored to your specific requirements.
   Check the Outputs tab of this stack for useful details about resources created by this template.
 
@@ -20,6 +20,7 @@ Metadata:
           - SshSecurityGroupId
           - EnableDcvAccess
           - DcvSecurityGroupId
+          - DcvUbuntuPassword
           - SshKeyName
       - Label:
           default: Networking
@@ -61,6 +62,19 @@ Parameters:
   DcvSecurityGroupId:
     Type: AWS::EC2::SecurityGroup::Id
     Description: Security group for DCV access to login nodes (only used if EnableDcvAccess is True)
+  DcvUbuntuPassword:
+    Type: String
+    NoEcho: true
+    Default: ''
+    MinLength: 0
+    MaxLength: 128
+    AllowedPattern: "^$|^[A-Za-z0-9!@#%^&*()_+=,.:;/?<>{}\\[\\]~-]{8,128}$"
+    Description: >-
+      Optional initial password for the `ubuntu` user on the login node, used
+      to sign in to DCV web sessions at https://<login-public-ip>:8443/. Leave
+      blank to skip password setup (DCV will then require manually setting a
+      password on the instance before the web UI can be used). 8-128 chars;
+      avoid quotes, backticks, backslash, and whitespace.
   SshKeyName:
     Type: AWS::EC2::KeyPair::KeyName
     Description: SSH key name for access to login nodes
@@ -138,20 +152,40 @@ Resources:
 
             packages:
             - amazon-efs-utils
-            
+
+            write_files:
+            - path: /etc/update-motd.d/99-dcv-url
+              permissions: '0755'
+              owner: root:root
+              content: |
+                #!/bin/sh
+                TOKEN=$(curl -fsSL --max-time 2 -X PUT -H 'X-aws-ec2-metadata-token-ttl-seconds: 60' http://169.254.169.254/latest/api/token 2>/dev/null)
+                IP=$(curl -fsSL --max-time 2 -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4 2>/dev/null)
+                [ -n "$IP" ] || IP=$(hostname -I | awk '{print $1}')
+                printf '\n  DCV remote desktop: https://%s:8443/  (user: ubuntu)\n\n' "$IP"
+
             runcmd:
             # Mount EFS filesystem as /home
             - mkdir -p /tmp/home
             - rsync -aA /home/ /tmp/home
             - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab
             - mount -a -t efs defaults
-            - if [ "enabled" == "$(sestatus | awk '/^SELinux status:/{print $3}')" ]; then setsebool -P use_nfs_home_dirs 1; fi
+            - if command -v sestatus >/dev/null 2>&1 && [ "X$(sestatus | awk '/^SELinux status:/{print $3}')" = "Xenabled" ]; then setsebool -P use_nfs_home_dirs 1; fi
             - rsync -aA --ignore-existing /tmp/home/ /home
             - rm -rf /tmp/home/
             # If provided, mount FSxL filesystem as /shared
             - if [ ! -z "${FSxLustreFilesystemId}" ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; chmod 777 /shared; fi
+            # If provided, set an initial password for the `ubuntu` user so DCV web sessions can sign in.
+            - if [ -n '${DcvUbuntuPassword}' ]; then echo 'ubuntu:${DcvUbuntuPassword}' | chpasswd; fi
+            # Enable GDM autologin for `ubuntu` so DCV's "console" session attaches to the user's Xorg.
+            # Without this, GDM's greeter lives on one VT and the user session on another after sign-in;
+            # DCV stays pinned to the greeter VT and the desktop is invisible. Canonical per AWS DCV
+            # Ubuntu + GNOME setup. Remove once the underlying AMI bakes the same config.
+            - sed -i 's/^#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
+            - sed -i 's/^#  AutomaticLogin = user1/AutomaticLogin = ubuntu/' /etc/gdm3/custom.conf
+            - systemctl restart gdm3 || true
 
-            --==MYBOUNDARY==
+            --==MYBOUNDARY==--
 
   ComputeLaunchTemplate:
     Type: AWS::EC2::LaunchTemplate
@@ -191,20 +225,20 @@ Resources:
 
             packages:
             - amazon-efs-utils
-            
+
             runcmd:
             # Mount EFS filesystem as /home
             - mkdir -p /tmp/home
             - rsync -aA /home/ /tmp/home
             - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab
             - mount -a -t efs defaults
-            - if [ "enabled" == "$(sestatus | awk '/^SELinux status:/{print $3}')" ]; then setsebool -P use_nfs_home_dirs 1; fi
+            - if command -v sestatus >/dev/null 2>&1 && [ "X$(sestatus | awk '/^SELinux status:/{print $3}')" = "Xenabled" ]; then setsebool -P use_nfs_home_dirs 1; fi
             - rsync -aA --ignore-existing /tmp/home/ /home
             - rm -rf /tmp/home/
             # If provided, mount FSxL filesystem as /shared
             - if [ ! -z "${FSxLustreFilesystemId}" ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; fi
 
-            --==MYBOUNDARY==
+            --==MYBOUNDARY==--
 
 Outputs:
   LoginLaunchTemplateId:
@@ -222,3 +256,11 @@ Outputs:
   EfaSecurityGroupId:
     Description: Security group created to support EFA communications
     Value: !Ref EfaSecurityGroup
+  DcvWebAccessHint:
+    Description: >-
+      Once the login node reaches "Active", point a browser at
+      https://<login-public-ipv4>:8443/ and sign in as user `ubuntu`
+      with the password supplied via DcvUbuntuPassword (if set). The
+      login node also prints the resolved DCV URL in its MOTD on SSH /
+      Session Manager login.
+    Value: "https://<login-public-ipv4>:8443/  (user: ubuntu)"
