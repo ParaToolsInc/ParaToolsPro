@@ -153,6 +153,15 @@ Resources:
             packages:
             - amazon-efs-utils
 
+            # Enable GDM autologin for `ubuntu` BEFORE gdm3 starts, so DCV's "console" session attaches
+            # to the user's Xorg without a greeter->user-session transition. A late (`runcmd`) edit +
+            # `systemctl restart gdm3` would segfault the mode=system dcvagent mid-transition.
+            # Idempotent: sed regex won't match on reboot after first edit. Remove once the underlying
+            # AMI bakes this config. Canonical per AWS DCV Ubuntu + GNOME setup.
+            bootcmd:
+            - sed -i 's/^#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
+            - sed -i 's/^#  AutomaticLogin = user1/AutomaticLogin = ubuntu/' /etc/gdm3/custom.conf
+
             write_files:
             - path: /etc/update-motd.d/99-dcv-url
               permissions: '0755'
@@ -177,13 +186,6 @@ Resources:
             - if [ ! -z "${FSxLustreFilesystemId}" ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; chmod 777 /shared; fi
             # If provided, set an initial password for the `ubuntu` user so DCV web sessions can sign in.
             - if [ -n '${DcvUbuntuPassword}' ]; then echo 'ubuntu:${DcvUbuntuPassword}' | chpasswd; fi
-            # Enable GDM autologin for `ubuntu` so DCV's "console" session attaches to the user's Xorg.
-            # Without this, GDM's greeter lives on one VT and the user session on another after sign-in;
-            # DCV stays pinned to the greeter VT and the desktop is invisible. Canonical per AWS DCV
-            # Ubuntu + GNOME setup. Remove once the underlying AMI bakes the same config.
-            - sed -i 's/^#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
-            - sed -i 's/^#  AutomaticLogin = user1/AutomaticLogin = ubuntu/' /etc/gdm3/custom.conf
-            - systemctl restart gdm3 || true
 
             --==MYBOUNDARY==--
 
