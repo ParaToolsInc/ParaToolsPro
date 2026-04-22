@@ -3,4 +3,5 @@ repos:
     rev: v1.49.2
     hooks:
       - id: cfn-lint
+        language_version: python3.13
         files: '^docs/assets/.*cloudformation.*\.ya?ml$'
