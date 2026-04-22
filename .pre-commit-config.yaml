@@ -1,0 +1,6 @@
+repos:
+  - repo: https://github.com/aws-cloudformation/cfn-lint
+    rev: v1.49.2
+    hooks:
+      - id: cfn-lint
+        files: '^docs/assets/.*cloudformation.*\.ya?ml$'
