@@ -174,7 +174,7 @@ Allowed values for Scheduler:
 1. slurm
 2. awsbatch
 Scheduler [slurm]: 1
-Allowed values for Operating System: 
+Allowed values for Operating System:
 1. alinux2
 2. centos7
 3. ubuntu2004
@@ -194,7 +194,7 @@ Allowed values for Availability Zone:
 Availability Zone [us-west-2a]: 1
 Allowed values for Network Configuration:
 1. Head node in a public subnet and compute fleet in a private subnet
-2. Head node and compute fleet in the same public subnet 
+2. Head node and compute fleet in the same public subnet
 Network Configuration [Head node in a public subnet and compute fleet in a private subnet]:
 Beginning VPC creation. Please do not leave the terminal until the creation is finalized
 Creating CloudFormation stack...
@@ -276,6 +276,15 @@ From the head node, you can submit jobs using Slurm.
 ### Running Examples
 
 The head node contains an `examples` directory with tests and example workloads. For NVIDIA NeMo™, see `examples/nemo/ex2/text_classification/ex2.sbatch`.
+
+!!! note "NVIDIA NeMo™ and BioNeMo™ live in a dedicated Python environment"
+    NeMo and BioNeMo are installed in a separate virtual environment to avoid dependency conflicts with other GPU/ML packages. Activate it before running NeMo or BioNeMo workloads (or `source` it from your sbatch script):
+
+    ```bash
+    source /usr/local/py-env/nemo/bin/activate
+    ```
+
+    Other Python packages (including vLLM) are available in the default system Python and require no activation.
 
 [1]: https://docs.aws.amazon.com/parallelcluster/latest/ug/install-v3.html
 [2]: https://aws.amazon.com/hpc/parallelcluster/

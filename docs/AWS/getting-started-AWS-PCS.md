@@ -438,6 +438,15 @@ Move into the examples directory:
 cd ~/examples
 ```
 
+!!! note "NVIDIA NeMo™ and BioNeMo™ live in a dedicated Python environment"
+    NeMo and BioNeMo are installed in a separate virtual environment to avoid dependency conflicts with other GPU/ML packages. Activate it before running NeMo or BioNeMo workloads (or `source` it from your sbatch script):
+
+    ```bash
+    source /usr/local/py-env/nemo/bin/activate
+    ```
+
+    Other Python packages (including vLLM) are available in the default system Python and require no activation.
+
 #### 12.1 Run the `mpi-procname` example
 
 `mpi-procname` is a tiny MPI program that prints the rank and hostname of each process. It is a quick sanity check that MPI launches and that EFA is reachable between nodes.
