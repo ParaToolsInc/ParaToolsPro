@@ -3,7 +3,21 @@ on:
   push:
     branches:
       - '**'
+    paths-ignore:
+      - '.gitignore'
+      - '.gitattributes'
+      - '.pre-commit-config.yaml'
+      - '.claude/**'
+      - 'CLAUDE.md'
+      - 'LICENSE'
   pull_request:
+    paths-ignore:
+      - '.gitignore'
+      - '.gitattributes'
+      - '.pre-commit-config.yaml'
+      - '.claude/**'
+      - 'CLAUDE.md'
+      - 'LICENSE'
 permissions:
   contents: write
 env:
