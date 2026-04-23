@@ -92,6 +92,9 @@ extra:
 copyright: |
   &copy; 2023-2026 <a href="https://www.paratools.com/" target="blank" rel="noopener">ParaTools, Inc.</a>
 
+extra_css:
+  - assets/stylesheets/extra.css
+
 # Page tree
 nav:
   - Home: index.md
