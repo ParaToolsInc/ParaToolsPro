@@ -4,7 +4,8 @@ site_description: ParaTools Pro for E4S™ - HPC documentation, tutorials, and c
 theme:
   name: material
   custom_dir: overrides
-#  logo: assets/e4spro-440-220.png
+  logo: assets/e4spro-440-220.png
+  favicon: assets/favicon.png
   features:
     - navigation.instant
     - navigation.tracking
