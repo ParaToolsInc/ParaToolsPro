@@ -1,3 +1,8 @@
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 2.5rem;
+}
+
 .md-social-wrap {
   display: flex;
   flex-direction: column;
