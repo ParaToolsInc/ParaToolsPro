@@ -56,18 +56,46 @@ jobs:
             "$SITE_URL" > muffet.out 2>&1
           EXIT=$?
           set -e
+          PAGES=$(curl -fsSL "$SITE_URL/sitemap.xml" | grep -c '<loc>' || true)
+          if [ "$EXIT" -eq 0 ]; then
+            echo "::notice::Crawl OK - $PAGES source pages in sitemap, 0 broken links on $SITE_URL"
+          else
+            ERRORS=$(grep -cE '^\s+(->|lookup|Get |status code)' muffet.out || true)
+            echo "::error::muffet exit=$EXIT - $ERRORS error lines across $PAGES source pages"
+          fi
           {
-            echo '# Broken links report'
+            echo '# Link check report'
             echo
             echo "- Site: $SITE_URL"
             echo "- Run: $RUN_URL"
+            echo "- Source pages (sitemap): $PAGES"
             echo "- muffet exit code: $EXIT"
             echo
-            echo '```'
-            cat muffet.out
-            echo '```'
+            if [ "$EXIT" -eq 0 ]; then
+              echo '**Result:** No broken links detected.'
+            else
+              echo '**Result:** Broken links detected. Output:'
+              echo
+              echo '```'
+              cat muffet.out
+              echo '```'
+            fi
           } > "$REPORT_PATH"
-          cat muffet.out
+          echo "::group::Broken links report ($REPORT_PATH)"
+          cat "$REPORT_PATH"
+          echo "::endgroup::"
+          {
+            echo "## Link check summary"
+            echo
+            echo "- Site: $SITE_URL"
+            echo "- muffet exit code: $EXIT"
+            echo
+            echo '<details><summary>Full report</summary>'
+            echo
+            cat "$REPORT_PATH"
+            echo
+            echo '</details>'
+          } >> "$GITHUB_STEP_SUMMARY"
           echo "exit_code=$EXIT" >> "$GITHUB_OUTPUT"
 
       - name: Upload link report

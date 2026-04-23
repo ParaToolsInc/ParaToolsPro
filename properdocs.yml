@@ -42,6 +42,10 @@ plugins:
   - redirects:
       redirect_maps:
         'ODDC/getting-started-ODDC.md': 'Heidi/getting-started-Heidi.md'
+  - git-revision-date-localized:
+      type: date
+      enable_creation_date: true
+      fallback_to_build_date: true
 #   - privacy:
 #       enabled: !ENV [CI, false]
 
