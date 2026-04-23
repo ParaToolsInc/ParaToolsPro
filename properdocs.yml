@@ -3,6 +3,7 @@ site_url: https://docs.paratoolspro.com/
 site_description: ParaTools Pro for E4S™ - HPC documentation, tutorials, and cloud deployment guides for AWS, GCP, Azure, and Heidi
 theme:
   name: material
+  custom_dir: overrides
 #  logo: assets/e4spro-440-220.png
   features:
     - navigation.instant
@@ -44,7 +45,7 @@ plugins:
         'ODDC/getting-started-ODDC.md': 'Heidi/getting-started-Heidi.md'
   - git-revision-date-localized:
       type: date
-      enable_creation_date: true
+      enable_creation_date: false
       fallback_to_build_date: true
 #   - privacy:
 #       enabled: !ENV [CI, false]
