@@ -1,0 +1,115 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: >-
+  IAM role, policies, and instance profile for AWS PCS cluster nodes
+  (login + compute). Creates the role required by the AWS PCS service
+  (name must start with "AWSPCS-"), attaches the minimum PCS policy,
+  the AWS Systems Manager managed instance policy, and optionally the
+  Amazon DCV license-bucket read policy needed for remote-desktop
+  access on the login node.
+
+Parameters:
+  RoleNameSuffix:
+    Type: String
+    Default: PCS-cluster
+    Description: >-
+      Suffix appended to the required "AWSPCS-" prefix to form the role
+      and instance-profile name. Must be unique in the account. The
+      final name will be "AWSPCS-<RoleNameSuffix>".
+    AllowedPattern: '[A-Za-z0-9+=,.@_-]+'
+    MinLength: 1
+    MaxLength: 50
+
+  EnableDcvLicenseAccess:
+    Type: String
+    Default: 'true'
+    AllowedValues: ['true', 'false']
+    Description: >-
+      If "true", attach a policy granting s3:GetObject on the Amazon
+      DCV license bucket for this region, required for DCV remote-
+      desktop licensing on EC2 instances.
+
+Conditions:
+  AttachDcvPolicy: !Equals [!Ref EnableDcvLicenseAccess, 'true']
+
+Resources:
+  PcsRegisterNodePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${AWS::StackName}-pcs-register-node'
+      Description: Allow EC2 instances to register as AWS PCS compute node group members.
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - pcs:RegisterComputeNodeGroupInstance
+            Resource: '*'
+
+  DcvLicenseAccessPolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Condition: AttachDcvPolicy
+    Properties:
+      ManagedPolicyName: !Sub '${AWS::StackName}-dcv-license-access'
+      Description: >-
+        Allow EC2 instances to read the Amazon DCV license bucket for
+        the stack's deployment region, required for DCV licensing.
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action: s3:GetObject
+            Resource: !Sub 'arn:${AWS::Partition}:s3:::dcv-license.${AWS::Region}/*'
+
+  PcsNodeRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: !Sub 'AWSPCS-${RoleNameSuffix}'
+      Description: >-
+        Instance role for AWS PCS cluster nodes. Name prefix "AWSPCS-"
+        is required by the AWS PCS service.
+      AssumeRolePolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: !Sub 'ec2.${AWS::URLSuffix}'
+            Action: sts:AssumeRole
+      ManagedPolicyArns: !If
+        - AttachDcvPolicy
+        - - !Ref PcsRegisterNodePolicy
+          - !Ref DcvLicenseAccessPolicy
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
+        - - !Ref PcsRegisterNodePolicy
+          - !Sub 'arn:${AWS::Partition}:iam::aws:policy/AmazonSSMManagedInstanceCore'
+
+  PcsNodeInstanceProfile:
+    Type: AWS::IAM::InstanceProfile
+    Properties:
+      InstanceProfileName: !Sub 'AWSPCS-${RoleNameSuffix}'
+      Roles:
+        - !Ref PcsNodeRole
+
+Outputs:
+  RoleName:
+    Description: Name of the PCS node IAM role.
+    Value: !Ref PcsNodeRole
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleName'
+
+  RoleArn:
+    Description: ARN of the PCS node IAM role.
+    Value: !GetAtt PcsNodeRole.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-RoleArn'
+
+  InstanceProfileName:
+    Description: Name of the PCS node instance profile (pass this to node group / launch template).
+    Value: !Ref PcsNodeInstanceProfile
+    Export:
+      Name: !Sub '${AWS::StackName}-InstanceProfileName'
+
+  InstanceProfileArn:
+    Description: ARN of the PCS node instance profile.
+    Value: !GetAtt PcsNodeInstanceProfile.Arn
+    Export:
+      Name: !Sub '${AWS::StackName}-InstanceProfileArn'
