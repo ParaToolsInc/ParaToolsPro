@@ -31,13 +31,11 @@ jobs:
           git config --global user.email "279612+zbeekman@users.noreply.github.com"
           git config --global user.name "zbeekman"
 
-      - name: Set up Go
-        uses: actions/setup-go@v6
-        with:
-          go-version: stable
-
       - name: Install muffet
-        run: go install github.com/raviqqe/muffet/v2@latest
+        run: |
+          go version
+          go install github.com/raviqqe/muffet/v2@latest
+          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
 
       - name: Crawl site
         id: muffet
