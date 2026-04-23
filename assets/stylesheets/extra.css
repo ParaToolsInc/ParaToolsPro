@@ -1,0 +1,20 @@
+.md-social-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.md-social-wrap .md-social {
+  padding: 0;
+  margin: 0;
+}
+
+.md-social-wrap .md-generator {
+  margin-top: -0.2rem;
+  font-size: 0.64rem;
+  color: var(--md-footer-fg-color--light);
+}
+
+.md-social-wrap .md-generator a {
+  color: inherit;
+}
