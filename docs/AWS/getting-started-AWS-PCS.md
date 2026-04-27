@@ -39,7 +39,7 @@ Create a new stack for the cluster's VPC and subnets [using the CloudFormation c
 
 ??? note "Show template contents (click to expand)"
 
-    ```yaml
+    ``` yaml linenums="1"
     --8<-- "assets/aws/pcs/0-pcs-cluster-cloudformation-vpc-and-subnets.yaml"
     ```
 
@@ -69,7 +69,7 @@ Using [CloudFormation][1], create a new stack for the security groups with the f
 
 ??? note "Show template contents (click to expand)"
 
-    ```yaml
+    ``` yaml linenums="1"
     --8<-- "assets/aws/pcs/1-pcs-cluster-cloudformation-security-groups.yaml"
     ```
 
@@ -117,7 +117,7 @@ Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) a
 
     ??? note "Show template contents (click to expand)"
 
-        ```yaml
+        ``` yaml linenums="1"
         --8<-- "assets/aws/pcs/3-pcs-cluster-cloudformation-iam.yaml"
         ```
 
@@ -220,7 +220,7 @@ This step creates two EC2 launch templates -- one for the login node and one for
 
 ??? note "Show template contents (click to expand)"
 
-    ```yaml
+    ``` yaml linenums="1"
     --8<-- "assets/aws/pcs/2-pcs-cluster-cloudformation-launch-templates.yaml"
     ```
 

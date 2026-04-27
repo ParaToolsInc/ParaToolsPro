@@ -17,28 +17,29 @@ theme:
     - navigation.top
     - search.suggest
     - search.highlight
-    - contgent.tabs.link
-    - content.code.annotation
-    - content.code.annotate # (1)
+    - content.code.annotate
     - content.code.copy
     - content.code.select
     - content.tabs.link
   language: en
+  font:
+    text: Open Sans
+    code: JetBrains Mono
   palette:
     - media: "(prefers-color-scheme: light)"
       scheme: default
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/toggle-switch-off-outline
+        icon: material/weather-sunny
         name: Switch to dark mode
-      primary: grey
-      accent: blue
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
+      primary: custom
+      accent: custom
       toggle:
-        icon: material/toggle-switch
+        icon: material/weather-night
         name: Switch to light mode
-      primary: white
-      accent: blue
 
 plugins:
   - redirects:

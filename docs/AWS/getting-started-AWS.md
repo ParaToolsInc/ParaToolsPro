@@ -30,7 +30,7 @@ This tutorial assumes that you have already created an [AWS account][5] and an [
 
 To install ParallelCluster, upgrade `pip` and install `virtualenv` if it is not already installed. Amazon recommends installing ParallelCluster in a virtual environment. This section follows ["Setting Up AWS ParallelCluster"][1]; refer to it if you run into issues.
 
-``` bash linenums="1"
+``` bash
 python3 -m pip install --upgrade pip
 python3 -m pip install --user --upgrade virtualenv
 ```
@@ -155,7 +155,7 @@ Create the `cluster-config.yaml` file:
 pcluster configure --config cluster-config.yaml
 ```
 
-```
+``` text linenums="1"
 INFO: Configuration file cluster-config.yaml will be written.
 Press CTRL-C to interrupt the procedure.
 
@@ -231,7 +231,7 @@ pcluster create-cluster -c cluster.yaml -n name_of_cluster
 
 The command returns JSON similar to:
 
-```
+``` json linenums="1"
 {
   "cluster": {
     "clusterName": "name_of_cluster",
