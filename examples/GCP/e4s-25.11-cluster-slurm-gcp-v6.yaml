@@ -72,7 +72,8 @@ deployment_groups:
     use: [network]
     settings:
       node_count_dynamic_max: 2
-      bandwidth_tier: gvnic_enabled #(6)!
+      machine_type: c3-standard-88
+      bandwidth_tier: tier_1_enabled #(6)!
       instance_image_custom: true
       disk_size_gb: $(vars.disk_size)
       instance_image:

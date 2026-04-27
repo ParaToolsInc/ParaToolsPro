@@ -164,10 +164,10 @@ to install `gcluster` into `${HOME}/bin` and then ensure this is on your path:
 export PATH="${PATH}:${HOME}/bin"
 ```
 
-### Grant ADC access to Terraform and Enable OS Login
+### Grant ADC access to Terraform
 
 Generate cloud credentials associated with your Google Cloud account and grant
-Terraform access to the Aplication Default Credential (ADC).
+Terraform access to the Application Default Credential (ADC).
 
 !!! note
     If you are using the [Cloud Shell][12] you can skip this step.
@@ -176,22 +176,28 @@ Terraform access to the Aplication Default Credential (ADC).
 gcloud auth application-default login
 ```
 
-To be able to connect to VMs in the cluster OS Login must be enabled.
-Unless OS Login is already enabled at the organization level, enable it at the project level.
-To do this, run:
+!!! info "OS Login is already enabled by default"
+    The Slurm GCP v6 modules used by the example blueprint
+    (`schedmd-slurm-gcp-v6-controller`, `-login`, and `-nodeset`) all enable
+    [OS Login][oslogin] **at the instance level by default**, so you do not need to
+    enable it at the project level for the cluster's VMs to accept SSH from your
+    Google identity. Skip the `gcloud compute project-info add-metadata --metadata
+    enable-oslogin=TRUE` step you may have seen in older tutorials.
 
-``` bash
-gcloud compute project-info add-metadata \
-     --metadata enable-oslogin=TRUE
-```
+    If you have a non-default scenario where you actively want to **disable** OS Login
+    on a specific role (for example, to use legacy project-wide SSH keys on the login
+    node), set `enable_oslogin: false` in that module's `settings:` block in your
+    blueprint -- do not change project-level metadata.
 
-!!! warning "Do not enable project-level OS Login if you also run ParaTools Pro Heidi in the same GCP project"
-    Heidi (the Adaptive Computing-orchestrated ParaTools Pro for E4S™ marketplace product)
-    relies on instance-metadata-injected SSH keys for cluster-internal authentication.
-    Enabling OS Login at the project level breaks Heidi's SSH key injection. If you plan
-    to deploy both Heidi and Cluster-Toolkit-managed clusters in the same project, leave
-    project-level OS Login disabled and instead enable OS Login at the instance level
-    only on the Cluster Toolkit cluster's VMs, or use a separate project for Heidi.
+    !!! warning "Heidi conflict"
+        Do not enable OS Login at the **project** level on a project that also runs
+        ParaTools Pro Heidi (the Adaptive Computing-orchestrated marketplace product).
+        Heidi relies on instance-metadata-injected SSH keys for cluster-internal
+        authentication, and project-level OS Login breaks that injection. The default
+        behavior of the v6 modules (instance-level OS Login, no project-level change)
+        is safe to mix with Heidi in the same project.
+
+[oslogin]: https://cloud.google.com/compute/docs/oslogin
 
 ### Deploy the Cluster
 
