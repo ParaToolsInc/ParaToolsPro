@@ -1,25 +1,416 @@
-.md-header__button.md-logo img,
-.md-header__button.md-logo svg {
-  height: 3.5rem;
+/* ==========================================================================
+   ParaTools Pro for E4S — documentation theme
+   Sampled from paratools.com  (Raleway / Open Sans / #AA0000 / #00A0D2)
+   ========================================================================== */
+
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600;700;800;900&display=swap");
+
+:root {
+  /* Brand tokens (canonical) */
+  --pt-red:         #AA0000;
+  --pt-red-deep:    #7A0000;
+  --pt-red-bright:  #D62121;
+  --pt-cyan:        #00A0D2;
+  --pt-cyan-deep:   #007AA1;
+  --pt-cyan-bright: #2BB8E0;
+  --pt-amber:       #E8A317;
+  --pt-violet:      #6B5BD2;
+  --pt-carbon:      #0F1115;
+  --pt-slate:       #23282D;
+  --pt-steel:       #3A4148;
+  --pt-mist:        #F2F2F2;
+  --pt-bone:        #F8F9F9;
+  --pt-paper:       #FFFFFF;
+
+  --pt-display: "Raleway", "Open Sans", -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* --------------------------------------------------------------------------
+   LIGHT THEME  (scheme=default)
+   -------------------------------------------------------------------------- */
+[data-md-color-scheme="default"] {
+  --md-primary-fg-color:        var(--pt-red);
+  --md-primary-fg-color--light:  var(--pt-red-bright);
+  --md-primary-fg-color--dark:   var(--pt-red-deep);
+  --md-primary-bg-color:         #ffffff;
+  --md-primary-bg-color--light:  rgba(255, 255, 255, 0.7);
+
+  --md-accent-fg-color:          var(--pt-cyan-deep);
+  --md-accent-fg-color--transparent: rgba(0, 160, 210, 0.10);
+  --md-accent-bg-color:          #ffffff;
+  --md-accent-bg-color--light:   rgba(255, 255, 255, 0.7);
+
+  --md-typeset-a-color:          var(--pt-red);
+
+  --md-default-bg-color:         var(--pt-paper);
+  --md-default-fg-color:         #1a1d22;
+  --md-default-fg-color--light:  #4a525a;
+  --md-default-fg-color--lighter: #777;
+  --md-default-fg-color--lightest: rgba(15, 17, 21, 0.07);
+
+  --md-code-bg-color:            var(--pt-mist);
+  --md-code-fg-color:            #1a1d22;
+
+  --md-footer-bg-color:          var(--pt-carbon);
+  --md-footer-bg-color--dark:    #08090c;
+  --md-footer-fg-color:          rgba(255, 255, 255, 0.85);
+  --md-footer-fg-color--light:   rgba(255, 255, 255, 0.6);
+  --md-footer-fg-color--lighter: rgba(255, 255, 255, 0.4);
+}
+
+/* --------------------------------------------------------------------------
+   DARK THEME  (scheme=slate)
+   -------------------------------------------------------------------------- */
+[data-md-color-scheme="slate"] {
+  /* Material's slate uses an HSL hue base — re-anchor to a cool blue-black. */
+  --md-hue: 220;
+
+  --md-default-bg-color:         var(--pt-carbon);
+  --md-default-bg-color--light:  var(--pt-slate);
+  --md-default-bg-color--lighter: #2c333a;
+  --md-default-bg-color--lightest: #353d45;
+
+  --md-default-fg-color:         rgba(255, 255, 255, 0.92);
+  --md-default-fg-color--light:  rgba(255, 255, 255, 0.72);
+  --md-default-fg-color--lighter: rgba(255, 255, 255, 0.48);
+  --md-default-fg-color--lightest: rgba(255, 255, 255, 0.08);
+
+  --md-primary-fg-color:         var(--pt-carbon);
+  --md-primary-fg-color--light:  var(--pt-slate);
+  --md-primary-fg-color--dark:   #08090c;
+  --md-primary-bg-color:         #ffffff;
+  --md-primary-bg-color--light:  rgba(255, 255, 255, 0.85);
+
+  --md-accent-fg-color:          var(--pt-cyan-bright);
+  --md-accent-fg-color--transparent: rgba(43, 184, 224, 0.14);
+  --md-accent-bg-color:          var(--pt-carbon);
+  --md-accent-bg-color--light:   rgba(15, 17, 21, 0.7);
+
+  --md-typeset-a-color:          var(--pt-cyan-bright);
+
+  --md-code-bg-color:            rgba(255, 255, 255, 0.04);
+  --md-code-fg-color:            rgba(255, 255, 255, 0.88);
+
+  --md-footer-bg-color:          #08090c;
+  --md-footer-bg-color--dark:    #000000;
+  --md-footer-fg-color:          rgba(255, 255, 255, 0.85);
+  --md-footer-fg-color--light:   rgba(255, 255, 255, 0.6);
+  --md-footer-fg-color--lighter: rgba(255, 255, 255, 0.35);
+}
+
+/* --------------------------------------------------------------------------
+   TYPOGRAPHY
+   -------------------------------------------------------------------------- */
+.md-typeset {
+  font-feature-settings: "kern", "liga", "ss01";
+  font-size: 0.75rem;
+}
+
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6,
+.md-header__topic > .md-ellipsis,
+.md-header__title,
+.md-nav__title {
+  font-family: var(--pt-display);
+}
+
+.md-typeset h1 {
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: var(--md-default-fg-color);
+}
+.md-typeset h2 {
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  text-transform: uppercase;
+}
+.md-typeset h3 {
+  font-weight: 700;
+  letter-spacing: 0.005em;
+}
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+  font-weight: 600;
+}
+
+.md-typeset h2::before {
+  content: "";
+  display: block;
+  width: 36px;
+  height: 2px;
+  background: var(--pt-red);
+  margin-bottom: 14px;
+}
+[data-md-color-scheme="slate"] .md-typeset h2::before {
+  background: var(--pt-cyan-bright);
+}
+
+/* --------------------------------------------------------------------------
+   HEADER  (carbon bar in both themes)
+   -------------------------------------------------------------------------- */
+.md-header {
+  background-color: var(--pt-carbon);
+  color: #ffffff;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.md-header__title,
+.md-header__button {
+  color: #ffffff;
+}
+.md-header__topic > .md-ellipsis {
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+}
+
+/* Logo size — 50% larger than Material default; header lifts to fit. */
+.md-header__button.md-logo {
+  margin: 0.2rem 0.4rem;
+  padding: 0;
+}
+.md-header__button.md-logo img,
+.md-header__button.md-logo svg {
+  height: 5.25rem;
+  width: auto;
+}
+.md-header { height: auto; min-height: 6rem; }
+
+/* Search bar */
+.md-search__form {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 2px;
+}
+.md-search__form:hover { background-color: rgba(255, 255, 255, 0.12); }
+.md-search__input { color: #ffffff; }
+.md-search__input::placeholder { color: rgba(255, 255, 255, 0.55); }
+
+/* --------------------------------------------------------------------------
+   TABS  (red bar under header in light, slate in dark)
+   -------------------------------------------------------------------------- */
+.md-tabs {
+  background-color: var(--pt-red);
+  color: #ffffff;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+}
+[data-md-color-scheme="slate"] .md-tabs {
+  background-color: var(--pt-slate);
+}
+.md-tabs__link {
+  font-family: var(--pt-display);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  opacity: 0.78;
+}
+.md-tabs__link--active,
+.md-tabs__link:hover { opacity: 1; }
+.md-tabs__link--active {
+  border-bottom: 2px solid #ffffff;
+}
+[data-md-color-scheme="slate"] .md-tabs__link--active {
+  border-bottom-color: var(--pt-cyan-bright);
+}
+
+/* --------------------------------------------------------------------------
+   LINKS
+   -------------------------------------------------------------------------- */
+.md-typeset a {
+  color: var(--md-typeset-a-color);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: color 120ms, border-color 120ms;
+}
+.md-typeset a:hover {
+  color: var(--md-accent-fg-color);
+  border-bottom-color: currentColor;
+}
+
+/* --------------------------------------------------------------------------
+   CODE
+   -------------------------------------------------------------------------- */
+.md-typeset code,
+.md-typeset pre > code {
+  font-feature-settings: "calt", "liga";
+  border-radius: 2px;
+}
+.md-typeset :not(pre) > code {
+  padding: 2px 6px;
+  background-color: var(--md-code-bg-color);
+  border: 1px solid var(--md-default-fg-color--lightest);
+  color: var(--pt-red);
+}
+[data-md-color-scheme="slate"] .md-typeset :not(pre) > code {
+  color: var(--pt-cyan-bright);
+}
+.md-typeset pre > code {
+  border-left: 3px solid var(--pt-red);
+}
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  border-left-color: var(--pt-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   ADMONITIONS  (note / tip / warning / danger)
+   -------------------------------------------------------------------------- */
+.md-typeset .admonition,
+.md-typeset details {
+  border-radius: 2px;
+  border-left-width: 4px;
+  font-size: 0.78rem;
+}
+.md-typeset .admonition.note,
+.md-typeset details.note {
+  border-left-color: var(--pt-cyan);
+  background: rgba(0, 160, 210, 0.06);
+}
+.md-typeset .admonition.tip,
+.md-typeset details.tip {
+  border-left-color: #1f9d55;
+}
+.md-typeset .admonition.warning,
+.md-typeset details.warning {
+  border-left-color: var(--pt-amber);
+  background: rgba(232, 163, 23, 0.07);
+}
+.md-typeset .admonition.danger,
+.md-typeset details.danger,
+.md-typeset .admonition.failure,
+.md-typeset details.failure {
+  border-left-color: var(--pt-red);
+  background: rgba(170, 0, 0, 0.06);
+}
+
+/* --------------------------------------------------------------------------
+   BUTTONS
+   -------------------------------------------------------------------------- */
+.md-typeset .md-button {
+  border-radius: 2px;
+  font-family: "Open Sans", sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  padding: 0.65em 1.4em;
+  border-width: 1px;
+}
+.md-typeset .md-button--primary {
+  background-color: var(--pt-red);
+  border-color: var(--pt-red);
+  color: #ffffff;
+}
+.md-typeset .md-button--primary:hover,
+.md-typeset .md-button--primary:focus {
+  background-color: var(--pt-red-deep);
+  border-color: var(--pt-red-deep);
+  color: #ffffff;
+}
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary {
+  background-color: var(--pt-cyan);
+  border-color: var(--pt-cyan);
+  color: var(--pt-carbon);
+}
+[data-md-color-scheme="slate"] .md-typeset .md-button--primary:hover {
+  background-color: var(--pt-cyan-bright);
+  border-color: var(--pt-cyan-bright);
+}
+
+/* --------------------------------------------------------------------------
+   NAV  (left + right rails)
+   -------------------------------------------------------------------------- */
+.md-nav__title {
+  font-family: var(--pt-display);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  color: var(--md-default-fg-color--light);
+}
+.md-nav__link--active,
+.md-nav__link[aria-current="true"] {
+  color: var(--md-typeset-a-color);
+  font-weight: 600;
+}
+
+/* Section index dots (subtle) */
+.md-nav__item .md-nav__link::before {
+  content: none;
+}
+
+/* --------------------------------------------------------------------------
+   TABLES
+   -------------------------------------------------------------------------- */
+.md-typeset table:not([class]) {
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 2px;
+  font-size: 0.75rem;
+}
+.md-typeset table:not([class]) th {
+  background-color: var(--md-default-fg-color--lightest);
+  font-family: var(--pt-display);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   FOOTER  (carbon plate, cyan/red split rule)
+   -------------------------------------------------------------------------- */
+.md-footer {
+  border-top: 3px solid var(--pt-red);
+}
+[data-md-color-scheme="slate"] .md-footer {
+  border-top-color: var(--pt-cyan);
+}
+.md-footer-meta {
+  background-color: var(--md-footer-bg-color--dark);
+}
+
+/* Footer pieces (custom partials) */
 .md-social-wrap {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
 }
-
-.md-social-wrap .md-social {
-  padding: 0;
-  margin: 0;
-}
-
+.md-social-wrap .md-social { padding: 0; margin: 0; }
 .md-social-wrap .md-generator {
   margin-top: -0.2rem;
   font-size: 0.64rem;
   color: var(--md-footer-fg-color--light);
 }
+.md-social-wrap .md-generator a { color: inherit; }
 
-.md-social-wrap .md-generator a {
-  color: inherit;
+/* --------------------------------------------------------------------------
+   SEARCH PALETTE  (highlight hits in brand color)
+   -------------------------------------------------------------------------- */
+.md-search-result__article--document .md-search-result__title { font-weight: 700; }
+.md-search-result mark {
+  color: var(--pt-red);
+  background: transparent;
+  border-bottom: 1px solid var(--pt-red);
+}
+[data-md-color-scheme="slate"] .md-search-result mark {
+  color: var(--pt-cyan-bright);
+  border-bottom-color: var(--pt-cyan-bright);
+}
+
+/* --------------------------------------------------------------------------
+   SELECTION
+   -------------------------------------------------------------------------- */
+::selection {
+  background-color: var(--pt-red);
+  color: #ffffff;
+}
+[data-md-color-scheme="slate"] ::selection {
+  background-color: var(--pt-cyan);
+  color: var(--pt-carbon);
 }
