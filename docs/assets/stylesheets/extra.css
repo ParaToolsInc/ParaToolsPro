@@ -170,11 +170,17 @@
   font-size: 0.85rem;
 }
 
-/* Logo size override (preserved from original) */
+/* Logo size — 50% larger than Material default; header lifts to fit. */
+.md-header__button.md-logo {
+  margin: 0.2rem 0.4rem;
+  padding: 0;
+}
 .md-header__button.md-logo img,
 .md-header__button.md-logo svg {
-  height: 3.5rem;
+  height: 5.25rem;
+  width: auto;
 }
+.md-header { height: auto; min-height: 6rem; }
 
 /* Search bar */
 .md-search__form {
