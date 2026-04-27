@@ -251,7 +251,7 @@ cat > e4s-25.11-cluster-slurm-gcp-v6.yaml
 cat e4s-25.11-cluster-slurm-gcp-v6.yaml # check that the file copied correctly # (2)!
 ```
 
-1. Usually `Ctrl-v`, or `Command-v` on macOS.
+1. Usually `Ctrl-v`, or `Command-v` on macOS, to paste from the clipboard.
 2. Optional, but recommended.
 
 Using your favorite editor, select appropriate instance types for the compute
@@ -267,8 +267,10 @@ pay extra attention to the highlighted lines on the
 
     - Determine whether to pass the `${PROJECT_ID}` on the command line, or set
       `vars.project_id:` directly in the blueprint.
-    - Verify that the `image_family` key matches the image for
-      [ParaTools Pro for E4S™ from the GCP Marketplace][marketplace].
+    - Verify that the `image_family` key
+      (`paratools-gcluster-e4s-2511-nvidia89-x86-64` for the current GCluster
+      x86-64 image) matches the image family of the
+      [ParaTools Pro for E4S™ on GCluster GCP Marketplace listing][marketplace].
     - Adjust the region and zone used, if desired.
     - Set an appropriate `machine_type` and `node_count_dynamic_max` for each
       `*_nodeset` (`debug_nodeset`, `compute_nodeset`, and `h3_nodeset`).
