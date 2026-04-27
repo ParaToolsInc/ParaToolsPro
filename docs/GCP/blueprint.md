@@ -22,7 +22,7 @@ changed are highlighted and have expandable annotations offering further
 guidance.
 
 ## ParaTools Pro for E4S™ Slurm Cluster Blueprint Example
-``` yaml title="e4s-25.11-cluster-slurm-gcp-v6.yaml" linenums="1" hl_lines="20 25 37 49 51-54 74-76 90-111"
+``` { .yaml .annotate title="e4s-25.11-cluster-slurm-gcp-v6.yaml" linenums="1" hl_lines="20 25 37 49 51-54 74-76 90-111" }
 --8<-- "examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.yaml"
 ```
 

@@ -107,7 +107,7 @@ nav:
       #    - AWS Parallel Cluster Config: AWS/pcluster.md
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
-    - Cluster Toolkit Blueprint: GCP/blueprint.md
+    - Cluster Blueprint: GCP/blueprint.md
     - Cluster Deletion: GCP/Cluster-Deletion.md
   - Heidi:
     - Getting Started: Heidi/getting-started-Heidi.md
