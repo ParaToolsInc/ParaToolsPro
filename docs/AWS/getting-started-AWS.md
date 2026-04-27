@@ -263,7 +263,7 @@ Cluster creation takes a few minutes. Monitor progress with `pcluster list-clust
 
 ### Accessing your cluster
 
-Once the cluster finishes launching, open the **EC2** page and select **Instances**. Select the newly created instance labeled "Head Node". Click **Connect** in the upper right and choose your connection method. For SSH, the default username is typically `ubuntu`; if it is not, connect with a standard SSH client and the server will report the expected username.
+Once the cluster finishes launching, open the **EC2** page and select **Instances**. Select the newly created instance labeled **Head Node**. Click **Connect** in the upper right and choose your connection method. For SSH, the default username is typically `ubuntu`; if it is not, connect with a standard SSH client and the server will report the expected username.
 
 Alternatively, connect from your local terminal with:
 

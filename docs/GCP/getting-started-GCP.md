@@ -223,7 +223,7 @@ At minimum, grant yourself:
 
 - `roles/compute.osLogin` (or `roles/compute.osAdminLogin` if you need
   `sudo`) so the VMs accept your Google identity as a Linux user.
-- `roles/iap.tunnelResourceAccessor` so the GCP Console "SSH" button (which
+- `roles/iap.tunnelResourceAccessor` so the GCP Console **SSH** button (which
   tunnels through [Identity-Aware Proxy][iap]) can reach the login node.
 
 ``` bash
@@ -273,7 +273,7 @@ pay extra attention to the highlighted lines on the
     - Set an appropriate `machine_type` and `node_count_dynamic_max` for each
       `*_nodeset` (`debug_nodeset`, `compute_nodeset`, and `h3_nodeset`).
     - The default `network` module provides IAP SSH only (which is what the
-      GCP Console "SSH" button uses). To SSH directly from your workstation,
+      GCP Console **SSH** button uses). To SSH directly from your workstation,
       see [Allowing direct SSH from your workstation][workstation-ssh] in the
       blueprint reference.
 
@@ -317,14 +317,14 @@ Review the proposed changes, then press `a` to accept.
 
 Once the cluster is deployed, SSH to the login node.
 
-1. Go to the "Compute Engine" → "VM Instances" page.
+1. Go to the **Compute Engine** → **VM Instances** page.
 
     [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button .md-button--primary }
 
-2. Click "SSH" for the login node of the cluster. You may need to approve Google authentication before the session can connect.
+2. Click **SSH** for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
 !!! note "SSH permission errors"
-    If clicking "SSH" in the Console produces a permission error, confirm
+    If clicking **SSH** in the Console produces a permission error, confirm
     that your user identity holds the IAM roles listed in the OS Login
     admonition under [Grant ADC Access to Terraform](#grant-adc-access-to-terraform)
     (`roles/compute.osLogin` and `roles/iap.tunnelResourceAccessor`).
