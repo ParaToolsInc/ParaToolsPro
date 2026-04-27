@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Guide for deploying E4S on Google Cloud using the HPC Toolkit">
+        <meta name="description" content="Guide for deploying E4S on Google Cloud using the Cluster Toolkit">
       
       
       
@@ -639,10 +639,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#install-the-google-cloud-hpc-toolkit" class="md-nav__link">
+  <a href="#install-the-cluster-toolkit" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install the Google Cloud HPC-Toolkit
+        Install the Cluster Toolkit
       
     </span>
   </a>
@@ -650,10 +650,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#grant-adc-access-to-terraform-and-enable-os-login" class="md-nav__link">
+  <a href="#grant-adc-access-to-terraform" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grant ADC access to Terraform and Enable OS Login
+        Grant ADC Access to Terraform
       
     </span>
   </a>
@@ -683,10 +683,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#deletion-of-the-cluster" class="md-nav__link">
+  <a href="#delete-the-cluster" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Deletion of the Cluster
+        Delete the Cluster
       
     </span>
   </a>
@@ -721,7 +721,7 @@
   <span class="md-ellipsis">
     
   
-    HPC Toolkit Blueprint
+    Cluster Blueprint
   
 
     
@@ -1017,37 +1017,37 @@
 
 <h1 id="paratools-pro-for-e4stm-getting-started-with-google-cloud-platform-gcp">ParaTools Pro for E4S™ Getting Started with Google Cloud Platform (GCP)<a class="headerlink" href="#paratools-pro-for-e4stm-getting-started-with-google-cloud-platform-gcp" title="Permanent link">&para;</a></h1>
 <h2 id="general-background-information">General Background Information<a class="headerlink" href="#general-background-information" title="Permanent link">&para;</a></h2>
-<p>In the following tutorial, we roughly follow the same steps as the
-<a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster">"quickstart tutorial"</a> from the <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google HPC-Toolkit</a> project.
-For the purposes of this tutorial, we make the following assumptions:</p>
+<p>This tutorial roughly follows the same steps as the
+<a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster">"Deploy an HPC cluster with Slurm" quickstart</a> from the <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a> project.
+This tutorial assumes the following:</p>
 <ul>
 <li>You have <a href="https://console.cloud.google.com/freetrial">created a Google Cloud account</a>.</li>
-<li>You have <a href="https://cloud.google.com/resource-manager/docs/creating-managing-projects">created a Google Cloud project</a> appropriate for this tutorial
+<li>You have <a href="https://cloud.google.com/resource-manager/docs/creating-managing-projects">created a Google Cloud project</a> appropriate for this tutorial,
   and it is <a href="https://console.cloud.google.com/projectselector2/home/dashboard">selected</a>.</li>
-<li>You have <a href="https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console">setup billing for your Google Cloud Project</a>.</li>
+<li>You have <a href="https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console">set up billing for your Google Cloud project</a>.</li>
 <li>You have <a href="https://console.cloud.google.com/apis/api/compute.googleapis.com/overview">enabled the Compute Engine API</a>.</li>
 <li>You have <a href="https://console.cloud.google.com/apis/api/file.googleapis.com/overview">enabled the Filestore API</a>.</li>
-<li>You have <a href="https://console.cloud.google.com/apis/api/storage.googleapis.com/overview">enabled the Cloud Storage API</a></li>
-<li>You have <a href="https://console.cloud.google.com/apis/api/serviceusage.googleapis.com/overview">enabled the Sevice Usage API</a>.</li>
-<li>You have <a href="https://console.cloud.google.com/apis/api/secretmanager.googleapis.com/overview">enabled the Secret Manager API</a>.</li>
-<li>You are aware of <a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#costs">the costs for running instances on GCP Compute Engine</a> and
-  of the costs of using the ParaTools Pro for E4S™ GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live --></li>
-<li>You are comfortable using the <a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#launch">GCP Cloud Shell</a>, or are running locally
-    (which will match this tutorial) and are familiar with SSH, a terminal and have
-    <a href="https://cloud.google.com/sdk/docs/install">installed</a> and <a href="https://cloud.google.com/sdk/docs/initializing">initialized the gcloud CLI</a></li>
+<li>You have <a href="https://console.cloud.google.com/apis/api/storage.googleapis.com/overview">enabled the Cloud Storage API</a>.</li>
+<li>You have <a href="https://console.cloud.google.com/apis/api/serviceusage.googleapis.com/overview">enabled the Service Usage API</a>.</li>
+<li>You have <a href="https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview">enabled the Cloud Resource Manager API</a>.</li>
+<li>You have subscribed to <a href="https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64">ParaTools Pro for E4S™ on the GCP Marketplace</a>.</li>
+<li>You are aware of <a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#costs">the costs for running instances on GCP Compute Engine</a>, and
+  of the costs of using the <a href="https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64">ParaTools Pro for E4S™ GCP Marketplace VM image</a>.</li>
+<li>You are comfortable using the <a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#launch">GCP Cloud Shell</a>, or are running locally
+    (which will match this tutorial), are familiar with SSH and a terminal, and
+    have <a href="https://cloud.google.com/sdk/docs/install">installed</a> and <a href="https://cloud.google.com/sdk/docs/initializing">initialized the gcloud CLI</a>.</li>
 </ul>
 <h2 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h2>
 <h3 id="getting-set-up">Getting Set Up<a class="headerlink" href="#getting-set-up" title="Permanent link">&para;</a></h3>
-<p>First, let's grab your <code>PROJECT_ID</code> and <code>PROJECT_NUMBER</code>.
-Navigate to the <a href="https://console.cloud.google.com/projectselector2/home/dashboard">GCP project selector</a> and select the project that you'll be using for this tutorial.
-Take note of the <code>PROJECT_ID</code> and <code>PROJECT_NUMBER</code>
-Open your local shell or the <a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#launch">GCP Cloud Shell</a>, and run the following commands:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span>
-<span class="normal"><a href="#__codelineno-0-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PROJECT_ID</span><span class="o">=</span>&lt;enter<span class="w"> </span>your<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>here&gt;
-<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PROJECT_NUMBER</span><span class="o">=</span>&lt;enter<span class="w"> </span>your<span class="w"> </span>project<span class="w"> </span>number<span class="w"> </span>here&gt;
-</code></pre></div></td></tr></table></div></p>
+<p>First, capture your <code>PROJECT_ID</code> and <code>PROJECT_NUMBER</code>.
+Navigate to the <a href="https://console.cloud.google.com/projectselector2/home/dashboard">GCP project selector</a> and select the project for this tutorial.
+Take note of the <code>PROJECT_ID</code> and <code>PROJECT_NUMBER</code>.
+Open your local shell or the <a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#launch">GCP Cloud Shell</a>, and run the following commands:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PROJECT_ID</span><span class="o">=</span>&lt;enter<span class="w"> </span>your<span class="w"> </span>project<span class="w"> </span>ID<span class="w"> </span>here&gt;
+<a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PROJECT_NUMBER</span><span class="o">=</span>&lt;enter<span class="w"> </span>your<span class="w"> </span>project<span class="w"> </span>number<span class="w"> </span>here&gt;
+</code></pre></div></p>
 <p>Set a default project you will be using for this tutorial.
-If you have multiple projects you can switch back to a different one when you are finished.</p>
+If you have multiple projects, you can switch back to a different one when you are finished.</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span>
 </code></pre></div>
 <p>Next, ensure that the default Compute Engine service account is enabled:
@@ -1055,22 +1055,43 @@ If you have multiple projects you can switch back to a different one when you ar
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">     </span>--project<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">     </span><span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com
 </code></pre></div>
-and add the <code>roles/editor</code> IAM role to the service account:</p>
+and grant the service account the IAM roles required by Cluster Toolkit
+(<code>roles/compute.instanceAdmin.v1</code> for managing Compute Engine resources, and
+<code>roles/iam.serviceAccountUser</code> to act as the service account):</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--member<span class="o">=</span>serviceAccount:<span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--role<span class="o">=</span>roles/editor
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--role<span class="o">=</span>roles/compute.instanceAdmin.v1
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>--member<span class="o">=</span>serviceAccount:<span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span>--role<span class="o">=</span>roles/iam.serviceAccountUser
 </code></pre></div>
-<h3 id="install-the-google-cloud-hpc-toolkit">Install the <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google Cloud HPC-Toolkit</a><a class="headerlink" href="#install-the-google-cloud-hpc-toolkit" title="Permanent link">&para;</a></h3>
-<p>First install the dependencies of <code>ghpc</code>. Instructions to do this are included below.
+<div class="admonition note">
+<p class="admonition-title">Minimum required IAM roles</p>
+<p>Older tutorials grant <code>roles/editor</code> to this service account. That role is
+project-wide and far broader than required. The two roles above are the
+minimum recommended by the upstream
+<a href="https://docs.cloud.google.com/cluster-toolkit/docs/setup/configure-environment">Cluster Toolkit setup guide</a>.</p>
+</div>
+<h3 id="install-the-cluster-toolkit">Install the <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a><a class="headerlink" href="#install-the-cluster-toolkit" title="Permanent link">&para;</a></h3>
+<div class="admonition tip">
+<p class="admonition-title">Pre-built binary bundle (alternative)</p>
+<p>Since Cluster Toolkit v1.82.0, Google publishes pre-built <code>gcluster</code> bundles on the
+<a href="https://github.com/GoogleCloudPlatform/cluster-toolkit/releases">Releases page</a>. Download the bundle matching your OS and architecture
+(e.g., <code>gcluster_bundle_linux_amd64.zip</code>, <code>gcluster_bundle_mac_arm64.zip</code>), unzip it,
+and skip the build-from-source steps below. The bundle includes the <code>gcluster</code> binary
+plus the <code>examples/</code> and <code>community/examples/</code> directories. The build-from-source
+instructions below are still supported and required on Windows hosts.</p>
+</div>
+<p>First install the dependencies of <code>gcluster</code>. Instructions to do this are included below.
 If you encounter trouble please check the latest instructions from Google,
-available <a href="https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies">here</a>. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.</p>
+available <a href="https://docs.cloud.google.com/cluster-toolkit/docs/setup/configure-environment">here</a>. If you are running the GCP Cloud Shell, you do not need to install the dependencies and can skip ahead to cloning the Cluster Toolkit.</p>
 <div class="admonition info">
-<p class="admonition-title">Install the <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google Cloud HPC-Toolkit</a>  Prerequisites</p>
+<p class="admonition-title">Install the <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a> Prerequisites</p>
 <p>Please download and install any missing software packages from the following list:</p>
 <ul>
-<li><a href="https://www.terraform.io/downloads">Terraform</a> version 1.2.0 or later</li>
-<li><a href="https://www.packer.io/downloads">Packer</a> version 1.7.9 or later</li>
-<li><a href="https://go.dev/doc/install">Go</a> version 1.188 or later. Ensure that the <code>GOPATH</code> is setup and <code>go</code> is on your <code>PATH</code>.
+<li><a href="https://www.terraform.io/downloads">Terraform</a> version 1.12.2 or later (note: Terraform 1.6 and later are licensed under the BUSL)</li>
+<li><a href="https://www.packer.io/downloads">Packer</a> version 1.10.0 or later</li>
+<li><a href="https://go.dev/doc/install">Go</a> version 1.23 or later. Ensure that the <code>GOPATH</code> is set up and <code>go</code> is on your <code>PATH</code>.
   You may need to add the following to <code>.profile</code> or <code>.bashrc</code> startup "dot" file:
   <div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="nv">$PATH</span>:<span class="k">$(</span>go<span class="w"> </span>env<span class="w"> </span>GOPATH<span class="k">)</span>/bin
 </code></pre></div></li>
@@ -1098,138 +1119,180 @@ To install, run:
 </div>
 </div>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>Most of the packages above may be installable through your OSes package manager.
+<p class="admonition-title">Use your OS package manager</p>
+<p>Most of the packages above may be installable through your OS's package manager.
 For example, if you have <a href="https://brew.sh">Homebrew</a> on macOS you should be able to <code>brew install &lt;package_name&gt;</code>
 for most of these items, where <code>&lt;package_name&gt;</code> is, e.g., <code>go</code>.</p>
 </div>
 </div>
-<p>Once all the software listed above has been verified and/or installed, clone the <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google Cloud HPC-Toolkit</a>
+<p>Once all the software listed above has been verified or installed, clone the <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a>
 and change directories to the cloned repository:
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-8-1">1</a></span>
-<span class="normal"><a href="#__codelineno-8-2">2</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/GoogleCloudPlatform/hpc-toolkit.git
-<a id="__codelineno-8-2" name="__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>hpc-toolkit/
-</code></pre></div></td></tr></table></div>
-Next build the HPC-Toolkit and verify the version and that it built correctly.
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>make
-<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>./ghpc<span class="w"> </span>--version
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/GoogleCloudPlatform/cluster-toolkit.git
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>cluster-toolkit/
 </code></pre></div>
-If you would like to install the compiled binary to a location on your <code>$PATH</code>,
-run
+Next, build the Cluster Toolkit, then verify the version and confirm that it built correctly.
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>make
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a>./gcluster<span class="w"> </span>--version
+</code></pre></div>
+To install the compiled binary on your <code>$PATH</code>, run:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>sudo<span class="w"> </span>make<span class="w"> </span>install
 </code></pre></div>
-to install the <code>ghpc</code> binary into <code>/usr/local/bin</code>, of if you do not have root
-priviledges or do not want to install the binary into a system wide location, run
+<p>This installs the <code>gcluster</code> binary into <code>/usr/local/bin</code>. If you do not have
+root privileges or do not want to install the binary into a system-wide
+location, run:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-11-1" name="__codelineno-11-1" href="#__codelineno-11-1"></a>make<span class="w"> </span>install-user
 </code></pre></div>
-to install <code>ghpc</code> into <code>${HOME}/bin</code> and then ensure this is on your path:</p>
+<p>This installs <code>gcluster</code> into <code>${HOME}/bin</code>; then ensure that directory is
+on your <code>PATH</code>:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/bin&quot;</span>
 </code></pre></div>
-<h3 id="grant-adc-access-to-terraform-and-enable-os-login">Grant ADC access to Terraform and Enable OS Login<a class="headerlink" href="#grant-adc-access-to-terraform-and-enable-os-login" title="Permanent link">&para;</a></h3>
+<h3 id="grant-adc-access-to-terraform">Grant ADC Access to Terraform<a class="headerlink" href="#grant-adc-access-to-terraform" title="Permanent link">&para;</a></h3>
 <p>Generate cloud credentials associated with your Google Cloud account and grant
-Terraform access to the Aplication Default Credential (ADC).</p>
+Terraform access to the Application Default Credential (ADC).</p>
 <div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>If you are using the <a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#launch">Cloud Shell</a> you can skip this step.</p>
+<p class="admonition-title">Cloud Shell users skip this step</p>
+<p>If you are using the <a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#launch">Cloud Shell</a> you can skip this step.</p>
 </div>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>gcloud<span class="w"> </span>auth<span class="w"> </span>application-default<span class="w"> </span>login
 </code></pre></div>
-<p>To be able to connect to VMs in the cluster OS Login must be enabled.
-Unless OS Login is already enabled at the organization level, enable it at the project level.
-To do this, run:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a>gcloud<span class="w"> </span>compute<span class="w"> </span>project-info<span class="w"> </span>add-metadata<span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a><span class="w">     </span>--metadata<span class="w"> </span>enable-oslogin<span class="o">=</span>TRUE
+<div class="admonition info">
+<p class="admonition-title">OS Login is already enabled by default</p>
+<p>The Slurm GCP v6 modules used by the example blueprint
+(<code>schedmd-slurm-gcp-v6-controller</code>, <code>schedmd-slurm-gcp-v6-login</code>, and
+<code>schedmd-slurm-gcp-v6-nodeset</code>) all enable <a href="https://cloud.google.com/compute/docs/oslogin">OS Login</a> <strong>at the
+instance level by default</strong>, so you do not need to enable it at the
+project level for the cluster's VMs to accept SSH from your Google
+identity. Skip the <code>gcloud compute project-info add-metadata --metadata
+enable-oslogin=TRUE</code> step you may have seen in older tutorials.</p>
+<p>If you have a non-default scenario where you actively want to <strong>disable</strong>
+OS Login on a specific role (for example, to use legacy project-wide SSH
+keys on the login node), set <code>enable_oslogin: false</code> in that module's
+<code>settings:</code> block in your blueprint -- do not change project-level
+metadata.</p>
+<div class="admonition warning">
+<p class="admonition-title">Heidi conflict</p>
+<p>Do not enable OS Login at the <strong>project</strong> level on a project that also
+runs ParaTools Pro Heidi (the Adaptive Computing-orchestrated
+marketplace product). Heidi relies on instance-metadata-injected SSH
+keys for cluster-internal authentication, and project-level OS Login
+breaks that injection. The default behavior of the v6 modules
+(instance-level OS Login, no project-level change) is safe to mix
+with Heidi in the same project.</p>
+</div>
+</div>
+<p>Your <strong>user identity</strong> still needs the right IAM roles for SSH to succeed.
+At minimum, grant yourself:</p>
+<ul>
+<li><code>roles/compute.osLogin</code> (or <code>roles/compute.osAdminLogin</code> if you need
+  <code>sudo</code>) so the VMs accept your Google identity as a Linux user.</li>
+<li><code>roles/iap.tunnelResourceAccessor</code> so the GCP Console <strong>SSH</strong> button (which
+  tunnels through <a href="https://cloud.google.com/iap">Identity-Aware Proxy</a>) can reach the login node.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">USER_EMAIL</span><span class="o">=</span><span class="k">$(</span>gcloud<span class="w"> </span>config<span class="w"> </span>get-value<span class="w"> </span>account<span class="k">)</span>
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">&quot;user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--role<span class="o">=</span>roles/compute.osLogin
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">&quot;user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--role<span class="o">=</span>roles/iap.tunnelResourceAccessor
 </code></pre></div>
 <h3 id="deploy-the-cluster">Deploy the Cluster<a class="headerlink" href="#deploy-the-cluster" title="Permanent link">&para;</a></h3>
 <p>Copy the <a href="../blueprint/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example">ParaTools-Pro-slurm-cluster-blueprint-example</a> from the
-ParaTools Pro for E4S™ documentation to your clipboard, then paste it into a file named
-<code>ParaTools-Pro-Slurm-Cluster-Blueprint.yaml</code>. After copying the text, in your terminal
-do the following:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>ParaTools-Pro-Slurm-Cluster-Blueprint.yaml
-<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># paste the copied text # (1)</span>
+ParaTools Pro for E4S™ documentation to your clipboard, then paste it into a file
+named <code>e4s-25.11-cluster-slurm-gcp-v6.yaml</code>. After copying the text, in your
+terminal do the following:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-15-1" name="__codelineno-15-1" href="#__codelineno-15-1"></a>cat<span class="w"> </span>&gt;<span class="w"> </span>e4s-25.11-cluster-slurm-gcp-v6.yaml
+<a id="__codelineno-15-2" name="__codelineno-15-2" href="#__codelineno-15-2"></a><span class="c1"># paste the copied text # (1)!</span>
 <a id="__codelineno-15-3" name="__codelineno-15-3" href="#__codelineno-15-3"></a><span class="c1"># press Ctrl-d to add an end-of-file character</span>
-<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>cat<span class="w"> </span>ParaTools-Pro-Slurm-Cluster-Blueprint.yaml<span class="w"> </span><span class="c1"># Check the file copied correctly #(2)</span>
+<a id="__codelineno-15-4" name="__codelineno-15-4" href="#__codelineno-15-4"></a>cat<span class="w"> </span>e4s-25.11-cluster-slurm-gcp-v6.yaml<span class="w"> </span><span class="c1"># check that the file copied correctly # (2)!</span>
 </code></pre></div>
 <ol>
-<li>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-   Usually <code>Ctrl-v</code>, or <code>Command-v</code> on macOS</div>
-</li>
-<li>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-   This is optional, but usually a good idea</div>
-</li>
+<li>Usually <code>Ctrl-v</code>, or <code>Command-v</code> on macOS, to paste from the clipboard.</li>
+<li>Optional, but recommended.</li>
 </ol>
-<p>Using your favorite editor, select appropriate instance types for the compute partitions,
-and remove the h3 partition if you do not have access to h3 instances yet.
-See the expandable annotations and pay extra attention to the highlighted lines
-on the <a href="../blueprint/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example">ParaTools-Pro-slurm-cluster-blueprint-example</a> example.</p>
+<p>Using your favorite editor, select appropriate instance types for the compute
+partitions. If you do not have access to H3 instances, remove the <code>h3_nodeset</code>
+and <code>h3_partition</code> modules from the blueprint, <strong>and</strong> remove the <code>- h3_partition</code>
+entry from the <code>slurm_controller.use:</code> list (otherwise <code>gcluster create</code> will
+fail with an unresolved-reference error). See the expandable annotations and
+pay extra attention to the highlighted lines on the
+<a href="../blueprint/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example">ParaTools-Pro-slurm-cluster-blueprint-example</a> example.</p>
 <div class="admonition tip">
 <p class="admonition-title">Pay Attention</p>
 <p>In particular:</p>
 <ul>
-<li>Determine if you want to pass the <code>${PROJECT_ID}</code> on the command line or in the blueprint</li>
-<li>Verify that the <code>image_family</code> key matches the image for ParaTools Pro for E4S™ from the GCP marketplace</li>
-<li>Adjust the region and zone used, if desired</li>
-<li>Limit the IP <code>ranges</code> to those you will be connecting from via SSH in the <code>ssh-login</code>
-  <code>firewall_rules</code> rule, if in a production setting.
-  If you plan to connect only from the <a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#launch">cloud shell</a> the <code>ssh-login</code>
-  <code>firewall_rules</code> rule may be completely removed.</li>
-<li>Set an appropriate <code>machine_type</code> and <code>dynamic_node_count_max</code> for your <code>compute_node_group</code>.</li>
+<li>Determine whether to pass the <code>${PROJECT_ID}</code> on the command line, or set
+  <code>vars.project_id:</code> directly in the blueprint.</li>
+<li>Verify that the <code>image_family</code> key
+  (<code>paratools-gcluster-e4s-2511-nvidia89-x86-64</code> for the current GCluster
+  x86-64 image) matches the image family of the
+  <a href="https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64">ParaTools Pro for E4S™ on GCluster GCP Marketplace listing</a>.</li>
+<li>Adjust the region and zone used, if desired.</li>
+<li>Set an appropriate <code>machine_type</code> and <code>node_count_dynamic_max</code> for each
+  <code>*_nodeset</code> (<code>debug_nodeset</code>, <code>compute_nodeset</code>, and <code>h3_nodeset</code>).</li>
+<li>The default <code>network</code> module provides IAP SSH only (which is what the
+  GCP Console <strong>SSH</strong> button uses). To SSH directly from your workstation,
+  see <a href="../blueprint/#allowing-direct-ssh-from-your-workstation">Allowing direct SSH from your workstation</a> in the
+  blueprint reference.</li>
 </ul>
 </div>
-<p>Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
-set deployment variables and create the deployment folder.</p>
+<p>Once the blueprint is configured to be consistent with your GCP usage quotas
+and your preferences, set deployment variables and create the deployment
+folder.</p>
 <div class="admonition info">
 <p class="admonition-title">Create deployment folder</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>./ghpc<span class="w"> </span>create<span class="w"> </span>e4s-23.11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8.yaml<span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1" href="#__codelineno-16-1"></a>./gcluster<span class="w"> </span>create<span class="w"> </span>e4s-25.11-cluster-slurm-gcp-v6.yaml<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-16-2" name="__codelineno-16-2" href="#__codelineno-16-2"></a><span class="w">  </span>--vars<span class="w"> </span><span class="nv">project_id</span><span class="o">=</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="w"> </span><span class="c1"># (1)!</span>
 </code></pre></div>
 <ol>
-<li>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-   If you uncommented and updated the <code>vars.project_id:</code> you do not need to pass
-   <code>--vars project_id=...</code> on the command line.
-   If you're bringing a cluster back online that was previously deleted, but
-   the blueprint has been modified and the deployment folder is still present,
-   the <code>-w</code> flag will let you overwrite the deployment folder contents with the
-   latest changes.</div>
-</li>
+<li>If you uncommented and updated <code>vars.project_id:</code> in the blueprint,
+    you do not need to pass <code>--vars project_id=...</code> on the command line.
+    If you are bringing a cluster back online that was previously deleted,
+    but the blueprint has been modified and the deployment folder is
+    still present, pass the <code>-w</code> flag to <code>gcluster create</code> to overwrite
+    the deployment folder contents with the latest changes.</li>
 </ol>
 </div>
+<p><code>gcluster create</code> produces a deployment folder named after the blueprint's
+<code>vars.deployment_name:</code> field -- in this example,
+<code>./ppro-e4s-25-11-cluster/</code>. The next step references that folder.</p>
 <details class="note inline end">
-<summary>Note</summary>
+<summary>Provisioning time</summary>
 <p>It may take a few minutes to finish provisioning your cluster.</p>
 </details>
-<p>Now the cluster can be deployed.
-Run the following command to deploy your ParaTools Pro for E4S™ cluster:</p>
+<p>Now the cluster can be deployed. Run the following command to deploy your
+ParaTools Pro for E4S™ cluster:</p>
 <div class="admonition info">
 <p class="admonition-title">Perform the deployment</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>./ghpc<span class="w"> </span>deploy<span class="w"> </span>ppro-4-e4s-23-11-cluster-slurm-rocky8
+<div class="highlight"><pre><span></span><code><a id="__codelineno-17-1" name="__codelineno-17-1" href="#__codelineno-17-1"></a>./gcluster<span class="w"> </span>deploy<span class="w"> </span>ppro-e4s-25-11-cluster
 </code></pre></div>
 </div>
-<p>At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press <code>a</code> for accept once satisfied.</p>
+<p>Review the proposed changes, then press <code>a</code> to accept.</p>
 <h3 id="connect-to-the-cluster">Connect to the Cluster<a class="headerlink" href="#connect-to-the-cluster" title="Permanent link">&para;</a></h3>
-<p>Once the cluster is deployed, ssh to the login node.</p>
+<p>Once the cluster is deployed, SSH to the login node.</p>
 <ol>
 <li>
-<p>Go to the <strong>Compute Engine &gt; VM Instances</strong> page.</p>
-<p><a class="md-button" href="https://console.cloud.google.com/compute/instances">GCP VM Instances</a></p>
+<p>Go to the <strong>Compute Engine</strong> → <strong>VM Instances</strong> page.</p>
+<p><a class="md-button md-button--primary" href="https://console.cloud.google.com/compute/instances">GCP VM Instances</a></p>
 </li>
 <li>
-<p>Click on <code>ssh</code> for the login node of the cluster. You may need to approve Google authentication before the session can connect.</p>
+<p>Click <strong>SSH</strong> for the login node of the cluster. You may need to approve Google authentication before the session can connect.</p>
 </li>
 </ol>
-<h3 id="deletion-of-the-cluster">Deletion of the Cluster<a class="headerlink" href="#deletion-of-the-cluster" title="Permanent link">&para;</a></h3>
-<p>It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted in a different manner, see here. To delete your cluster correctly do</p>
-<p><div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>./ghpc destroy ppro-4-e4s-23-11-cluster-slurm-rocky8
+<div class="admonition note">
+<p class="admonition-title">SSH permission errors</p>
+<p>If clicking <strong>SSH</strong> in the Console produces a permission error, confirm
+that your user identity holds the IAM roles listed in the OS Login
+admonition under <a href="#grant-adc-access-to-terraform">Grant ADC Access to Terraform</a>
+(<code>roles/compute.osLogin</code> and <code>roles/iap.tunnelResourceAccessor</code>).</p>
+</div>
+<h3 id="delete-the-cluster">Delete the Cluster<a class="headerlink" href="#delete-the-cluster" title="Permanent link">&para;</a></h3>
+<p>When you are done using the cluster, you must use <code>gcluster</code> to destroy it.
+If your instances were deleted in a different manner, see
+<a href="../Cluster-Deletion/">Proper Cluster Deletion on GCP</a>. To delete your cluster
+correctly, run:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-18-1" name="__codelineno-18-1" href="#__codelineno-18-1"></a>./gcluster<span class="w"> </span>destroy<span class="w"> </span>ppro-e4s-25-11-cluster
 </code></pre></div>
-At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press <code>a</code> for accept once satisfied and the deletion will proceed.</p>
+<p>Review the proposed changes, then press <code>a</code> to accept and proceed with the
+deletion.</p>
 
 
 
@@ -1266,7 +1329,7 @@ You may review them if you like, but you should press <code>a</code> for accept 
   
   
     <div class="md-copyright__last-updated">
-      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 9, 2026 14:56:51 UTC">January 9, 2026</span>
+      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 27, 2026 19:02:49 UTC">April 27, 2026</span>
     </div>
   
 </div>

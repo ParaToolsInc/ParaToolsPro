@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Correctly destroy HPC clusters created with ghpc to avoid lingering resources and charges">
+        <meta name="description" content="Correctly destroy GCP clusters created with gcluster (Cluster Toolkit) to avoid lingering resources and charges">
       
       
       
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#proper-deletion" class="md-skip">
+        <a href="#proper-cluster-deletion-on-gcp" class="md-skip">
           Skip to content
         </a>
       
@@ -580,7 +580,7 @@
   <span class="md-ellipsis">
     
   
-    HPC Toolkit Blueprint
+    Cluster Blueprint
   
 
     
@@ -606,6 +606,8 @@
       
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
+      
+        
       
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
@@ -649,6 +651,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -680,10 +684,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#case-1" class="md-nav__link">
+  <a href="#case-1-compute-instances-deleted-deployment-folder-remains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Case 1
+        Case 1: Compute Instances Deleted, Deployment Folder Remains
       
     </span>
   </a>
@@ -691,10 +695,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#case-2" class="md-nav__link">
+  <a href="#case-2-deployment-folder-conflicts-with-a-new-create" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Case 2
+        Case 2: Deployment Folder Conflicts with a New Create
       
     </span>
   </a>
@@ -702,10 +706,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#case-3" class="md-nav__link">
+  <a href="#case-3-orphaned-infrastructure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Case 3
+        Case 3: Orphaned Infrastructure
       
     </span>
   </a>
@@ -978,57 +982,108 @@
 
 
 
-  <h1>Cluster Deletion</h1>
-
+<h1 id="proper-cluster-deletion-on-gcp">Proper Cluster Deletion on GCP<a class="headerlink" href="#proper-cluster-deletion-on-gcp" title="Permanent link">&para;</a></h1>
 <h2 id="proper-deletion">Proper Deletion<a class="headerlink" href="#proper-deletion" title="Permanent link">&para;</a></h2>
-<p>It is very important that when you are done using the cluster you must use ghcp to destroy it. When a cluster is created, ghcp creates resources and adds project metadata tags, if improperly deleted, some of these will remain and you will be charged for them. To delete your cluster correctly, find the instructions in the folder created by ghpc, <code>CLUSTER-IMAGE/instructions.txt</code> and do <br />
-<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./ghpc destroy CLUSTER-IMAGE/
-</code></pre></div></p>
+<p>When you are done using the cluster, you must use <code>gcluster</code> to destroy it.
+When a cluster is created, <code>gcluster</code> provisions infrastructure (networks,
+subnets, NAT gateways, IP addresses, Filestore instances, Slurm controller
+and login VMs, and related resources). If any of these are deleted
+out-of-band, some will remain and you will continue to be charged for
+them. To delete your cluster correctly, run the following from the same
+directory you ran <code>gcluster create</code> from:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>./gcluster<span class="w"> </span>destroy<span class="w"> </span>DEPLOYMENT_NAME/
+</code></pre></div>
+<p>where <code>DEPLOYMENT_NAME</code> is the value of <code>vars.deployment_name:</code> from your
+blueprint (in the example tutorial: <code>ppro-e4s-25-11-cluster</code>).</p>
 <h2 id="improper-deletion">Improper Deletion<a class="headerlink" href="#improper-deletion" title="Permanent link">&para;</a></h2>
-<h3 id="case-1">Case 1<a class="headerlink" href="#case-1" title="Permanent link">&para;</a></h3>
-<p>When the compute instances are deleted, but not the folder, you can run the command <code>./ghpc destroy CLUSTER-IMAGE/</code> and it should properly remove all the created resources. You should also run <code>rm -rf CLUSTER-IMAGE/</code> to remove the file.</p>
-<h3 id="case-2">Case 2<a class="headerlink" href="#case-2" title="Permanent link">&para;</a></h3>
-<p>When the folder hasn't been deleted, and you attempt to create the cluster again, you may get the error
+<h3 id="case-1-compute-instances-deleted-deployment-folder-remains">Case 1: Compute Instances Deleted, Deployment Folder Remains<a class="headerlink" href="#case-1-compute-instances-deleted-deployment-folder-remains" title="Permanent link">&para;</a></h3>
+<p>When the compute instances are deleted but the deployment folder still
+exists, you can run the command <code>./gcluster destroy DEPLOYMENT_NAME/</code> and
+it should properly remove all remaining created resources. You should
+also run <code>rm -rf DEPLOYMENT_NAME/</code> to remove the deployment folder.</p>
+<h3 id="case-2-deployment-folder-conflicts-with-a-new-create">Case 2: Deployment Folder Conflicts with a New Create<a class="headerlink" href="#case-2-deployment-folder-conflicts-with-a-new-create" title="Permanent link">&para;</a></h3>
+<p>When the deployment folder has not been deleted, and you attempt to
+create the cluster again, you may get the error:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>  Error: Failed to overwrite existing deployment.
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>
 <a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>        Use the -w command line argument to enable overwrite.
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>        If overwrite is already enabled then this may be because you are attempting to remove a deployment group, which is not supported.
-<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    original error: the directory already exists: ppro-4-e4s-23-11-cluster-slurm-rocky8
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    original error: the directory already exists: DEPLOYMENT_NAME
 </code></pre></div>
-In this case remove the folder as stated above.</p>
-<h3 id="case-3">Case 3<a class="headerlink" href="#case-3" title="Permanent link">&para;</a></h3>
-<p>If you are getting the below errors, it indicates ghpc is unable to recreate a cluster due to leftover resources. 
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Error: Error creating Address: googleapi: Error 409: The resource &#39;projects/YOUR-PROJECT/regions/us-central1/addresses/CLUSTER-IMAGE&#39; already exists, alreadyExists
+<p>In this case, either remove the folder as described above, or pass the
+<code>-w</code> flag to <code>gcluster create</code> to overwrite the existing deployment
+folder with the new contents.</p>
+<h3 id="case-3-orphaned-infrastructure">Case 3: Orphaned Infrastructure<a class="headerlink" href="#case-3-orphaned-infrastructure" title="Permanent link">&para;</a></h3>
+<p>If you are getting errors like the one below, <code>gcluster</code> is unable to
+recreate a cluster because of leftover resources from a prior deployment
+that was not cleanly destroyed:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Error: Error creating Address: googleapi: Error 409: The resource &#39;projects/YOUR-PROJECT/regions/us-central1/addresses/DEPLOYMENT_NAME&#39; already exists, alreadyExists
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>with module.network1.module.nat_ip_addresses[&quot;us-central1&quot;].google_compute_address.ip[1],
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>on .terraform/modules/network1.nat_ip_addresses/main.tf line 50, in resource &quot;google_compute_address&quot; &quot;ip&quot;:
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>with module.network.module.nat_ip_addresses[&quot;us-central1&quot;].google_compute_address.ip[1],
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>on .terraform/modules/network.nat_ip_addresses/main.tf line 50, in resource &quot;google_compute_address&quot; &quot;ip&quot;:
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  50: resource &quot;google_compute_address&quot; &quot;ip&quot; {
 </code></pre></div>
-And also errors like 
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Error: key &quot;e4s2311clu-slurm-compute-script-ghpc_startup_sh&quot; already present in metadata for project &quot;e4s-pro&quot;. Use `terraform import` to manage it with Terraform
+<p>You must manually delete the leftover resources before <code>gcluster</code> can
+recreate them. The most common categories are:</p>
+<ul>
+<li><strong>Cloud NAT external IP addresses</strong> -- shown directly in the error above.
+  Find them under <strong>VPC network</strong> → <strong>IP addresses</strong> (or
+  <code>gcloud compute addresses list</code>) and release them.</li>
+<li><strong>Filestore instances</strong> (the home filesystem). Find them under
+  <strong>Filestore</strong> → <strong>Instances</strong>. Confirm by creation date and name that
+  the instance belongs to the cluster you are deleting, since other
+  clusters may share the Filestore namespace.</li>
+<li><strong>VPC network resources</strong>, including the VPC network, subnetworks, Cloud
+  Router, NAT gateway, and peering. These often must be deleted in a
+  specific order: NAT gateway first, then subnetwork, then VPC network
+  peering, then Cloud Router, then VPC, and finally release the IP
+  addresses. If a resource will not delete because it is "in use by
+  another," find and delete the resource holding it first.</li>
+</ul>
+<p>After all stray resources are removed, run
+<code>./gcluster create -w DEPLOYMENT_NAME/</code> (or re-run <code>gcluster create</code>
+against the original blueprint), and then
+<code>./gcluster deploy DEPLOYMENT_NAME/</code>. If new "already exists" errors
+appear, repeat the cleanup above.</p>
+<div class="admonition info">
+<p class="admonition-title">Legacy clusters: Slurm GCP v5 project-metadata cleanup</p>
+<p>The procedure below applies <strong>only</strong> to clusters originally deployed with the
+Slurm GCP <strong>v5</strong> generation of the toolkit (<code>schedmd-slurm-gcp-v5-*</code> modules) -- back
+when the toolkit was named <code>ghpc</code> / "HPC Toolkit." Slurm GCP <strong>v6</strong> (used by the
+current ParaTools Pro for E4S™ blueprint) eliminated project-level metadata for
+cluster configuration, so v6 deployments will not produce the
+<code>*-ghpc_startup_sh</code> key collisions described below. Keep this section as a fallback
+for cleaning up older v5 deployments left behind by previous releases.</p>
+<p>If you see errors like
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Error: key &quot;DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh&quot; already present in metadata for project &quot;YOUR-PROJECT&quot;. Use `terraform import` to manage it with Terraform
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a> with module.slurm_controller.module.slurm_controller_instance.google_compute_project_metadata_item.compute_startup_scripts[&quot;ghpc_startup_sh&quot;],
 <a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  on .terraform/modules/slurm_controller.slurm_controller_instance/terraform/slurm_cluster/modules/slurm_controller_instance/main.tf line 281, in resource &quot;google_compute_project_metadata_item&quot; &quot;compute_startup_scripts&quot;:
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a> 281: resource &quot;google_compute_project_metadata_item&quot; &quot;compute_startup_scripts&quot; {
 </code></pre></div>
-You must now go through the process of manually deleting each of the keys that are listed in the error list.  As shown <a href="https://cloud.google.com/sdk/gcloud/reference/compute/project-info/describe">here</a>, we will use <code>gcloud compute project-info describe</code> to see the cloud metadata, and <code>gcloud compute project-info remove-metadata --keys="the key" --project=YOUR-PROJECT</code>. You can either run this command once using a list, such as 
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>gcloud compute project-info remove-metadata --keys==[&quot;CLUSTER-IMAGEclu-slurm-compute-script-ghpc_startup_sh&quot;,&quot;CLUSTER-IMAGEclu-slurm-controller-script-ghpc_startup_sh&quot;, … ]
+you must manually delete each of the listed keys with <code>gcloud compute
+project-info remove-metadata</code>. See <a href="https://cloud.google.com/sdk/gcloud/reference/compute/project-info"><code>gcloud compute project-info</code></a> for
+reference. Inspect current metadata with
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>gcloud compute project-info describe --project=YOUR-PROJECT
 </code></pre></div>
-where you put in each relevant key. Be very careful in this process that you only delete the relevant keys as this metadata info can affect all of you projects.<br />
-Or you can also do it one at a time,
-<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gcloud compute project-info remove-metadata --keys=&quot;CLUSTER-IMAgE-clu-slurm-controller-script-ghpc_startup_sh&quot; for each  key listed in the error message.
+Remove keys one at a time:
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gcloud compute project-info remove-metadata \
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    --keys=&quot;DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh&quot; \
+<a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    --project=YOUR-PROJECT
 </code></pre></div>
-In my case the command looked like:
-<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gcloud compute project-info remove-metadata --keys=[&quot;e4s2311clu-slurm-compute-script-ghpc_startup_sh&quot;,&quot;e4s2311clu-slurm-controller-script-ghpc_startup_sh&quot;,&quot;e4s2311clu-slurm-tpl-slurmdbd-conf&quot;,&quot;e4s2311clu-slurm-tpl-cgroup-conf&quot;,&quot;e4s2311clu-slurm-tpl-slurm-conf&quot;,&quot;e4s2311clu-slurm-partition-compute-script-ghpc_startup_sh&quot;,&quot;e4s2311clu-slurm-compute-script-ghpc_startup_sh&quot;,&quot;e4s2311clu-slurm-controller-script-ghpc_startup_sh&quot;,&quot;e4s2311clu-slurm-tpl-slurmdbd-conf&quot;,&quot;e4s2311clu-slurm-tpl-cgroup-conf&quot;]
-</code></pre></div>
-Furthermore, the networking, and filestore resources will still be active, so those must be deleted. By searching filestore you should the instances page, in my case it looks like this 
-<img alt="image" src="https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/21e434a9-00a6-4018-8cb8-70c0df068e8f" />
-I know that this is the filestore created by the instance I improperly deleted. In your case you must be 100% sure, because if you delete the wrong one you will delete data for other clusters. Be sure to check the creation date and delete.
-<img alt="image" src="https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/6305427b-8740-4de6-a8b9-f767f3ad4684" />
-By searching in your project you should be able to find the network resource page, 
-<img alt="image" src="https://github.com/ParaToolsInc/E4S-Pro/assets/81718016/c9c3ab74-1052-4767-94c7-3224f862720d" />
-You must delete all resources that are listed in the <code>Error 409: The resource 'projects/YOUR-PROJECT/regions/us-central1/addresses/CLUSTER-IMAGE' already exists</code> errors. For network resources they often have to be deleted in a specfic order. It is likely that you should delete the NAT gateway, then the subnetwork, and then the VPC network peering, router, and then VPC, then release the IP address. If you can't delete a resource, it is in use by another. Find and delete the prerequisite resources first, then delete it.
-Now you should run <code>./ghpc create CLUSTER-IMAGE/</code> If any stray resources still exist, delete them as shown above and rerun these two commands.</p>
+Or, if you have many keys to remove, batch them in a single call (replace each entry
+with the actual key name from your error output):
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gcloud compute project-info remove-metadata \
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    --keys=&quot;DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh&quot;,&quot;DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-slurmdbd-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-cgroup-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-slurm-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-partition-compute-script-ghpc_startup_sh&quot; \
+<a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    --project=YOUR-PROJECT
+</code></pre></div></p>
+<div class="admonition danger">
+<p class="admonition-title">Danger</p>
+<p>Project metadata is shared across all of your project's resources. Removing keys
+you do not recognize may break unrelated workloads. Only remove keys that are
+clearly named after the deleted v5 deployment.</p>
+</div>
+</div>
 
 
 
@@ -1065,7 +1120,7 @@ Now you should run <code>./ghpc create CLUSTER-IMAGE/</code> If any stray resour
   
   
     <div class="md-copyright__last-updated">
-      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 9, 2026 14:56:51 UTC">January 9, 2026</span>
+      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 27, 2026 19:35:06 UTC">April 27, 2026</span>
     </div>
   
 </div>

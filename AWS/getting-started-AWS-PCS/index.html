@@ -798,7 +798,7 @@
   <span class="md-ellipsis">
     
   
-    HPC Toolkit Blueprint
+    Cluster Blueprint
   
 
     
@@ -1794,8 +1794,8 @@
 <div class="admonition tip">
 <p class="admonition-title">Use this AWS CloudFormation <a href="https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T124707.749Zt1m-0-pcs-cluster-cloudformation-vpc-and-subnets.yaml&amp;stackName=AWSPCS-PTPro-cluster&amp;param_CidrPublicSubnetA=10.3.0.0%2F20&amp;param_ProvisionSubnetsC=False&amp;param_CidrBlock=10.3.0.0%2F16&amp;param_CidrPrivateSubnetB=10.3.144.0%2F20&amp;param_CidrPrivateSubnetC=10.3.160.0%2F20&amp;param_CidrPublicSubnetC=10.3.32.0%2F20&amp;param_CidrPublicSubnetB=10.3.16.0%2F20&amp;param_CidrPrivateSubnetA=10.3.128.0%2F20">quick-create link</a> to quickly provision these resources with default settings</p>
 </div>
-<p>Under "Capabilities", check the box for "I acknowledge that AWS CloudFormation might create IAM resources".</p>
-<p>After the VPC is created, find its ID in the <a href="https://console.aws.amazon.com/vpc">Amazon VPC Console</a> by selecting "VPCs" and searching for the stack name. If the suggested stack name was used, search for <code>PTPro</code>. For deployments in <code>us-east-1</code>, use this <a href="https://us-east-1.console.aws.amazon.com/vpcconsole/home?region=us-east-1#vpcs:search=PTPro">link</a>. Note the VPC ID for use in later steps.</p>
+<p>Under <strong>Capabilities</strong>, check the box for <strong>I acknowledge that AWS CloudFormation might create IAM resources</strong>.</p>
+<p>After the VPC is created, find its ID in the <a href="https://console.aws.amazon.com/vpc">Amazon VPC Console</a> by selecting <strong>VPCs</strong> and searching for the stack name. If the suggested stack name was used, search for <code>PTPro</code>. For deployments in <code>us-east-1</code>, use this <a href="https://us-east-1.console.aws.amazon.com/vpcconsole/home?region=us-east-1#vpcs:search=PTPro">link</a>. Note the VPC ID for use in later steps.</p>
 <h3 id="2-create-security-groups">2. Create Security Groups<a class="headerlink" href="#2-create-security-groups" title="Permanent link">&para;</a></h3>
 <details class="summary" open="open">
 <summary>Summary</summary>
@@ -1943,8 +1943,8 @@
 </code></pre></div>
 </details>
 <ul>
-<li>Under "Stack name", use something like <code>AWSPCS-PTPro-sg</code>.</li>
-<li>Set "VpcId" to the VPC ID noted in <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
+<li>Under <strong>Stack name</strong>, use something like <code>AWSPCS-PTPro-sg</code>.</li>
+<li>Set <strong>VpcId</strong> to the VPC ID noted in <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
 <li>Enable SSH, and optionally enable DCV access.</li>
 </ul>
 <details class="warning">
@@ -1958,30 +1958,30 @@
 </details>
 <p>Go to the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a> and create a new cluster.</p>
 <ul>
-<li>Under "Cluster setup", choose a name like <code>AWSPCS-PTPro-cluster</code>.</li>
-<li>Set the "Controller size" to "Small".</li>
+<li>Under <strong>Cluster setup</strong>, choose a name like <code>AWSPCS-PTPro-cluster</code>.</li>
+<li>Set the <strong>Controller size</strong> to <strong>Small</strong>.</li>
 <li>Use the version of Slurm compatible with the ParaTools Pro for E4S™ image. This is usually the latest version available (<code>25.05</code> as of December 2025).</li>
-<li>Under "Networking":<ul>
+<li>Under <strong>Networking</strong>:<ul>
 <li>Use the VPC ID created in <a href="#1-create-vpc-and-subnets">step 1</a> (e.g., <code>AWSPCS-PTPro-cluster...</code>).</li>
 <li>Select the subnet labeled <code>PrivateSubnetA</code> created in <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
-<li>Under "Security groups" choose "Select an existing security group".<ul>
+<li>Under <strong>Security groups</strong> choose <strong>Select an existing security group</strong>.<ul>
 <li>Use the security group <code>cluster-*-sg</code> created in <a href="#2-create-security-groups">step 2</a> (e.g., <code>cluster-AWSPCS-PTPro-sg</code>).</li>
 </ul>
 </li>
 </ul>
 </li>
-<li>Click "Create Cluster" to begin creating the cluster.</li>
+<li>Click <strong>Create Cluster</strong> to begin creating the cluster.</li>
 </ul>
 <h3 id="4-create-shared-filesystem-using-efs">4. Create shared filesystem using EFS<a class="headerlink" href="#4-create-shared-filesystem-using-efs" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Go to the <a href="https://console.aws.amazon.com/efs">EFS console</a> and ensure the region matches the region where the PCS cluster is being set up.</li>
-<li>Click "Create file system":<ul>
+<li>Click <strong>Create file system</strong>:<ul>
 <li><strong>Name</strong>: something like <code>AWSPCS-PTPro-fs</code>.</li>
 <li><strong>Virtual Private Cloud (VPC)</strong>: the VPC ID from <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
 </ul>
 </li>
-<li>Click "Create".</li>
-<li>Note the "File system ID" (e.g., <code>fs-0123456789abcdef0</code>); it is needed in <a href="#7-create-node-launch-templates">step 7</a>.</li>
+<li>Click <strong>Create</strong>.</li>
+<li>Note the <strong>File system ID</strong> (e.g., <code>fs-0123456789abcdef0</code>); it is needed in <a href="#7-create-node-launch-templates">step 7</a>.</li>
 </ul>
 <h3 id="5-create-an-instance-profile">5. Create an Instance Profile<a class="headerlink" href="#5-create-an-instance-profile" title="Permanent link">&para;</a></h3>
 <div class="admonition tip">
@@ -2115,7 +2115,7 @@
 <p>After the stack completes, reference the <code>InstanceProfileName</code> output in the node launch template in <a href="#7-create-node-launch-templates">step 7</a>. Skip to <a href="#6-create-efa-placement-group">step 6</a>.</p>
 </div>
 <p>To create the policy and role manually via the IAM console, follow the rest of this section.</p>
-<p>Go to the <a href="https://console.aws.amazon.com/iam">IAM console</a>. Under "Access Management" → "Policies", check whether a policy matching this one already exists (search for <code>pcs</code>).
+<p>Go to the <a href="https://console.aws.amazon.com/iam">IAM console</a>. Under <strong>Access Management</strong> → <strong>Policies</strong>, check whether a policy matching this one already exists (search for <code>pcs</code>).
 If none exists, create a new one and specify the permissions using the JSON editor as follows:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="p">{</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span><span class="nt">&quot;Version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2012-10-17&quot;</span><span class="p">,</span>
@@ -2161,20 +2161,20 @@ Otherwise, create a new one, specifying the permissions with the JSON editor as 
 <p>In a CloudFormation template the policy Resource can be parameterized with <code>!Sub 'arn:${AWS::Partition}:s3:::dcv-license.${AWS::Region}/*'</code> so it substitutes the stack's region automatically. IAM policy JSON itself has no built-in variable for the EC2 instance's region.</p>
 </details>
 </details>
-<p>Next, in the <a href="https://console.aws.amazon.com/iam">IAM Console</a> go to "Access Management" → "Roles" and check whether a role starting with <code>AWSPCS-</code> already exists with the required policies attached.
+<p>Next, in the <a href="https://console.aws.amazon.com/iam">IAM Console</a> go to <strong>Access Management</strong> → <strong>Roles</strong> and check whether a role starting with <code>AWSPCS-</code> already exists with the required policies attached.
 Otherwise, create it as follows:</p>
 <ul>
-<li>Select "Create Role".</li>
-<li>For "Trusted Entity Type", choose "AWS Service".</li>
-<li>For "Service or use case", choose "EC2"; for "Use Case", choose "EC2".</li>
-<li>Click "Next".</li>
-<li>Under "Add permissions":<ul>
+<li>Select <strong>Create Role</strong>.</li>
+<li>For <strong>Trusted Entity Type</strong>, choose <strong>AWS Service</strong>.</li>
+<li>For <strong>Service or use case</strong>, choose <strong>EC2</strong>; for <strong>Use Case</strong>, choose <strong>EC2</strong>.</li>
+<li>Click <strong>Next</strong>.</li>
+<li>Under <strong>Add permissions</strong>:<ul>
 <li>Add the policy created earlier in <a href="#5-create-an-instance-profile">step 5</a>.</li>
 <li>If planning to use DCV to access the login node, also add the <code>EC2AccessDCVLicenseS3</code> policy.</li>
 <li>Add the <code>AmazonSSMManagedInstanceCore</code> policy.</li>
 </ul>
 </li>
-<li>Click "Next".</li>
+<li>Click <strong>Next</strong>.</li>
 <li>Give the role a name that <strong>must</strong> start with <code>AWSPCS-</code> (e.g., <code>AWSPCS-PTPro-role</code>).</li>
 </ul>
 <h3 id="6-create-efa-placement-group">6. Create EFA Placement Group<a class="headerlink" href="#6-create-efa-placement-group" title="Permanent link">&para;</a></h3>
@@ -2182,11 +2182,11 @@ Otherwise, create it as follows:</p>
 <summary>It is possible to reuse an existing placement group</summary>
 <p>If a compatible cluster placement group already exists, skip this step and reference its name in later steps.</p>
 </details>
-<p>Under the <a href="https://console.aws.amazon.com/ec2">EC2 Console</a>, navigate to "Network &amp; Security" → "Placement Groups" → "Create placement group".</p>
+<p>Under the <a href="https://console.aws.amazon.com/ec2">EC2 Console</a>, navigate to <strong>Network &amp; Security</strong> → <strong>Placement Groups</strong> → <strong>Create placement group</strong>.</p>
 <ul>
 <li><strong>Name</strong>: something like <code>AWSPCS-PTPro-cluster</code>.</li>
-<li><strong>Placement strategy</strong>: "Cluster".</li>
-<li>Click "Create group".</li>
+<li><strong>Placement strategy</strong>: <strong>Cluster</strong>.</li>
+<li>Click <strong>Create group</strong>.</li>
 </ul>
 <h3 id="7-create-node-launch-templates">7. Create node Launch Templates<a class="headerlink" href="#7-create-node-launch-templates" title="Permanent link">&para;</a></h3>
 <p>This step creates two EC2 launch templates -- one for the login node and one for compute nodes -- both wired up for EFA networking and the shared EFS filesystem.</p>
@@ -2514,10 +2514,10 @@ Otherwise, create it as follows:</p>
 <p>After the stack reaches <code>CREATE_COMPLETE</code>, note the launch template names from the stack outputs. They will be named <code>login-&lt;stack-name&gt;</code> and <code>compute-&lt;stack-name&gt;</code>, and are referenced in <a href="#8-create-node-groups">step 8</a>.</p>
 <h3 id="8-create-node-groups">8. Create node groups<a class="headerlink" href="#8-create-node-groups" title="Permanent link">&para;</a></h3>
 <p>A cluster requires at least two compute node groups: one for interactive login nodes (statically scaled) and one for elastic compute nodes that run jobs.</p>
-<p>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster created in <a href="#3-create-pcs-cluster">step 3</a>, navigate to "Compute node groups", and click "Create".</p>
+<p>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster created in <a href="#3-create-pcs-cluster">step 3</a>, navigate to <strong>Compute node groups</strong>, and click <strong>Create</strong>.</p>
 <div class="admonition note">
 <p class="admonition-title">AMI selection</p>
-<p>For the "AMI ID" field, use a ParaTools Pro for E4S™ PCS-compatible AMI from the AWS Marketplace. Use the same AMI for both node groups so the login and compute environments stay in sync. Pick the product matching your cluster's target architecture:</p>
+<p>For the <strong>AMI ID</strong> field, use a ParaTools Pro for E4S™ PCS-compatible AMI from the AWS Marketplace. Use the same AMI for both node groups so the login and compute environments stay in sync. Pick the product matching your cluster's target architecture:</p>
 <table>
 <thead>
 <tr>
@@ -2538,13 +2538,13 @@ Otherwise, create it as follows:</p>
 </table>
 <p><strong>Obtaining the AMI ID after subscribing:</strong></p>
 <ol>
-<li>Open the marketplace product page above and click "View purchase options" / "Continue to Subscribe".</li>
+<li>Open the marketplace product page above and click <strong>View purchase options</strong> / <strong>Continue to Subscribe</strong>.</li>
 <li>Accept the terms and wait for the subscription to be processed.</li>
-<li>Click "Continue to Configuration".</li>
+<li>Click <strong>Continue to Configuration</strong>.</li>
 <li>Select the delivery method, software version, and AWS region matching your cluster.</li>
-<li>Copy the AMI ID shown on the configuration page (format: <code>ami-0123456789abcdef0</code>). Use this value in the "AMI ID" field when creating the compute node groups below.</li>
+<li>Copy the AMI ID shown on the configuration page (format: <code>ami-0123456789abcdef0</code>). Use this value in the <strong>AMI ID</strong> field when creating the compute node groups below.</li>
 </ol>
-<p>Alternatively, after subscribing, find the AMI in the <a href="https://console.aws.amazon.com/ec2">EC2 console</a> under "Images" → "AMIs", filtered by "Owner alias = <code>aws-marketplace</code>" and searching for <code>ParaTools</code>.</p>
+<p>Alternatively, after subscribing, find the AMI in the <a href="https://console.aws.amazon.com/ec2">EC2 console</a> under <strong>Images</strong> → <strong>AMIs</strong>, filtered by <strong>Owner alias = <code>aws-marketplace</code></strong> and searching for <code>ParaTools</code>.</p>
 </div>
 <details class="tip">
 <summary>Recommended instance types</summary>
@@ -2575,79 +2575,79 @@ Otherwise, create it as follows:</p>
 <h4 id="81-compute-node-group-compute-1">8.1 Compute node group (<code>compute-1</code>)<a class="headerlink" href="#81-compute-node-group-compute-1" title="Permanent link">&para;</a></h4>
 <p>This is a <strong>dynamic node group</strong>: instances are launched when jobs are submitted and terminated after the configured idle time, scaling down to zero when the queue is empty.</p>
 <ul>
-<li>Under "Compute node group details":<ul>
+<li>Under <strong>Compute node group details</strong>:<ul>
 <li><strong>Compute node group name</strong>: <code>compute-1</code>.</li>
 </ul>
 </li>
-<li>Under "Compute configuration":<ul>
+<li>Under <strong>Compute configuration</strong>:<ul>
 <li><strong>EC2 launch template</strong>: <code>compute-&lt;stack-name&gt;</code> from <a href="#7-create-node-launch-templates">step 7</a>.</li>
 <li><strong>Version</strong>: select the latest version of the launch template.</li>
-<li><strong>IAM instance profile</strong>: select the "Use an existing profile" radio, then under <strong>Selected profile</strong> choose the <code>AWSPCS-*</code> role created in <a href="#5-create-an-instance-profile">step 5</a>.</li>
+<li><strong>IAM instance profile</strong>: select the <strong>Use an existing profile</strong> radio, then under <strong>Selected profile</strong> choose the <code>AWSPCS-*</code> role created in <a href="#5-create-an-instance-profile">step 5</a>.</li>
 <li><strong>Subnets</strong>: <code>PrivateSubnetA</code> from <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
-<li><strong>Instance types</strong>: <code>g4dn.8xlarge</code> (for <code>arm64</code> clusters, see the "Recommended instance types" tip above).</li>
-<li><strong>Scaling configuration</strong>: select the "Dynamic node group" radio. Set <strong>Minimum instance count</strong> to <code>0</code> and <strong>Maximum instance count</strong> to <code>2</code>.</li>
-<li><strong>AMI ID</strong>: select the "Custom AMI" radio, then paste the ParaTools Pro for E4S™ AMI ID obtained from the marketplace subscription (see the "AMI selection" note above).</li>
+<li><strong>Instance types</strong>: <code>g4dn.8xlarge</code> (for <code>arm64</code> clusters, see the <strong>Recommended instance types</strong> tip above).</li>
+<li><strong>Scaling configuration</strong>: select the <strong>Dynamic node group</strong> radio. Set <strong>Minimum instance count</strong> to <code>0</code> and <strong>Maximum instance count</strong> to <code>2</code>.</li>
+<li><strong>AMI ID</strong>: select the <strong>Custom AMI</strong> radio, then paste the ParaTools Pro for E4S™ AMI ID obtained from the marketplace subscription (see the <strong>AMI selection</strong> note above).</li>
 </ul>
 </li>
-<li>Leave "Capacity purchase option" at its default (<code>On-Demand</code>). Skip "Scheduler configuration" and "Tags".</li>
-<li>Click "Create compute node group" and wait for the "Status" field to show "Active" before proceeding.</li>
+<li>Leave <strong>Capacity purchase option</strong> at its default (<code>On-Demand</code>). Skip <strong>Scheduler configuration</strong> and <strong>Tags</strong>.</li>
+<li>Click <strong>Create compute node group</strong> and wait for the <strong>Status</strong> field to show <strong>Active</strong> before proceeding.</li>
 </ul>
 <h4 id="82-login-node-group-login">8.2 Login node group (<code>login</code>)<a class="headerlink" href="#82-login-node-group-login" title="Permanent link">&para;</a></h4>
 <p>This is a <strong>static node group</strong>: a single long-running instance you SSH into (or access via Session Manager) to submit jobs.</p>
 <ul>
-<li>Navigate back to "Compute node groups" and click "Create".</li>
-<li>Under "Compute node group details":<ul>
+<li>Navigate back to <strong>Compute node groups</strong> and click <strong>Create</strong>.</li>
+<li>Under <strong>Compute node group details</strong>:<ul>
 <li><strong>Compute node group name</strong>: <code>login</code>.</li>
 </ul>
 </li>
-<li>Under "Compute configuration":<ul>
+<li>Under <strong>Compute configuration</strong>:<ul>
 <li><strong>EC2 launch template</strong>: <code>login-&lt;stack-name&gt;</code> from <a href="#7-create-node-launch-templates">step 7</a>.</li>
 <li><strong>Version</strong>: select the latest version of the launch template.</li>
-<li><strong>IAM instance profile</strong>: select the "Use an existing profile" radio, then under <strong>Selected profile</strong> choose the same <code>AWSPCS-*</code> role used for <code>compute-1</code>.</li>
+<li><strong>IAM instance profile</strong>: select the <strong>Use an existing profile</strong> radio, then under <strong>Selected profile</strong> choose the same <code>AWSPCS-*</code> role used for <code>compute-1</code>.</li>
 <li><strong>Subnets</strong>: <code>PublicSubnetA</code> from <a href="#1-create-vpc-and-subnets">step 1</a>.</li>
-<li><strong>Instance types</strong>: <code>g4dn.4xlarge</code> (for <code>arm64</code> clusters, see the "Recommended instance types" tip above).</li>
-<li><strong>Scaling configuration</strong>: select the "Static node group" radio. Set both <strong>Minimum instance count</strong> and <strong>Maximum instance count</strong> to <code>1</code>.</li>
-<li><strong>AMI ID</strong>: select the "Custom AMI" radio and paste the same ParaTools Pro for E4S™ AMI ID used for <code>compute-1</code>.</li>
+<li><strong>Instance types</strong>: <code>g4dn.4xlarge</code> (for <code>arm64</code> clusters, see the <strong>Recommended instance types</strong> tip above).</li>
+<li><strong>Scaling configuration</strong>: select the <strong>Static node group</strong> radio. Set both <strong>Minimum instance count</strong> and <strong>Maximum instance count</strong> to <code>1</code>.</li>
+<li><strong>AMI ID</strong>: select the <strong>Custom AMI</strong> radio and paste the same ParaTools Pro for E4S™ AMI ID used for <code>compute-1</code>.</li>
 </ul>
 </li>
-<li>Leave "Capacity purchase option", "Scheduler configuration", and "Tags" at their defaults.</li>
-<li>Click "Create compute node group".</li>
+<li>Leave <strong>Capacity purchase option</strong>, <strong>Scheduler configuration</strong>, and <strong>Tags</strong> at their defaults.</li>
+<li>Click <strong>Create compute node group</strong>.</li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Wait for Active status</p>
-<p>Wait for the <code>login</code> group to reach "Active" before attempting to connect in <a href="#10-connect-to-login-node">step 10</a>. The login instance needs several minutes after activation for cloud-init and slurm configuration to complete.</p>
+<p>Wait for the <code>login</code> group to reach <strong>Active</strong> before attempting to connect in <a href="#10-connect-to-login-node">step 10</a>. The login instance needs several minutes after activation for cloud-init and slurm configuration to complete.</p>
 </div>
 <h3 id="9-create-queue">9. Create queue<a class="headerlink" href="#9-create-queue" title="Permanent link">&para;</a></h3>
 <p>A queue exposes a compute node group to Slurm as a partition. Jobs submitted with <code>sbatch -p &lt;queue-name&gt;</code> will land on the attached compute node group.</p>
-<p>Before creating the queue, ensure the <code>compute-1</code> group from <a href="#81-compute-node-group-compute-1">step 8.1</a> has reached "Active" status.</p>
-<p>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster created in <a href="#3-create-pcs-cluster">step 3</a>, navigate to "Queues", and click "Create queue".</p>
+<p>Before creating the queue, ensure the <code>compute-1</code> group from <a href="#81-compute-node-group-compute-1">step 8.1</a> has reached <strong>Active</strong> status.</p>
+<p>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster created in <a href="#3-create-pcs-cluster">step 3</a>, navigate to <strong>Queues</strong>, and click <strong>Create queue</strong>.</p>
 <ul>
-<li>Under "Queue configuration":<ul>
+<li>Under <strong>Queue configuration</strong>:<ul>
 <li><strong>Queue name</strong>: <code>compute-1</code> (this becomes the Slurm partition name).</li>
 <li><strong>Compute node groups</strong>: select <code>compute-1</code> from <a href="#81-compute-node-group-compute-1">step 8.1</a>.</li>
 </ul>
 </li>
-<li>Click "Create queue" and wait for the "Status" field to show "Active".</li>
+<li>Click <strong>Create queue</strong> and wait for the <strong>Status</strong> field to show <strong>Active</strong>.</li>
 </ul>
 <h3 id="10-connect-to-login-node">10. Connect to login node<a class="headerlink" href="#10-connect-to-login-node" title="Permanent link">&para;</a></h3>
-<p>Once the <code>login</code> compute node group has reached "Active", locate its EC2 instance and connect.</p>
+<p>Once the <code>login</code> compute node group has reached <strong>Active</strong>, locate its EC2 instance and connect.</p>
 <ol>
 <li><strong>Find the login instance.</strong><ul>
 <li>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster from <a href="#3-create-pcs-cluster">step 3</a>.</li>
-<li>Go to "Compute node groups" and select the <code>login</code> group from <a href="#82-login-node-group-login">step 8.2</a>.</li>
-<li>Copy the "Compute node group ID" (e.g., <code>cng-abc123def456...</code>).</li>
+<li>Go to <strong>Compute node groups</strong> and select the <code>login</code> group from <a href="#82-login-node-group-login">step 8.2</a>.</li>
+<li>Copy the <strong>Compute node group ID</strong> (e.g., <code>cng-abc123def456...</code>).</li>
 </ul>
 </li>
 <li>
 <p><strong>Locate the instance in EC2.</strong></p>
 <ul>
-<li>In the <a href="https://console.aws.amazon.com/ec2">EC2 Console</a>, choose "Instances".</li>
+<li>In the <a href="https://console.aws.amazon.com/ec2">EC2 Console</a>, choose <strong>Instances</strong>.</li>
 <li>
-<p>In the "Find instances by attribute or tag (case sensitive)" search bar, filter by the PCS tag:</p>
+<p>In the <strong>Find instances by attribute or tag (case sensitive)</strong> search bar, filter by the PCS tag:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>tag:aws:pcs:compute-node-group-id = &lt;compute-node-group-id&gt;
 </code></pre></div>
 <p>There should be exactly one running instance matching the login group's ID.
-    - Select the instance and copy its "Public IPv4 address".</p>
+    - Select the instance and copy its <strong>Public IPv4 address</strong>.</p>
 </li>
 </ul>
 </li>
@@ -2662,8 +2662,8 @@ Otherwise, create it as follows:</p>
 </div>
 <div class="tabbed-block">
 <ul>
-<li>In the EC2 console, select the instance and click "Connect".</li>
-<li>Choose the "Session Manager" tab and click "Connect".</li>
+<li>In the EC2 console, select the instance and click <strong>Connect</strong>.</li>
+<li>Choose the <strong>Session Manager</strong> tab and click <strong>Connect</strong>.</li>
 <li>An interactive browser-based terminal opens as user <code>ssm-user</code>.</li>
 <li>
 <p>Switch to the default user to pick up the cluster environment:</p>
@@ -2678,7 +2678,7 @@ Otherwise, create it as follows:</p>
 </ol>
 <div class="admonition warning">
 <p class="admonition-title">Allow time for cluster bootstrap</p>
-<p>Wait about 2 minutes after the login node reaches "Active" before connecting, so cloud-init can finish.</p>
+<p>Wait about 2 minutes after the login node reaches <strong>Active</strong> before connecting, so cloud-init can finish.</p>
 </div>
 <h4 id="dcv-remote-desktop-optional">DCV remote desktop (optional)<a class="headerlink" href="#dcv-remote-desktop-optional" title="Permanent link">&para;</a></h4>
 <p>The ParaTools Pro for E4S™ AMI ships with <a href="https://aws.amazon.com/hpc/dcv/">NICE DCV</a> configured to serve a GPU-accelerated Linux desktop on TCP <code>8443</code>. The DCV license is granted to the node via the IAM policy from <a href="#5-create-an-instance-profile">step 5</a>, and inbound access is allowed by the DCV security group from <a href="#2-create-security-groups">step 2</a>.</p>
@@ -2716,7 +2716,7 @@ Otherwise, create it as follows:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-13-1" name="__codelineno-13-1" href="#__codelineno-13-1"></a>sinfo
 </code></pre></div>
 <p><code>sinfo</code> lists the Slurm partitions, their node states, and the compute node groups backing them. You should see the queue from <a href="#9-create-queue">step 9</a> listed as a partition in the <code>idle~</code> state (the <code>~</code> suffix indicates dynamically-provisioned nodes that are currently powered down).</p>
-<p>Compute nodes are automatically terminated after a period of inactivity governed by the <code>ScaledownIdletime</code> parameter. This can be configured in <a href="#3-create-pcs-cluster">step 3</a> during cluster creation by adjusting the "Slurm configuration" settings.</p>
+<p>Compute nodes are automatically terminated after a period of inactivity governed by the <code>ScaledownIdletime</code> parameter. This can be configured in <a href="#3-create-pcs-cluster">step 3</a> during cluster creation by adjusting the <strong>Slurm configuration</strong> settings.</p>
 <h3 id="12-run-sample-jobs-from-paratools-e4s-cloud-examples">12. Run sample jobs from ParaTools E4S Cloud Examples<a class="headerlink" href="#12-run-sample-jobs-from-paratools-e4s-cloud-examples" title="Permanent link">&para;</a></h3>
 <p>The ParaTools Pro for E4S™ AMI ships with a set of MPI/HPC example programs pre-copied into your home directory at <code>~/examples</code>.</p>
 <details class="question">
@@ -2766,9 +2766,9 @@ Otherwise, create it as follows:</p>
 <p>To stop incurring EC2 charges, tear down the queue and node groups. The cluster, VPC, and CloudFormation stacks can be kept around for future use.</p>
 <p>In the <a href="https://console.aws.amazon.com/pcs/home#/clusters">AWS PCS console</a>, select the cluster created in <a href="#3-create-pcs-cluster">step 3</a> and, in order:</p>
 <ol>
-<li>Delete the queue created in <a href="#9-create-queue">step 9</a> ("Queues" → select queue → "Delete").</li>
-<li>Delete the <code>login</code> node group from <a href="#82-login-node-group-login">step 8.2</a> ("Compute node groups" → select group → "Delete").</li>
-<li>Delete the <code>compute-1</code> node group from <a href="#81-compute-node-group-compute-1">step 8.1</a> ("Compute node groups" → select group → "Delete").</li>
+<li>Delete the queue created in <a href="#9-create-queue">step 9</a> (<strong>Queues</strong> → select queue → <strong>Delete</strong>).</li>
+<li>Delete the <code>login</code> node group from <a href="#82-login-node-group-login">step 8.2</a> (<strong>Compute node groups</strong> → select group → <strong>Delete</strong>).</li>
+<li>Delete the <code>compute-1</code> node group from <a href="#81-compute-node-group-compute-1">step 8.1</a> (<strong>Compute node groups</strong> → select group → <strong>Delete</strong>).</li>
 </ol>
 <div class="admonition tip">
 <p class="admonition-title">Deletion order matters</p>
@@ -2810,7 +2810,7 @@ Otherwise, create it as follows:</p>
   
   
     <div class="md-copyright__last-updated">
-      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 22, 2026 18:02:55 UTC">April 22, 2026</span>
+      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 27, 2026 18:52:08 UTC">April 27, 2026</span>
     </div>
   
 </div>

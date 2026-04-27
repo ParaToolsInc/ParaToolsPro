@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Example blueprint for deploying ParaTools Pro for E4S™ on GCP with HPC Toolkit">
+        <meta name="description" content="Example blueprint for deploying ParaTools Pro for E4S™ on GCP with the Cluster Toolkit">
       
       
       
@@ -27,7 +27,7 @@
     
     
       
-        <title>SLURM Scheduler Cluster Blueprint for GCP - ParaTools Pro for E4S™ Documentation</title>
+        <title>Slurm Cluster Blueprint for GCP - ParaTools Pro for E4S™ Documentation</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#slurm-scheduler-cluster-blueprint-for-gcp" class="md-skip">
+        <a href="#slurm-cluster-blueprint-for-gcp" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              SLURM Scheduler Cluster Blueprint for GCP
+              Slurm Cluster Blueprint for GCP
             
           </span>
         </div>
@@ -589,7 +589,7 @@
   <span class="md-ellipsis">
     
   
-    HPC Toolkit Blueprint
+    Cluster Blueprint
   
 
     
@@ -607,7 +607,7 @@
   <span class="md-ellipsis">
     
   
-    HPC Toolkit Blueprint
+    Cluster Blueprint
   
 
     
@@ -651,6 +651,45 @@
       
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#allowing-direct-ssh-from-your-workstation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Allowing Direct SSH from Your Workstation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Allowing Direct SSH from Your Workstation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#option-1-add-the-rule-to-the-blueprint" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 1: Add the Rule to the Blueprint
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#option-2-add-the-rule-out-of-band" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Option 2: Add the Rule Out of Band
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -943,21 +982,378 @@
 
 
 
-<h1 id="slurm-scheduler-cluster-blueprint-for-gcp">SLURM Scheduler Cluster Blueprint for GCP<a class="headerlink" href="#slurm-scheduler-cluster-blueprint-for-gcp" title="Permanent link">&para;</a></h1>
+<h1 id="slurm-cluster-blueprint-for-gcp">Slurm Cluster Blueprint for GCP<a class="headerlink" href="#slurm-cluster-blueprint-for-gcp" title="Permanent link">&para;</a></h1>
 <h2 id="general-info">General Info<a class="headerlink" href="#general-info" title="Permanent link">&para;</a></h2>
-<p>Below is an example <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google HPC-Toolkit</a> bluiprint for using ParaTools Pro for E4S™.
-Once you have access to ParaTools Pro for E4S™ through the GCP marketplace, we recommend
-following the
-<a href="https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster">"quickstart tutorial"</a> from the <a href="https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart">Google HPC-Toolkit</a> project to get
-started if you are new to GCP and/or HPC-Toolkit.
-The ParaTools Pro for E4S™ blueprint provided below can be copied with some small modifications
-and used for the tutorial or in production.</p>
-<p>Areas of the blueprint that require your attention and that may need to be
-changed are highlighted and have expandable annotations offering further
-guidance.</p>
+<p>This page provides an example <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a> blueprint for use with
+ParaTools Pro for E4S™. Once you have subscribed to
+<a href="https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64">ParaTools Pro for E4S™ on the GCP Marketplace</a>, we recommend
+working through the <a href="https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster">"Deploy an HPC cluster with Slurm" quickstart</a> from
+the <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart">Cluster Toolkit</a> project if you are new to GCP or to the Cluster
+Toolkit. The blueprint below can be copied with small modifications and
+used either for the tutorial or in production.</p>
+<p>Areas of the blueprint that require your attention, and that may need to
+be changed, are highlighted and have expandable annotations offering
+further guidance.</p>
 <h2 id="paratools-pro-for-e4stm-slurm-cluster-blueprint-example">ParaTools Pro for E4S™ Slurm Cluster Blueprint Example<a class="headerlink" href="#paratools-pro-for-e4stm-slurm-cluster-blueprint-example" title="Permanent link">&para;</a></h2>
-<div class="highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">e4s-23.11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">1</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="hll">
-</span></code></pre></div></td></tr></table></div>
+<div class="annotate highlight"><table class="highlighttable"><tr><th colspan="2" class="filename"><span class="filename">e4s-25.11-cluster-slurm-gcp-v6.yaml</span></th></tr><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"><a href="#__codelineno-0-1">  1</a></span>
+<span class="normal"><a href="#__codelineno-0-2">  2</a></span>
+<span class="normal"><a href="#__codelineno-0-3">  3</a></span>
+<span class="normal"><a href="#__codelineno-0-4">  4</a></span>
+<span class="normal"><a href="#__codelineno-0-5">  5</a></span>
+<span class="normal"><a href="#__codelineno-0-6">  6</a></span>
+<span class="normal"><a href="#__codelineno-0-7">  7</a></span>
+<span class="normal"><a href="#__codelineno-0-8">  8</a></span>
+<span class="normal"><a href="#__codelineno-0-9">  9</a></span>
+<span class="normal"><a href="#__codelineno-0-10"> 10</a></span>
+<span class="normal"><a href="#__codelineno-0-11"> 11</a></span>
+<span class="normal"><a href="#__codelineno-0-12"> 12</a></span>
+<span class="normal"><a href="#__codelineno-0-13"> 13</a></span>
+<span class="normal"><a href="#__codelineno-0-14"> 14</a></span>
+<span class="normal"><a href="#__codelineno-0-15"> 15</a></span>
+<span class="normal"><a href="#__codelineno-0-16"> 16</a></span>
+<span class="normal"><a href="#__codelineno-0-17"> 17</a></span>
+<span class="normal"><a href="#__codelineno-0-18"> 18</a></span>
+<span class="normal"><a href="#__codelineno-0-19"> 19</a></span>
+<span class="normal"><a href="#__codelineno-0-20"> 20</a></span>
+<span class="normal"><a href="#__codelineno-0-21"> 21</a></span>
+<span class="normal"><a href="#__codelineno-0-22"> 22</a></span>
+<span class="normal"><a href="#__codelineno-0-23"> 23</a></span>
+<span class="normal"><a href="#__codelineno-0-24"> 24</a></span>
+<span class="normal"><a href="#__codelineno-0-25"> 25</a></span>
+<span class="normal"><a href="#__codelineno-0-26"> 26</a></span>
+<span class="normal"><a href="#__codelineno-0-27"> 27</a></span>
+<span class="normal"><a href="#__codelineno-0-28"> 28</a></span>
+<span class="normal"><a href="#__codelineno-0-29"> 29</a></span>
+<span class="normal"><a href="#__codelineno-0-30"> 30</a></span>
+<span class="normal"><a href="#__codelineno-0-31"> 31</a></span>
+<span class="normal"><a href="#__codelineno-0-32"> 32</a></span>
+<span class="normal"><a href="#__codelineno-0-33"> 33</a></span>
+<span class="normal"><a href="#__codelineno-0-34"> 34</a></span>
+<span class="normal"><a href="#__codelineno-0-35"> 35</a></span>
+<span class="normal"><a href="#__codelineno-0-36"> 36</a></span>
+<span class="normal"><a href="#__codelineno-0-37"> 37</a></span>
+<span class="normal"><a href="#__codelineno-0-38"> 38</a></span>
+<span class="normal"><a href="#__codelineno-0-39"> 39</a></span>
+<span class="normal"><a href="#__codelineno-0-40"> 40</a></span>
+<span class="normal"><a href="#__codelineno-0-41"> 41</a></span>
+<span class="normal"><a href="#__codelineno-0-42"> 42</a></span>
+<span class="normal"><a href="#__codelineno-0-43"> 43</a></span>
+<span class="normal"><a href="#__codelineno-0-44"> 44</a></span>
+<span class="normal"><a href="#__codelineno-0-45"> 45</a></span>
+<span class="normal"><a href="#__codelineno-0-46"> 46</a></span>
+<span class="normal"><a href="#__codelineno-0-47"> 47</a></span>
+<span class="normal"><a href="#__codelineno-0-48"> 48</a></span>
+<span class="normal"><a href="#__codelineno-0-49"> 49</a></span>
+<span class="normal"><a href="#__codelineno-0-50"> 50</a></span>
+<span class="normal"><a href="#__codelineno-0-51"> 51</a></span>
+<span class="normal"><a href="#__codelineno-0-52"> 52</a></span>
+<span class="normal"><a href="#__codelineno-0-53"> 53</a></span>
+<span class="normal"><a href="#__codelineno-0-54"> 54</a></span>
+<span class="normal"><a href="#__codelineno-0-55"> 55</a></span>
+<span class="normal"><a href="#__codelineno-0-56"> 56</a></span>
+<span class="normal"><a href="#__codelineno-0-57"> 57</a></span>
+<span class="normal"><a href="#__codelineno-0-58"> 58</a></span>
+<span class="normal"><a href="#__codelineno-0-59"> 59</a></span>
+<span class="normal"><a href="#__codelineno-0-60"> 60</a></span>
+<span class="normal"><a href="#__codelineno-0-61"> 61</a></span>
+<span class="normal"><a href="#__codelineno-0-62"> 62</a></span>
+<span class="normal"><a href="#__codelineno-0-63"> 63</a></span>
+<span class="normal"><a href="#__codelineno-0-64"> 64</a></span>
+<span class="normal"><a href="#__codelineno-0-65"> 65</a></span>
+<span class="normal"><a href="#__codelineno-0-66"> 66</a></span>
+<span class="normal"><a href="#__codelineno-0-67"> 67</a></span>
+<span class="normal"><a href="#__codelineno-0-68"> 68</a></span>
+<span class="normal"><a href="#__codelineno-0-69"> 69</a></span>
+<span class="normal"><a href="#__codelineno-0-70"> 70</a></span>
+<span class="normal"><a href="#__codelineno-0-71"> 71</a></span>
+<span class="normal"><a href="#__codelineno-0-72"> 72</a></span>
+<span class="normal"><a href="#__codelineno-0-73"> 73</a></span>
+<span class="normal"><a href="#__codelineno-0-74"> 74</a></span>
+<span class="normal"><a href="#__codelineno-0-75"> 75</a></span>
+<span class="normal"><a href="#__codelineno-0-76"> 76</a></span>
+<span class="normal"><a href="#__codelineno-0-77"> 77</a></span>
+<span class="normal"><a href="#__codelineno-0-78"> 78</a></span>
+<span class="normal"><a href="#__codelineno-0-79"> 79</a></span>
+<span class="normal"><a href="#__codelineno-0-80"> 80</a></span>
+<span class="normal"><a href="#__codelineno-0-81"> 81</a></span>
+<span class="normal"><a href="#__codelineno-0-82"> 82</a></span>
+<span class="normal"><a href="#__codelineno-0-83"> 83</a></span>
+<span class="normal"><a href="#__codelineno-0-84"> 84</a></span>
+<span class="normal"><a href="#__codelineno-0-85"> 85</a></span>
+<span class="normal"><a href="#__codelineno-0-86"> 86</a></span>
+<span class="normal"><a href="#__codelineno-0-87"> 87</a></span>
+<span class="normal"><a href="#__codelineno-0-88"> 88</a></span>
+<span class="normal"><a href="#__codelineno-0-89"> 89</a></span>
+<span class="normal"><a href="#__codelineno-0-90"> 90</a></span>
+<span class="normal"><a href="#__codelineno-0-91"> 91</a></span>
+<span class="normal"><a href="#__codelineno-0-92"> 92</a></span>
+<span class="normal"><a href="#__codelineno-0-93"> 93</a></span>
+<span class="normal"><a href="#__codelineno-0-94"> 94</a></span>
+<span class="normal"><a href="#__codelineno-0-95"> 95</a></span>
+<span class="normal"><a href="#__codelineno-0-96"> 96</a></span>
+<span class="normal"><a href="#__codelineno-0-97"> 97</a></span>
+<span class="normal"><a href="#__codelineno-0-98"> 98</a></span>
+<span class="normal"><a href="#__codelineno-0-99"> 99</a></span>
+<span class="normal"><a href="#__codelineno-0-100">100</a></span>
+<span class="normal"><a href="#__codelineno-0-101">101</a></span>
+<span class="normal"><a href="#__codelineno-0-102">102</a></span>
+<span class="normal"><a href="#__codelineno-0-103">103</a></span>
+<span class="normal"><a href="#__codelineno-0-104">104</a></span>
+<span class="normal"><a href="#__codelineno-0-105">105</a></span>
+<span class="normal"><a href="#__codelineno-0-106">106</a></span>
+<span class="normal"><a href="#__codelineno-0-107">107</a></span>
+<span class="normal"><a href="#__codelineno-0-108">108</a></span>
+<span class="normal"><a href="#__codelineno-0-109">109</a></span>
+<span class="normal"><a href="#__codelineno-0-110">110</a></span>
+<span class="normal"><a href="#__codelineno-0-111">111</a></span>
+<span class="normal"><a href="#__codelineno-0-112">112</a></span>
+<span class="normal"><a href="#__codelineno-0-113">113</a></span>
+<span class="normal"><a href="#__codelineno-0-114">114</a></span>
+<span class="normal"><a href="#__codelineno-0-115">115</a></span>
+<span class="normal"><a href="#__codelineno-0-116">116</a></span>
+<span class="normal"><a href="#__codelineno-0-117">117</a></span>
+<span class="normal"><a href="#__codelineno-0-118">118</a></span>
+<span class="normal"><a href="#__codelineno-0-119">119</a></span>
+<span class="normal"><a href="#__codelineno-0-120">120</a></span>
+<span class="normal"><a href="#__codelineno-0-121">121</a></span>
+<span class="normal"><a href="#__codelineno-0-122">122</a></span>
+<span class="normal"><a href="#__codelineno-0-123">123</a></span>
+<span class="normal"><a href="#__codelineno-0-124">124</a></span>
+<span class="normal"><a href="#__codelineno-0-125">125</a></span>
+<span class="normal"><a href="#__codelineno-0-126">126</a></span>
+<span class="normal"><a href="#__codelineno-0-127">127</a></span>
+<span class="normal"><a href="#__codelineno-0-128">128</a></span>
+<span class="normal"><a href="#__codelineno-0-129">129</a></span>
+<span class="normal"><a href="#__codelineno-0-130">130</a></span>
+<span class="normal"><a href="#__codelineno-0-131">131</a></span>
+<span class="normal"><a href="#__codelineno-0-132">132</a></span>
+<span class="normal"><a href="#__codelineno-0-133">133</a></span>
+<span class="normal"><a href="#__codelineno-0-134">134</a></span>
+<span class="normal"><a href="#__codelineno-0-135">135</a></span>
+<span class="normal"><a href="#__codelineno-0-136">136</a></span>
+<span class="normal"><a href="#__codelineno-0-137">137</a></span>
+<span class="normal"><a href="#__codelineno-0-138">138</a></span>
+<span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Copyright 2022 Google LLC</span>
+<a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="c1">#</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># you may not use this file except in compliance with the License.</span>
+<a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># You may obtain a copy of the License at</span>
+<a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1">#</span>
+<a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
+<a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1">#</span>
+<a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="c1"># See the License for the specific language governing permissions and</span>
+<a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="c1"># limitations under the License.</span>
+<a id="__codelineno-0-14" name="__codelineno-0-14"></a>
+<a id="__codelineno-0-15" name="__codelineno-0-15"></a><span class="nn">---</span>
+<a id="__codelineno-0-16" name="__codelineno-0-16"></a>
+<a id="__codelineno-0-17" name="__codelineno-0-17"></a><span class="nt">blueprint_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ppro-e4s-25-11-cluster</span>
+<a id="__codelineno-0-18" name="__codelineno-0-18"></a>
+<a id="__codelineno-0-19" name="__codelineno-0-19"></a><span class="nt">vars</span><span class="p">:</span>
+<a id="__codelineno-0-20" name="__codelineno-0-20"></a><span class="hll"><span class="w">  </span><span class="nt">project_id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paratools-pro</span><span class="w"> </span><span class="c1">#(1)!</span>
+</span><a id="__codelineno-0-21" name="__codelineno-0-21"></a><span class="w">  </span><span class="nt">deployment_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ppro-e4s-25-11-cluster</span>
+<a id="__codelineno-0-22" name="__codelineno-0-22"></a><span class="w">  </span><span class="nt">region</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-central1</span>
+<a id="__codelineno-0-23" name="__codelineno-0-23"></a><span class="w">  </span><span class="nt">zone</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">us-central1-a</span>
+<a id="__codelineno-0-24" name="__codelineno-0-24"></a><span class="w">  </span><span class="nt">disk_size</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">250</span>
+<a id="__codelineno-0-25" name="__codelineno-0-25"></a><span class="hll"><span class="w">  </span><span class="nt">image_family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">paratools-gcluster-e4s-2511-nvidia89-x86-64</span><span class="w"> </span><span class="c1">#(2)!</span>
+</span><a id="__codelineno-0-26" name="__codelineno-0-26"></a><span class="w">  </span><span class="nt">instance_image_custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-27" name="__codelineno-0-27"></a>
+<a id="__codelineno-0-28" name="__codelineno-0-28"></a><span class="c1"># Documentation for each of the modules used below can be found at</span>
+<a id="__codelineno-0-29" name="__codelineno-0-29"></a><span class="c1"># https://github.com/GoogleCloudPlatform/cluster-toolkit/blob/main/modules/README.md</span>
+<a id="__codelineno-0-30" name="__codelineno-0-30"></a>
+<a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="nt">deployment_groups</span><span class="p">:</span>
+<a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">primary</span>
+<a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">  </span><span class="nt">modules</span><span class="p">:</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">  </span><span class="c1"># Source is an embedded module, denoted by &quot;modules/*&quot; without ./, ../, /</span>
+<a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">  </span><span class="c1"># as a prefix. To refer to a local module, prefix with ./, ../ or /</span>
+<a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">network</span>
+<a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="hll"><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modules/network/vpc</span><span class="w"> </span><span class="c1">#(3)!</span>
+</span><a id="__codelineno-0-38" name="__codelineno-0-38"></a>
+<a id="__codelineno-0-39" name="__codelineno-0-39"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">homefs</span>
+<a id="__codelineno-0-40" name="__codelineno-0-40"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modules/file-system/filestore</span>
+<a id="__codelineno-0-41" name="__codelineno-0-41"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">network</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-0-42" name="__codelineno-0-42"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-43" name="__codelineno-0-43"></a><span class="w">      </span><span class="nt">local_mount</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/home</span>
+<a id="__codelineno-0-44" name="__codelineno-0-44"></a>
+<a id="__codelineno-0-45" name="__codelineno-0-45"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug_nodeset</span>
+<a id="__codelineno-0-46" name="__codelineno-0-46"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-nodeset</span>
+<a id="__codelineno-0-47" name="__codelineno-0-47"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">network</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-0-48" name="__codelineno-0-48"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-49" name="__codelineno-0-49"></a><span class="hll"><span class="w">      </span><span class="nt">node_count_dynamic_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span><span class="w"> </span><span class="c1">#(4)!</span>
+</span><a id="__codelineno-0-50" name="__codelineno-0-50"></a><span class="w">      </span><span class="nt">machine_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">n1-standard-16</span>
+<a id="__codelineno-0-51" name="__codelineno-0-51"></a><span class="hll"><span class="w">      </span><span class="nt">guest_accelerator</span><span class="p">:</span><span class="w"> </span><span class="c1">#(5)!</span>
+</span><a id="__codelineno-0-52" name="__codelineno-0-52"></a><span class="hll"><span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">nvidia-tesla-t4</span>
+</span><a id="__codelineno-0-53" name="__codelineno-0-53"></a><span class="hll"><span class="w">        </span><span class="nt">count</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">1</span>
+</span><a id="__codelineno-0-54" name="__codelineno-0-54"></a><span class="hll"><span class="w">      </span><span class="nt">enable_placement</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># the default is: true</span>
+</span><a id="__codelineno-0-55" name="__codelineno-0-55"></a><span class="w">      </span><span class="nt">instance_image_custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-56" name="__codelineno-0-56"></a><span class="w">      </span><span class="nt">disk_size_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.disk_size)</span>
+<a id="__codelineno-0-57" name="__codelineno-0-57"></a><span class="w">      </span><span class="nt">instance_image</span><span class="p">:</span>
+<a id="__codelineno-0-58" name="__codelineno-0-58"></a><span class="w">        </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.image_family)</span>
+<a id="__codelineno-0-59" name="__codelineno-0-59"></a><span class="w">        </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.project_id)</span>
+<a id="__codelineno-0-60" name="__codelineno-0-60"></a>
+<a id="__codelineno-0-61" name="__codelineno-0-61"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug_partition</span>
+<a id="__codelineno-0-62" name="__codelineno-0-62"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-partition</span>
+<a id="__codelineno-0-63" name="__codelineno-0-63"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span>
+<a id="__codelineno-0-64" name="__codelineno-0-64"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug_nodeset</span>
+<a id="__codelineno-0-65" name="__codelineno-0-65"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-66" name="__codelineno-0-66"></a><span class="w">      </span><span class="nt">partition_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug</span>
+<a id="__codelineno-0-67" name="__codelineno-0-67"></a><span class="w">      </span><span class="nt">exclusive</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">false</span><span class="w"> </span><span class="c1"># allows nodes to stay up after jobs are done</span>
+<a id="__codelineno-0-68" name="__codelineno-0-68"></a><span class="w">      </span><span class="nt">is_default</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-69" name="__codelineno-0-69"></a>
+<a id="__codelineno-0-70" name="__codelineno-0-70"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute_nodeset</span>
+<a id="__codelineno-0-71" name="__codelineno-0-71"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-nodeset</span>
+<a id="__codelineno-0-72" name="__codelineno-0-72"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">network</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-0-73" name="__codelineno-0-73"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-74" name="__codelineno-0-74"></a><span class="hll"><span class="w">      </span><span class="nt">node_count_dynamic_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</span><a id="__codelineno-0-75" name="__codelineno-0-75"></a><span class="hll"><span class="w">      </span><span class="nt">machine_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">c3-standard-88</span>
+</span><a id="__codelineno-0-76" name="__codelineno-0-76"></a><span class="hll"><span class="w">      </span><span class="nt">bandwidth_tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tier_1_enabled</span><span class="w"> </span><span class="c1">#(6)!</span>
+</span><a id="__codelineno-0-77" name="__codelineno-0-77"></a><span class="w">      </span><span class="nt">instance_image_custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-78" name="__codelineno-0-78"></a><span class="w">      </span><span class="nt">disk_size_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.disk_size)</span>
+<a id="__codelineno-0-79" name="__codelineno-0-79"></a><span class="w">      </span><span class="nt">instance_image</span><span class="p">:</span>
+<a id="__codelineno-0-80" name="__codelineno-0-80"></a><span class="w">        </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.image_family)</span>
+<a id="__codelineno-0-81" name="__codelineno-0-81"></a><span class="w">        </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.project_id)</span>
+<a id="__codelineno-0-82" name="__codelineno-0-82"></a>
+<a id="__codelineno-0-83" name="__codelineno-0-83"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute_partition</span>
+<a id="__codelineno-0-84" name="__codelineno-0-84"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-partition</span>
+<a id="__codelineno-0-85" name="__codelineno-0-85"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span>
+<a id="__codelineno-0-86" name="__codelineno-0-86"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute_nodeset</span>
+<a id="__codelineno-0-87" name="__codelineno-0-87"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-88" name="__codelineno-0-88"></a><span class="w">      </span><span class="nt">partition_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute</span>
+<a id="__codelineno-0-89" name="__codelineno-0-89"></a>
+<a id="__codelineno-0-90" name="__codelineno-0-90"></a><span class="hll"><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3_nodeset</span><span class="w"> </span><span class="c1">#(7)!</span>
+</span><a id="__codelineno-0-91" name="__codelineno-0-91"></a><span class="hll"><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-nodeset</span>
+</span><a id="__codelineno-0-92" name="__codelineno-0-92"></a><span class="hll"><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">network</span><span class="p p-Indicator">]</span>
+</span><a id="__codelineno-0-93" name="__codelineno-0-93"></a><span class="hll"><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+</span><a id="__codelineno-0-94" name="__codelineno-0-94"></a><span class="hll"><span class="w">      </span><span class="nt">node_count_dynamic_max</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+</span><a id="__codelineno-0-95" name="__codelineno-0-95"></a><span class="hll"><span class="w">      </span><span class="nt">machine_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3-standard-88</span>
+</span><a id="__codelineno-0-96" name="__codelineno-0-96"></a><span class="hll"><span class="w">      </span><span class="c1"># H3 does not support pd-ssd and pd-standard</span>
+</span><a id="__codelineno-0-97" name="__codelineno-0-97"></a><span class="hll"><span class="w">      </span><span class="c1"># https://cloud.google.com/compute/docs/compute-optimized-machines#h3_disks</span>
+</span><a id="__codelineno-0-98" name="__codelineno-0-98"></a><span class="hll"><span class="w">      </span><span class="nt">disk_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">pd-balanced</span>
+</span><a id="__codelineno-0-99" name="__codelineno-0-99"></a><span class="hll"><span class="w">      </span><span class="nt">bandwidth_tier</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">gvnic_enabled</span>
+</span><a id="__codelineno-0-100" name="__codelineno-0-100"></a><span class="hll"><span class="w">      </span><span class="nt">instance_image_custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+</span><a id="__codelineno-0-101" name="__codelineno-0-101"></a><span class="hll"><span class="w">      </span><span class="nt">disk_size_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.disk_size)</span>
+</span><a id="__codelineno-0-102" name="__codelineno-0-102"></a><span class="hll"><span class="w">      </span><span class="nt">instance_image</span><span class="p">:</span>
+</span><a id="__codelineno-0-103" name="__codelineno-0-103"></a><span class="hll"><span class="w">        </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.image_family)</span>
+</span><a id="__codelineno-0-104" name="__codelineno-0-104"></a><span class="hll"><span class="w">        </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.project_id)</span>
+</span><a id="__codelineno-0-105" name="__codelineno-0-105"></a><span class="hll">
+</span><a id="__codelineno-0-106" name="__codelineno-0-106"></a><span class="hll"><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3_partition</span>
+</span><a id="__codelineno-0-107" name="__codelineno-0-107"></a><span class="hll"><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/compute/schedmd-slurm-gcp-v6-partition</span>
+</span><a id="__codelineno-0-108" name="__codelineno-0-108"></a><span class="hll"><span class="w">    </span><span class="nt">use</span><span class="p">:</span>
+</span><a id="__codelineno-0-109" name="__codelineno-0-109"></a><span class="hll"><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3_nodeset</span>
+</span><a id="__codelineno-0-110" name="__codelineno-0-110"></a><span class="hll"><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+</span><a id="__codelineno-0-111" name="__codelineno-0-111"></a><span class="hll"><span class="w">      </span><span class="nt">partition_name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3</span>
+</span><a id="__codelineno-0-112" name="__codelineno-0-112"></a>
+<a id="__codelineno-0-113" name="__codelineno-0-113"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm_login</span>
+<a id="__codelineno-0-114" name="__codelineno-0-114"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/scheduler/schedmd-slurm-gcp-v6-login</span>
+<a id="__codelineno-0-115" name="__codelineno-0-115"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">network</span><span class="p p-Indicator">]</span>
+<a id="__codelineno-0-116" name="__codelineno-0-116"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-117" name="__codelineno-0-117"></a><span class="w">      </span><span class="nt">machine_type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">n1-standard-16</span>
+<a id="__codelineno-0-118" name="__codelineno-0-118"></a><span class="w">      </span><span class="nt">enable_login_public_ips</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-119" name="__codelineno-0-119"></a><span class="w">      </span><span class="nt">instance_image_custom</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-120" name="__codelineno-0-120"></a><span class="w">      </span><span class="nt">disk_size_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.disk_size)</span>
+<a id="__codelineno-0-121" name="__codelineno-0-121"></a><span class="w">      </span><span class="nt">instance_image</span><span class="p">:</span>
+<a id="__codelineno-0-122" name="__codelineno-0-122"></a><span class="w">        </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.image_family)</span>
+<a id="__codelineno-0-123" name="__codelineno-0-123"></a><span class="w">        </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.project_id)</span>
+<a id="__codelineno-0-124" name="__codelineno-0-124"></a>
+<a id="__codelineno-0-125" name="__codelineno-0-125"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm_controller</span>
+<a id="__codelineno-0-126" name="__codelineno-0-126"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">community/modules/scheduler/schedmd-slurm-gcp-v6-controller</span>
+<a id="__codelineno-0-127" name="__codelineno-0-127"></a><span class="w">    </span><span class="nt">use</span><span class="p">:</span>
+<a id="__codelineno-0-128" name="__codelineno-0-128"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">network</span>
+<a id="__codelineno-0-129" name="__codelineno-0-129"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">debug_partition</span>
+<a id="__codelineno-0-130" name="__codelineno-0-130"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">compute_partition</span>
+<a id="__codelineno-0-131" name="__codelineno-0-131"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">h3_partition</span>
+<a id="__codelineno-0-132" name="__codelineno-0-132"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">homefs</span>
+<a id="__codelineno-0-133" name="__codelineno-0-133"></a><span class="w">    </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">slurm_login</span>
+<a id="__codelineno-0-134" name="__codelineno-0-134"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-0-135" name="__codelineno-0-135"></a><span class="w">      </span><span class="nt">enable_controller_public_ips</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">true</span>
+<a id="__codelineno-0-136" name="__codelineno-0-136"></a><span class="w">      </span><span class="nt">disk_size_gb</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.disk_size)</span>
+<a id="__codelineno-0-137" name="__codelineno-0-137"></a><span class="w">      </span><span class="nt">instance_image</span><span class="p">:</span>
+<a id="__codelineno-0-138" name="__codelineno-0-138"></a><span class="w">        </span><span class="nt">family</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.image_family)</span>
+<a id="__codelineno-0-139" name="__codelineno-0-139"></a><span class="w">        </span><span class="nt">project</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">$(vars.project_id)</span>
+</code></pre></div></td></tr></table></div>
+<ol>
+<li>
+<div class="admonition warning">
+<p class="admonition-title">Use your own GCP project ID</p>
+   Set this to your own GCP project ID, or comment this line and invoke <code>gcluster</code> with the <code>--vars project_id="${PROJECT_ID}"</code> flag instead. The value shown here is the ParaTools development project and will not work for you.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title">Image family</p>
+   This must match the image family of the ParaTools Pro for E4S™ marketplace image you have subscribed to. The current GCluster (x86-64) image family is <code>paratools-gcluster-e4s-2511-nvidia89-x86-64</code>.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title">Default VPC firewall behavior</p>
+   The <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit/tree/main/modules/network/vpc"><code>modules/network/vpc</code></a> module with no <code>settings:</code> block creates a VPC with two firewall rules by default: one allowing SSH from <a href="https://cloud.google.com/iap">Identity-Aware Proxy (IAP)</a> (range <code>35.235.240.0/20</code>) and one allowing all intra-VPC traffic. The <strong>SSH</strong> button in the GCP Console for the login node uses IAP, so it works with this default. If you want to SSH directly to the login node's public IP from your workstation, you must add a firewall rule that allows your workstation's IP -- see <a href="#allowing-direct-ssh-from-your-workstation">Allowing direct SSH from your workstation</a>.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title">Node count and instance type</p>
+   The <code>machine_type</code> and <code>node_count_dynamic_max</code> set the instance type and the maximum number of nodes Slurm can spin up dynamically in this nodeset. Tune these to match your usage and quotas (vCPUs = cores-per-node x <code>node_count_dynamic_max</code>). This same setting also appears in the <code>compute_nodeset</code> (line 74) and <code>h3_nodeset</code> (line 94) blocks. For compute-intensive, tightly coupled jobs, C3 or H3 instances perform well.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title">GPU on the debug nodeset</p>
+   The <code>debug_nodeset</code> attaches one NVIDIA Tesla T4 GPU per node by default, providing a low-cost path to test CUDA, NeMo, or PyTorch GPU workloads before scaling up. Set <code>count: 0</code> and remove the <code>guest_accelerator</code> block, or change to a CPU-only instance type, if you do not need a GPU on the debug partition.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title"><code>bandwidth_tier</code>: gVNIC vs. Tier 1</p>
+   The <code>bandwidth_tier</code> setting controls the network adapter and per-VM egress bandwidth ceiling. Valid values are <code>platform_default</code>, <code>virtio_enabled</code>, <code>gvnic_enabled</code> (the <a href="https://cloud.google.com/compute/docs/networking/using-gvnic">gVNIC</a> adapter without Tier 1), and <code>tier_1_enabled</code> (gVNIC adapter <strong>plus</strong> <a href="https://cloud.google.com/compute/docs/networking/configure-vm-with-high-bandwidth-configuration">per-VM Tier 1 high-bandwidth networking</a>). The <code>compute_nodeset</code> uses <code>tier_1_enabled</code> because <code>c3-standard-88</code> is a C3 shape with 88 vCPUs, which clears the Tier 1 minimum (44 vCPUs for C3) and unlocks the full bandwidth ceiling for tightly coupled MPI and collective-heavy workloads. The <code>h3_nodeset</code> (line 99) uses <code>gvnic_enabled</code> because the H3 family is <strong>not</strong> in the <a href="https://cloud.google.com/compute/docs/networking/configure-vm-with-high-bandwidth-configuration">Tier 1 supported list</a> (despite its 88 vCPUs); H3 is limited to gVNIC speeds. If you change <code>compute_nodeset</code>'s <code>machine_type</code> to a shape that does not support Tier 1 (for example any N1, N2, E2, or H3 shape, or a supported family below its vCPU minimum), drop <code>tier_1_enabled</code> back to <code>gvnic_enabled</code> to avoid a deployment error.</div>
+</li>
+<li>
+<div class="admonition info">
+<p class="admonition-title">Optional H3 partition</p>
+   This example includes an additional Slurm partition containing H3 nodes. Access to H3 instances may require a quota-increase request. You do not need multiple Slurm partitions, so you may remove the <code>h3_nodeset</code> and <code>h3_partition</code> modules (and the <code>- h3_partition</code> reference in <code>slurm_controller.use</code>) if you do not have H3 access.</div>
+</li>
+</ol>
+<h2 id="allowing-direct-ssh-from-your-workstation">Allowing Direct SSH from Your Workstation<a class="headerlink" href="#allowing-direct-ssh-from-your-workstation" title="Permanent link">&para;</a></h2>
+<p>The default firewall rules created by <a href="https://github.com/GoogleCloudPlatform/cluster-toolkit/tree/main/modules/network/vpc"><code>modules/network/vpc</code></a> permit SSH
+from <a href="https://cloud.google.com/iap">Identity-Aware Proxy (IAP)</a> only. The <strong>SSH</strong> button in the GCP Console (which
+uses IAP) works without any extra configuration. If you want to SSH directly from your
+workstation to the login node's public IP -- for example, to use <code>scp</code> for large file
+transfers, or because you prefer a local terminal over the browser-based IAP SSH session
+-- you must allow your workstation's IP address through the firewall.</p>
+<p>There are two equivalent options:</p>
+<h3 id="option-1-add-the-rule-to-the-blueprint">Option 1: Add the Rule to the Blueprint<a class="headerlink" href="#option-1-add-the-rule-to-the-blueprint" title="Permanent link">&para;</a></h3>
+<p>Edit the <code>network</code> module in your blueprint and add a <code>settings:</code> block listing the
+firewall rule. Replace <code>203.0.113.42/32</code> with your workstation's public IP (find it
+with <code>curl -s ifconfig.me</code>), or replace <code>203.0.113.0/24</code> with a CIDR block covering your
+home or office network:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">network</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modules/network/vpc</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span><span class="nt">settings</span><span class="p">:</span>
+<a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">firewall_rules</span><span class="p">:</span>
+<a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ssh-from-workstation</span>
+<a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">          </span><span class="nt">direction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INGRESS</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">          </span><span class="nt">ranges</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">203.0.113.42/32</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># single IP -- replace with your workstation&#39;s IP</span>
+<a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">          </span><span class="c1"># ranges: [203.0.113.0/24] # or a CIDR block covering your network</span>
+<a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">          </span><span class="nt">allow</span><span class="p">:</span>
+<a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tcp</span>
+<a id="__codelineno-1-11" name="__codelineno-1-11" href="#__codelineno-1-11"></a><span class="w">              </span><span class="nt">ports</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">22</span><span class="p p-Indicator">]</span>
+</code></pre></div>
+<p>Then re-run <code>gcluster create -w ...</code> and <code>gcluster deploy ...</code> to apply the change.</p>
+<h3 id="option-2-add-the-rule-out-of-band">Option 2: Add the Rule Out of Band<a class="headerlink" href="#option-2-add-the-rule-out-of-band" title="Permanent link">&para;</a></h3>
+<p>After the cluster is deployed, add the firewall rule with <code>gcloud</code> directly:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Replace YOUR_IP with your workstation&#39;s public IP, or a CIDR covering your network.</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Replace VPC_NAME with the name of the VPC created by your deployment</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># (typically &quot;${deployment_name}-net0&quot;, e.g., &quot;ppro-e4s-25-11-cluster-net0&quot;).</span>
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>gcloud<span class="w"> </span>compute<span class="w"> </span>firewall-rules<span class="w"> </span>create<span class="w"> </span>ssh-from-workstation<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--network<span class="o">=</span>VPC_NAME<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>--direction<span class="o">=</span>INGRESS<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="w">    </span>--action<span class="o">=</span>ALLOW<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a><span class="w">    </span>--rules<span class="o">=</span>tcp:22<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="w">    </span>--source-ranges<span class="o">=</span>YOUR_IP/32
+</code></pre></div>
+<div class="admonition danger">
+<p class="admonition-title">Do not use <code>0.0.0.0/0</code></p>
+<p>Opening TCP port 22 to the entire internet is a serious security risk. Always restrict
+<code>--source-ranges</code> (or <code>ranges:</code>) to a single IP (<code>/32</code>) or a small CIDR block under
+your control. Prefer Console (IAP) SSH whenever possible.</p>
+</div>
 
 
 
@@ -994,7 +1390,7 @@ guidance.</p>
   
   
     <div class="md-copyright__last-updated">
-      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="January 9, 2026 14:56:51 UTC">January 9, 2026</span>
+      Last updated: <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-date" title="April 27, 2026 19:35:06 UTC">April 27, 2026</span>
     </div>
   
 </div>
