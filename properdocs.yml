@@ -65,7 +65,9 @@ markdown_extensions:
       anchor_linenums: true
   - pymdownx.inlinehilite
   - pymdownx.snippets:
-      base_path: docs
+      base_path:
+        - docs
+        - .
   - admonition
   - pymdownx.arithmatex:
       generic: true
@@ -105,7 +107,7 @@ nav:
       #    - AWS Parallel Cluster Config: AWS/pcluster.md
   - GCP:
     - Getting Started: GCP/getting-started-GCP.md
-    - HPC Toolkit Blueprint: GCP/blueprint.md
+    - Cluster Toolkit Blueprint: GCP/blueprint.md
     - Cluster Deletion: GCP/Cluster-Deletion.md
   - Heidi:
     - Getting Started: Heidi/getting-started-Heidi.md

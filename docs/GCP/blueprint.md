@@ -1,6 +1,6 @@
 ---
 title: SLURM Scheduler Cluster Blueprint for GCP
-description: Example blueprint for deploying ParaTools Pro for E4S™ on GCP with HPC Toolkit
+description: Example blueprint for deploying ParaTools Pro for E4S™ on GCP with the Google Cloud Cluster Toolkit
 canonical_url: https://docs.paratoolspro.com/GCP/blueprint/
 image: assets/images/gcluster/e4s_spack_find_thumb.jpg
 twitter_card: summary_large_image
@@ -23,10 +23,10 @@ guidance.
 
 ## ParaTools Pro for E4S™ Slurm Cluster Blueprint Example
 ``` yaml title="e4s-25.11-cluster-slurm-gcp-v6.yaml" linenums="1" hl_lines="20 25 37 49 51-54 74-76 90-111"
---8<-- "./examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.yaml"
+--8<-- "examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.yaml"
 ```
 
---8<-- "./examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.annotations.md"
+--8<-- "examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.annotations.md"
 
 ## Allowing direct SSH from your workstation
 
