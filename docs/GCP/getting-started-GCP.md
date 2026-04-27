@@ -187,32 +187,14 @@ Terraform access to the Application Default Credential (ADC).
 gcloud auth application-default login
 ```
 
-!!! info "OS Login and SSH access (already configured by default)"
+!!! info "OS Login is already enabled by default"
     The Slurm GCP v6 modules used by the example blueprint
     (`schedmd-slurm-gcp-v6-controller`, `schedmd-slurm-gcp-v6-login`, and
     `schedmd-slurm-gcp-v6-nodeset`) all enable [OS Login][oslogin] **at the
-    instance level by default**, so you do not need to enable it at the project
-    level for the cluster's VMs to accept SSH from your Google identity. Skip
-    the `gcloud compute project-info add-metadata --metadata enable-oslogin=TRUE`
-    step you may have seen in older tutorials.
-
-    Your **user identity** still needs the right IAM roles for SSH to succeed.
-    Grant yourself, at minimum:
-
-    - `roles/compute.osLogin` (or `roles/compute.osAdminLogin` if you need
-      `sudo`) so the VMs accept your Google identity as a Linux user.
-    - `roles/iap.tunnelResourceAccessor` so the GCP Console "SSH" button (which
-      tunnels through [Identity-Aware Proxy][iap]) can reach the login node.
-
-    For example:
-
-    ``` bash
-    USER_EMAIL=$(gcloud config get-value account)
-    gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-        --member="user:${USER_EMAIL}" --role=roles/compute.osLogin
-    gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
-        --member="user:${USER_EMAIL}" --role=roles/iap.tunnelResourceAccessor
-    ```
+    instance level by default**, so you do not need to enable it at the
+    project level for the cluster's VMs to accept SSH from your Google
+    identity. Skip the `gcloud compute project-info add-metadata --metadata
+    enable-oslogin=TRUE` step you may have seen in older tutorials.
 
     If you have a non-default scenario where you actively want to **disable**
     OS Login on a specific role (for example, to use legacy project-wide SSH
@@ -228,6 +210,22 @@ gcloud auth application-default login
         breaks that injection. The default behavior of the v6 modules
         (instance-level OS Login, no project-level change) is safe to mix
         with Heidi in the same project.
+
+Your **user identity** still needs the right IAM roles for SSH to succeed.
+At minimum, grant yourself:
+
+- `roles/compute.osLogin` (or `roles/compute.osAdminLogin` if you need
+  `sudo`) so the VMs accept your Google identity as a Linux user.
+- `roles/iap.tunnelResourceAccessor` so the GCP Console "SSH" button (which
+  tunnels through [Identity-Aware Proxy][iap]) can reach the login node.
+
+``` bash
+USER_EMAIL=$(gcloud config get-value account)
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="user:${USER_EMAIL}" --role=roles/compute.osLogin
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member="user:${USER_EMAIL}" --role=roles/iap.tunnelResourceAccessor
+```
 
 [oslogin]: https://cloud.google.com/compute/docs/oslogin
 [iap]: https://cloud.google.com/iap
@@ -315,7 +313,7 @@ Once the cluster is deployed, SSH to the login node.
 
 1. Go to the __Compute Engine > VM Instances__ page.
 
-    [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
+    [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button .md-button--primary }
 
 2. Click __SSH__ for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
