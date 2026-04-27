@@ -1,25 +1,26 @@
 ---
-title: SLURM Scheduler Cluster Blueprint for GCP
-description: Example blueprint for deploying ParaTools Pro for E4S™ on GCP with the Google Cloud Cluster Toolkit
+title: Slurm Cluster Blueprint for GCP
+description: Example blueprint for deploying ParaTools Pro for E4S™ on GCP with the Cluster Toolkit
 canonical_url: https://docs.paratoolspro.com/GCP/blueprint/
 image: assets/images/gcluster/e4s_spack_find_thumb.jpg
 twitter_card: summary_large_image
 ---
 
-# SLURM Scheduler Cluster Blueprint for GCP
+# Slurm Cluster Blueprint for GCP
 
 ## General Info
-Below is an example [Google Cloud Cluster Toolkit][2] blueprint for using ParaTools Pro for E4S™.
-Once you have access to ParaTools Pro for E4S™ through the GCP marketplace, we recommend
-following the ["Deploy an HPC cluster with Slurm" quickstart][1] from the
-[Google Cloud Cluster Toolkit][2] project to get started if you are new to GCP and/or
-the Cluster Toolkit.
-The ParaTools Pro for E4S™ blueprint provided below can be copied with some small modifications
-and used for the tutorial or in production.
 
-Areas of the blueprint that require your attention and that may need to be
-changed are highlighted and have expandable annotations offering further
-guidance.
+This page provides an example [Cluster Toolkit][2] blueprint for use with
+ParaTools Pro for E4S™. Once you have subscribed to
+[ParaTools Pro for E4S™ on the GCP Marketplace][marketplace], we recommend
+working through the ["Deploy an HPC cluster with Slurm" quickstart][1] from
+the [Cluster Toolkit][2] project if you are new to GCP or to the Cluster
+Toolkit. The blueprint below can be copied with small modifications and
+used either for the tutorial or in production.
+
+Areas of the blueprint that require your attention, and that may need to
+be changed, are highlighted and have expandable annotations offering
+further guidance.
 
 ## ParaTools Pro for E4S™ Slurm Cluster Blueprint Example
 ``` { .yaml .annotate title="e4s-25.11-cluster-slurm-gcp-v6.yaml" linenums="1" hl_lines="20 25 37 49 51-54 74-76 90-111" }
@@ -28,18 +29,18 @@ guidance.
 
 --8<-- "examples/GCP/e4s-25.11-cluster-slurm-gcp-v6.annotations.md"
 
-## Allowing direct SSH from your workstation
+## Allowing Direct SSH from Your Workstation
 
-The default firewall rules created by [`modules/network/vpc`][vpc-module] permit SSH from
-[Identity-Aware Proxy (IAP)][iap] only. The "SSH" button in the GCP Console (which uses IAP)
-works without any extra configuration. If you want to SSH directly from your workstation
-to the login node's public IP -- for example, to use `scp` for large file transfers, or
-because you prefer a local terminal over the browser-based IAP SSH session -- you must
-allow your workstation's IP address through the firewall.
+The default firewall rules created by [`modules/network/vpc`][vpc-module] permit SSH
+from [Identity-Aware Proxy (IAP)][iap] only. The **SSH** button in the GCP Console (which
+uses IAP) works without any extra configuration. If you want to SSH directly from your
+workstation to the login node's public IP -- for example, to use `scp` for large file
+transfers, or because you prefer a local terminal over the browser-based IAP SSH session
+-- you must allow your workstation's IP address through the firewall.
 
 There are two equivalent options:
 
-### Option 1: add the rule to the blueprint
+### Option 1: Add the Rule to the Blueprint
 
 Edit the `network` module in your blueprint and add a `settings:` block listing the
 firewall rule. Replace `203.0.113.42/32` with your workstation's public IP (find it
@@ -62,7 +63,7 @@ home or office network:
 
 Then re-run `gcluster create -w ...` and `gcluster deploy ...` to apply the change.
 
-### Option 2: add the rule out-of-band
+### Option 2: Add the Rule Out of Band
 
 After the cluster is deployed, add the firewall rule with `gcloud` directly:
 
@@ -87,3 +88,4 @@ gcloud compute firewall-rules create ssh-from-workstation \
 [2]: https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart
 [vpc-module]: https://github.com/GoogleCloudPlatform/cluster-toolkit/tree/main/modules/network/vpc
 [iap]: https://cloud.google.com/iap
+[marketplace]: https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64
