@@ -1,6 +1,6 @@
 ---
 title: Getting Started with Google Cluster Toolkit (GCP)
-description: Guide for deploying E4S on Google Cloud using the HPC Toolkit
+description: Guide for deploying E4S on Google Cloud using the Cluster Toolkit
 canonical_url: https://docs.paratoolspro.com/GCP/getting-started-GCP/
 image: assets/images/gcluster/e4s_desktop_thumb.jpg
 twitter_card: summary_large_image
@@ -10,24 +10,24 @@ twitter_card: summary_large_image
 
 ## General Background Information
 
-In the following tutorial, we roughly follow the same steps as the
+This tutorial roughly follows the same steps as the
 ["Deploy an HPC cluster with Slurm" quickstart][1] from the [Google Cloud Cluster Toolkit][2] project.
-For the purposes of this tutorial, we make the following assumptions:
+This tutorial assumes the following:
 
 - You have [created a Google Cloud account][3].
-- You have [created a Google Cloud project][4] appropriate for this tutorial
+- You have [created a Google Cloud project][4] appropriate for this tutorial,
   and it is [selected][15].
-- You have [setup billing for your Google Cloud Project][5].
+- You have [set up billing for your Google Cloud project][5].
 - You have [enabled the Compute Engine API][6].
 - You have [enabled the Filestore API][7].
-- You have [enabled the Cloud Storage API][8]
-- You have [enabled the Sevice Usage API][9].
-- You have [enabled the Secret Manager API][10].
-- You are aware of [the costs for running instances on GCP Compute Engine][11] and
+- You have [enabled the Cloud Storage API][8].
+- You have [enabled the Service Usage API][9].
+- You have [enabled the Cloud Resource Manager API][10].
+- You are aware of [the costs for running instances on GCP Compute Engine][11], and
   of the costs of using the ParaTools Pro for E4S™ GCP marketplace VM image. <!-- FIXME: these need links when marketplace goes live -->
 - You are comfortable using the [GCP Cloud Shell][12], or are running locally
-    (which will match this tutorial) and are familiar with SSH, a terminal and have
-    [installed][13] and [initialized the gcloud CLI][14]
+    (which will match this tutorial), are familiar with SSH and a terminal, and
+    have [installed][13] and [initialized the gcloud CLI][14].
 
 [1]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster
 [2]: https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart
@@ -38,7 +38,7 @@ For the purposes of this tutorial, we make the following assumptions:
 [7]: https://console.cloud.google.com/apis/api/file.googleapis.com/overview
 [8]: https://console.cloud.google.com/apis/api/storage.googleapis.com/overview
 [9]: https://console.cloud.google.com/apis/api/serviceusage.googleapis.com/overview
-[10]: https://console.cloud.google.com/apis/api/secretmanager.googleapis.com/overview
+[10]: https://console.cloud.google.com/apis/api/cloudresourcemanager.googleapis.com/overview
 [11]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#costs
 [12]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#launch
 [13]: https://cloud.google.com/sdk/docs/install
@@ -49,9 +49,9 @@ For the purposes of this tutorial, we make the following assumptions:
 
 ### Getting Set Up
 
-First, let's grab your `PROJECT_ID` and `PROJECT_NUMBER`.
-Navigate to the [GCP project selector][15] and select the project that you'll be using for this tutorial.
-Take note of the `PROJECT_ID` and `PROJECT_NUMBER`
+First, capture your `PROJECT_ID` and `PROJECT_NUMBER`.
+Navigate to the [GCP project selector][15] and select the project that you will be using for this tutorial.
+Take note of the `PROJECT_ID` and `PROJECT_NUMBER`.
 Open your local shell or the [GCP Cloud Shell][12], and run the following commands:
 ``` bash linenums="1"
 export PROJECT_ID=<enter your project ID here>
@@ -59,7 +59,7 @@ export PROJECT_NUMBER=<enter your project number here>
 ```
 
 Set a default project you will be using for this tutorial.
-If you have multiple projects you can switch back to a different one when you are finished.
+If you have multiple projects, you can switch back to a different one when you are finished.
 
 ``` bash
 gcloud config set project "${PROJECT_ID}"
@@ -71,13 +71,24 @@ gcloud iam service-accounts enable \
      --project="${PROJECT_ID}" \
      ${PROJECT_NUMBER}-compute@developer.gserviceaccount.com
 ```
-and add the `roles/editor` IAM role to the service account:
+and grant the service account the IAM roles required by Cluster Toolkit
+(`roles/compute.instanceAdmin.v1` for managing Compute Engine resources, and
+`roles/iam.serviceAccountUser` to act as the service account):
 
 ``` bash
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
     --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
-    --role=roles/editor
+    --role=roles/compute.instanceAdmin.v1
+gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+    --member=serviceAccount:${PROJECT_NUMBER}-compute@developer.gserviceaccount.com \
+    --role=roles/iam.serviceAccountUser
 ```
+
+!!! note
+    Older tutorials grant `roles/editor` to this service account. That role is
+    project-wide and far broader than required. The two roles above are the
+    minimum recommended by the upstream
+    [Cluster Toolkit setup guide][prereqs].
 
 ### Install the [Google Cloud Cluster Toolkit][2]
 
@@ -93,16 +104,16 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 
 First install the dependencies of `gcluster`. Instructions to do this are included below.
 If you encounter trouble please check the latest instructions from Google,
-available [here][prereqs]. If you are running the GCP Cloud Shell you do not need to install the dependencies and can skip to cloning the Cluster Toolkit.
+available [here][prereqs]. If you are running the GCP Cloud Shell, you do not need to install the dependencies and can skip ahead to cloning the Cluster Toolkit.
 
 [prereqs]: https://docs.cloud.google.com/cluster-toolkit/docs/setup/configure-environment
 
-!!! info "Install the [Google Cloud Cluster Toolkit][2]  Prerequisites"
+!!! info "Install the [Google Cloud Cluster Toolkit][2] Prerequisites"
     Please download and install any missing software packages from the following list:
 
-    - [Terraform] version 1.2.0 or later
-    - [Packer] version 1.7.9 or later
-    - [Go] version 1.188 or later. Ensure that the `GOPATH` is setup and `go` is on your `PATH`.
+    - [Terraform] version 1.12.2 or later (note: Terraform 1.6 and later are licensed under the BUSL)
+    - [Packer] version 1.10.0 or later
+    - [Go] version 1.23 or later. Ensure that the `GOPATH` is set up and `go` is on your `PATH`.
       You may need to add the following to `.profile` or `.bashrc` startup "dot" file:
       ``` bash
       export PATH=$PATH:$(go env GOPATH)/bin
@@ -126,8 +137,8 @@ available [here][prereqs]. If you are running the GCP Cloud Shell you do not nee
         yum install -y make
         ```
 
-    !!! Note
-        Most of the packages above may be installable through your OSes package manager.
+    !!! note
+        Most of the packages above may be installable through your OS's package manager.
         For example, if you have [Homebrew] on macOS you should be able to `brew install <package_name>`
         for most of these items, where `<package_name>` is, e.g., `go`.
 
@@ -137,13 +148,13 @@ available [here][prereqs]. If you are running the GCP Cloud Shell you do not nee
 [Git]: https://github.com/git-guides/install-git
 [Homebrew]: https://brew.sh
 
-Once all the software listed above has been verified and/or installed, clone the [Google Cloud Cluster Toolkit][2]
+Once all the software listed above has been verified or installed, clone the [Google Cloud Cluster Toolkit][2]
 and change directories to the cloned repository:
 ``` bash linenums="1"
 git clone https://github.com/GoogleCloudPlatform/cluster-toolkit.git
 cd cluster-toolkit/
 ```
-Next build the Cluster Toolkit and verify the version and that it built correctly.
+Next, build the Cluster Toolkit, then verify the version and confirm that it built correctly.
 ``` bash
 make
 ./gcluster --version
@@ -164,7 +175,7 @@ to install `gcluster` into `${HOME}/bin` and then ensure this is on your path:
 export PATH="${PATH}:${HOME}/bin"
 ```
 
-### Grant ADC access to Terraform
+### Grant ADC Access to Terraform
 
 Generate cloud credentials associated with your Google Cloud account and grant
 Terraform access to the Application Default Credential (ADC).
@@ -176,69 +187,94 @@ Terraform access to the Application Default Credential (ADC).
 gcloud auth application-default login
 ```
 
-!!! info "OS Login is already enabled by default"
+!!! info "OS Login and SSH access (already configured by default)"
     The Slurm GCP v6 modules used by the example blueprint
-    (`schedmd-slurm-gcp-v6-controller`, `-login`, and `-nodeset`) all enable
-    [OS Login][oslogin] **at the instance level by default**, so you do not need to
-    enable it at the project level for the cluster's VMs to accept SSH from your
-    Google identity. Skip the `gcloud compute project-info add-metadata --metadata
-    enable-oslogin=TRUE` step you may have seen in older tutorials.
+    (`schedmd-slurm-gcp-v6-controller`, `schedmd-slurm-gcp-v6-login`, and
+    `schedmd-slurm-gcp-v6-nodeset`) all enable [OS Login][oslogin] **at the
+    instance level by default**, so you do not need to enable it at the project
+    level for the cluster's VMs to accept SSH from your Google identity. Skip
+    the `gcloud compute project-info add-metadata --metadata enable-oslogin=TRUE`
+    step you may have seen in older tutorials.
 
-    If you have a non-default scenario where you actively want to **disable** OS Login
-    on a specific role (for example, to use legacy project-wide SSH keys on the login
-    node), set `enable_oslogin: false` in that module's `settings:` block in your
-    blueprint -- do not change project-level metadata.
+    Your **user identity** still needs the right IAM roles for SSH to succeed.
+    Grant yourself, at minimum:
+
+    - `roles/compute.osLogin` (or `roles/compute.osAdminLogin` if you need
+      `sudo`) so the VMs accept your Google identity as a Linux user.
+    - `roles/iap.tunnelResourceAccessor` so the GCP Console "SSH" button (which
+      tunnels through [Identity-Aware Proxy][iap]) can reach the login node.
+
+    For example:
+
+    ``` bash
+    USER_EMAIL=$(gcloud config get-value account)
+    gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+        --member="user:${USER_EMAIL}" --role=roles/compute.osLogin
+    gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
+        --member="user:${USER_EMAIL}" --role=roles/iap.tunnelResourceAccessor
+    ```
+
+    If you have a non-default scenario where you actively want to **disable**
+    OS Login on a specific role (for example, to use legacy project-wide SSH
+    keys on the login node), set `enable_oslogin: false` in that module's
+    `settings:` block in your blueprint -- do not change project-level
+    metadata.
 
     !!! warning "Heidi conflict"
-        Do not enable OS Login at the **project** level on a project that also runs
-        ParaTools Pro Heidi (the Adaptive Computing-orchestrated marketplace product).
-        Heidi relies on instance-metadata-injected SSH keys for cluster-internal
-        authentication, and project-level OS Login breaks that injection. The default
-        behavior of the v6 modules (instance-level OS Login, no project-level change)
-        is safe to mix with Heidi in the same project.
+        Do not enable OS Login at the **project** level on a project that also
+        runs ParaTools Pro Heidi (the Adaptive Computing-orchestrated
+        marketplace product). Heidi relies on instance-metadata-injected SSH
+        keys for cluster-internal authentication, and project-level OS Login
+        breaks that injection. The default behavior of the v6 modules
+        (instance-level OS Login, no project-level change) is safe to mix
+        with Heidi in the same project.
 
 [oslogin]: https://cloud.google.com/compute/docs/oslogin
+[iap]: https://cloud.google.com/iap
 
 ### Deploy the Cluster
 
 Copy the [ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] from the
-ParaTools Pro for E4S™ documentation to your clipboard, then paste it into a file named
-`ParaTools-Pro-Slurm-Cluster-Blueprint.yaml`. After copying the text, in your terminal
-do the following:
+ParaTools Pro for E4S™ documentation to your clipboard, then paste it into a file
+named `e4s-25.11-cluster-slurm-gcp-v6.yaml`. After copying the text, in your
+terminal do the following:
 
 ``` bash
-cat > ParaTools-Pro-Slurm-Cluster-Blueprint.yaml
-# paste the copied text # (1)
+cat > e4s-25.11-cluster-slurm-gcp-v6.yaml
+# paste the copied text # (1)!
 # press Ctrl-d to add an end-of-file character
-cat ParaTools-Pro-Slurm-Cluster-Blueprint.yaml # Check the file copied correctly #(2)
+cat e4s-25.11-cluster-slurm-gcp-v6.yaml # check that the file copied correctly # (2)!
 ```
 
-1. !!! note
-       Usually `Ctrl-v`, or `Command-v` on macOS
-2. !!! note
-       This is optional, but usually a good idea
+1. Usually `Ctrl-v`, or `Command-v` on macOS.
+2. Optional, but recommended.
 
-Using your favorite editor, select appropriate instance types for the compute partitions,
-and remove the h3 partition if you do not have access to h3 instances yet.
-See the expandable annotations and pay extra attention to the highlighted lines
-on the [ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] example.
+Using your favorite editor, select appropriate instance types for the compute
+partitions. If you do not have access to H3 instances, remove the `h3_nodeset`
+and `h3_partition` modules from the blueprint, **and** remove the `- h3_partition`
+entry from the `slurm_controller.use:` list (otherwise `gcluster create` will
+fail with an unresolved-reference error). See the expandable annotations and
+pay extra attention to the highlighted lines on the
+[ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] example.
 
-!!! Tip "Pay Attention"
+!!! tip "Pay Attention"
     In particular:
 
-    - Determine if you want to pass the `${PROJECT_ID}` on the command line or set
-      `vars.project_id:` directly in the blueprint
-    - Verify that the `image_family` key matches the image for ParaTools Pro for E4S™ from the GCP marketplace
-    - Adjust the region and zone used, if desired
+    - Determine whether to pass the `${PROJECT_ID}` on the command line, or set
+      `vars.project_id:` directly in the blueprint.
+    - Verify that the `image_family` key matches the image for ParaTools Pro
+      for E4S™ from the GCP marketplace.
+    - Adjust the region and zone used, if desired.
     - Set an appropriate `machine_type` and `node_count_dynamic_max` for each
-      `*_nodeset` (`debug_nodeset`, `compute_nodeset`, `h3_nodeset`)
-    - The default `network` module provides IAP SSH only (works with the GCP Console
-      "SSH" button). To SSH directly from your workstation, see
-      [Allowing direct SSH from your workstation][workstation-ssh] in the blueprint
-      reference
+      `*_nodeset` (`debug_nodeset`, `compute_nodeset`, and `h3_nodeset`).
+    - The default `network` module provides IAP SSH only (which is what the
+      GCP Console "SSH" button uses). To SSH directly from your workstation,
+      see [Allowing direct SSH from your workstation][workstation-ssh] in the
+      blueprint reference.
 
-Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
-set deployment variables and create the deployment folder.
+Once the blueprint is configured to be consistent with your GCP usage quotas
+and your preferences, set deployment variables and create the deployment
+folder.
 
 !!! info "Create deployment folder"
 
@@ -247,46 +283,62 @@ set deployment variables and create the deployment folder.
       --vars project_id=${PROJECT_ID} # (1)!
     ```
 
-    1. !!! note
-           If you uncommented and updated the `vars.project_id:` you do not need to pass
-           `--vars project_id=...` on the command line.
-           If you're bringing a cluster back online that was previously deleted, but
-           the blueprint has been modified and the deployment folder is still present,
-           the `-w` flag will let you overwrite the deployment folder contents with the
-           latest changes.
+    1.  If you uncommented and updated `vars.project_id:` in the blueprint,
+        you do not need to pass `--vars project_id=...` on the command line.
+        If you are bringing a cluster back online that was previously deleted,
+        but the blueprint has been modified and the deployment folder is
+        still present, pass the `-w` flag to `gcluster create` to overwrite
+        the deployment folder contents with the latest changes.
+
+`gcluster create` produces a deployment folder named after the blueprint's
+`vars.deployment_name:` field -- in this example,
+`./ppro-e4s-25-11-cluster/`. The next step references that folder.
 
 ??? note inline end
     It may take a few minutes to finish provisioning your cluster.
-Now the cluster can be deployed.
-Run the following command to deploy your ParaTools Pro for E4S™ cluster:
+
+Now the cluster can be deployed. Run the following command to deploy your
+ParaTools Pro for E4S™ cluster:
 
 !!! info "Perform the deployment"
+
     ``` bash
     ./gcluster deploy ppro-e4s-25-11-cluster
     ```
-At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press `a` for accept once satisfied.
+
+At this point, you will be prompted to review or accept the proposed changes.
+You may review them if you wish, then press `a` to accept once satisfied.
 
 ### Connect to the Cluster
 
-Once the cluster is deployed, ssh to the login node.
+Once the cluster is deployed, SSH to the login node.
 
 1. Go to the __Compute Engine > VM Instances__ page.
 
     [GCP VM Instances](https://console.cloud.google.com/compute/instances){ .md-button }
 
-2. Click on `ssh` for the login node of the cluster. You may need to approve Google authentication before the session can connect.
+2. Click __SSH__ for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
-[blueprint]: ./blueprint.md/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example
-[workstation-ssh]: ./blueprint.md/#allowing-direct-ssh-from-your-workstation
+!!! note
+    If clicking __SSH__ in the Console produces a permission error, confirm
+    that your user identity holds the IAM roles listed in the OS Login
+    admonition under [Grant ADC Access to Terraform](#grant-adc-access-to-terraform)
+    (`roles/compute.osLogin` and `roles/iap.tunnelResourceAccessor`).
+
+[blueprint]: ./blueprint.md#paratools-pro-for-e4stm-slurm-cluster-blueprint-example
+[workstation-ssh]: ./blueprint.md#allowing-direct-ssh-from-your-workstation
+
 ### Deletion of the Cluster
 
-It is very important that when you are done using the cluster you must use `gcluster` to
-destroy it. If your instances were deleted in a different manner, see
-[Proper Cluster Deletion on GCP](./Cluster-Deletion.md). To delete your cluster correctly do
+When you are done using the cluster, you must use `gcluster` to destroy it.
+If your instances were deleted in a different manner, see
+[Proper Cluster Deletion on GCP](./Cluster-Deletion.md). To delete your cluster
+correctly, run:
 
-```
+``` bash
 ./gcluster destroy ppro-e4s-25-11-cluster
 ```
-At this point you will be prompted to review or accept the proposed changes.
-You may review them if you like, but you should press `a` for accept once satisfied and the deletion will proceed.
+
+At this point, you will be prompted to review or accept the proposed changes.
+You may review them if you wish, then press `a` to accept once satisfied; the
+deletion will then proceed.
