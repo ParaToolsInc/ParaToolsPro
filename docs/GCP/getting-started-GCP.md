@@ -23,8 +23,9 @@ This tutorial assumes the following:
 - You have [enabled the Cloud Storage API][8].
 - You have [enabled the Service Usage API][9].
 - You have [enabled the Cloud Resource Manager API][10].
+- You have subscribed to [ParaTools Pro for E4S™ on the GCP Marketplace][marketplace].
 - You are aware of [the costs for running instances on GCP Compute Engine][11], and
-  of the costs of using the ParaTools Pro for E4S™ GCP marketplace VM image.
+  of the costs of using the [ParaTools Pro for E4S™ GCP Marketplace VM image][marketplace].
 - You are comfortable using the [GCP Cloud Shell][12], or are running locally
     (which will match this tutorial), are familiar with SSH and a terminal, and
     have [installed][13] and [initialized the gcloud CLI][14].
@@ -44,6 +45,7 @@ This tutorial assumes the following:
 [13]: https://cloud.google.com/sdk/docs/install
 [14]: https://cloud.google.com/sdk/docs/initializing
 [15]: https://console.cloud.google.com/projectselector2/home/dashboard
+[marketplace]: https://console.cloud.google.com/marketplace/product/paratools-public/paratools-pro-for-e4s-on-googleclustertoolkit-amd64
 
 ## Tutorial
 
@@ -265,8 +267,8 @@ pay extra attention to the highlighted lines on the
 
     - Determine whether to pass the `${PROJECT_ID}` on the command line, or set
       `vars.project_id:` directly in the blueprint.
-    - Verify that the `image_family` key matches the image for ParaTools Pro
-      for E4S™ from the GCP marketplace.
+    - Verify that the `image_family` key matches the image for
+      [ParaTools Pro for E4S™ from the GCP Marketplace][marketplace].
     - Adjust the region and zone used, if desired.
     - Set an appropriate `machine_type` and `node_count_dynamic_max` for each
       `*_nodeset` (`debug_nodeset`, `compute_nodeset`, and `h3_nodeset`).
