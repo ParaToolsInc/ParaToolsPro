@@ -11,7 +11,7 @@ twitter_card: summary_large_image
 ## General Background Information
 
 In the following tutorial, we roughly follow the same steps as the
-["quickstart tutorial"][1] from the [Google HPC-Toolkit][2] project.
+["Deploy an HPC cluster with Slurm" quickstart][1] from the [Google Cloud Cluster Toolkit][2] project.
 For the purposes of this tutorial, we make the following assumptions:
 
 - You have [created a Google Cloud account][3].
@@ -29,8 +29,8 @@ For the purposes of this tutorial, we make the following assumptions:
     (which will match this tutorial) and are familiar with SSH, a terminal and have
     [installed][13] and [initialized the gcloud CLI][14]
 
-[1]: https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster
-[2]: https://github.com/GoogleCloudPlatform/hpc-toolkit?tab=readme-ov-file#quickstart
+[1]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster
+[2]: https://github.com/GoogleCloudPlatform/cluster-toolkit?tab=readme-ov-file#quickstart
 [3]: https://console.cloud.google.com/freetrial
 [4]: https://cloud.google.com/resource-manager/docs/creating-managing-projects
 [5]: https://cloud.google.com/billing/docs/how-to/verify-billing-enabled#console
@@ -39,8 +39,8 @@ For the purposes of this tutorial, we make the following assumptions:
 [8]: https://console.cloud.google.com/apis/api/storage.googleapis.com/overview
 [9]: https://console.cloud.google.com/apis/api/serviceusage.googleapis.com/overview
 [10]: https://console.cloud.google.com/apis/api/secretmanager.googleapis.com/overview
-[11]: https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#costs
-[12]: https://cloud.google.com/hpc-toolkit/docs/quickstarts/slurm-cluster#launch
+[11]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#costs
+[12]: https://docs.cloud.google.com/cluster-toolkit/docs/quickstarts/slurm-cluster#launch
 [13]: https://cloud.google.com/sdk/docs/install
 [14]: https://cloud.google.com/sdk/docs/initializing
 [15]: https://console.cloud.google.com/projectselector2/home/dashboard
@@ -79,15 +79,25 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
     --role=roles/editor
 ```
 
-### Install the [Google Cloud HPC-Toolkit][2]
+### Install the [Google Cloud Cluster Toolkit][2]
 
-First install the dependencies of `ghpc`. Instructions to do this are included below.
+!!! tip "Pre-built binary bundle (alternative)"
+    Since Cluster Toolkit v1.82.0, Google publishes pre-built `gcluster` bundles on the
+    [Releases page][releases]. Download the bundle matching your OS and architecture
+    (e.g., `gcluster_bundle_linux_amd64.zip`, `gcluster_bundle_mac_arm64.zip`), unzip it,
+    and skip the build-from-source steps below. The bundle includes the `gcluster` binary
+    plus the `examples/` and `community/examples/` directories. The build-from-source
+    instructions below are still supported and required on Windows hosts.
+
+[releases]: https://github.com/GoogleCloudPlatform/cluster-toolkit/releases
+
+First install the dependencies of `gcluster`. Instructions to do this are included below.
 If you encounter trouble please check the latest instructions from Google,
-available [here][prereqs]. If you are running the google cloud shell you do not need to install the dependencies and can skip to cloning the hpctoolkit.
+available [here][prereqs]. If you are running the GCP Cloud Shell you do not need to install the dependencies and can skip to cloning the Cluster Toolkit.
 
-[prereqs]: https://cloud.google.com/hpc-toolkit/docs/setup/install-dependencies
+[prereqs]: https://docs.cloud.google.com/cluster-toolkit/docs/setup/configure-environment
 
-!!! info "Install the [Google Cloud HPC-Toolkit][2]  Prerequisites"
+!!! info "Install the [Google Cloud Cluster Toolkit][2]  Prerequisites"
     Please download and install any missing software packages from the following list:
 
     - [Terraform] version 1.2.0 or later
@@ -127,28 +137,28 @@ available [here][prereqs]. If you are running the google cloud shell you do not 
 [Git]: https://github.com/git-guides/install-git
 [Homebrew]: https://brew.sh
 
-Once all the software listed above has been verified and/or installed, clone the [Google Cloud HPC-Toolkit][2]
+Once all the software listed above has been verified and/or installed, clone the [Google Cloud Cluster Toolkit][2]
 and change directories to the cloned repository:
 ``` bash linenums="1"
-git clone https://github.com/GoogleCloudPlatform/hpc-toolkit.git
-cd hpc-toolkit/
+git clone https://github.com/GoogleCloudPlatform/cluster-toolkit.git
+cd cluster-toolkit/
 ```
-Next build the HPC-Toolkit and verify the version and that it built correctly.
+Next build the Cluster Toolkit and verify the version and that it built correctly.
 ``` bash
 make
-./ghpc --version
+./gcluster --version
 ```
 If you would like to install the compiled binary to a location on your `$PATH`,
 run
 ``` bash
 sudo make install
 ```
-to install the `ghpc` binary into `/usr/local/bin`, of if you do not have root
-priviledges or do not want to install the binary into a system wide location, run
+to install the `gcluster` binary into `/usr/local/bin`, or if you do not have root
+privileges or do not want to install the binary into a system-wide location, run
 ``` bash
 make install-user
 ```
-to install `ghpc` into `${HOME}/bin` and then ensure this is on your path:
+to install `gcluster` into `${HOME}/bin` and then ensure this is on your path:
 
 ``` bash
 export PATH="${PATH}:${HOME}/bin"
@@ -174,6 +184,14 @@ To do this, run:
 gcloud compute project-info add-metadata \
      --metadata enable-oslogin=TRUE
 ```
+
+!!! warning "Do not enable project-level OS Login if you also run ParaTools Pro Heidi in the same GCP project"
+    Heidi (the Adaptive Computing-orchestrated ParaTools Pro for E4S™ marketplace product)
+    relies on instance-metadata-injected SSH keys for cluster-internal authentication.
+    Enabling OS Login at the project level breaks Heidi's SSH key injection. If you plan
+    to deploy both Heidi and Cluster-Toolkit-managed clusters in the same project, leave
+    project-level OS Login disabled and instead enable OS Login at the instance level
+    only on the Cluster Toolkit cluster's VMs, or use a separate project for Heidi.
 
 ### Deploy the Cluster
 
@@ -202,14 +220,16 @@ on the [ParaTools-Pro-slurm-cluster-blueprint-example][blueprint] example.
 !!! Tip "Pay Attention"
     In particular:
 
-    - Determine if you want to pass the `${PROJECT_ID}` on the command line or in the blueprint
+    - Determine if you want to pass the `${PROJECT_ID}` on the command line or set
+      `vars.project_id:` directly in the blueprint
     - Verify that the `image_family` key matches the image for ParaTools Pro for E4S™ from the GCP marketplace
     - Adjust the region and zone used, if desired
-    - Limit the IP `ranges` to those you will be connecting from via SSH in the `ssh-login`
-      `firewall_rules` rule, if in a production setting.
-      If you plan to connect only from the [cloud shell][12] the `ssh-login`
-      `firewall_rules` rule may be completely removed.
-    - Set an appropriate `machine_type` and `dynamic_node_count_max` for your `compute_node_group`.
+    - Set an appropriate `machine_type` and `node_count_dynamic_max` for each
+      `*_nodeset` (`debug_nodeset`, `compute_nodeset`, `h3_nodeset`)
+    - The default `network` module provides IAP SSH only (works with the GCP Console
+      "SSH" button). To SSH directly from your workstation, see
+      [Allowing direct SSH from your workstation][workstation-ssh] in the blueprint
+      reference
 
 Once the blue print is configured to be consistent with your GCP usage quotas and your preferences,
 set deployment variables and create the deployment folder.
@@ -217,7 +237,7 @@ set deployment variables and create the deployment folder.
 !!! info "Create deployment folder"
 
     ``` bash
-    ./ghpc create e4s-23.11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8.yaml \
+    ./gcluster create e4s-25.11-cluster-slurm-gcp-v6.yaml \
       --vars project_id=${PROJECT_ID} # (1)!
     ```
 
@@ -236,7 +256,7 @@ Run the following command to deploy your ParaTools Pro for E4S™ cluster:
 
 !!! info "Perform the deployment"
     ``` bash
-    ./ghpc deploy ppro-4-e4s-23-11-cluster-slurm-rocky8
+    ./gcluster deploy ppro-e4s-25-11-cluster
     ```
 At this point you will be prompted to review or accept the proposed changes.
 You may review them if you like, but you should press `a` for accept once satisfied.
@@ -252,12 +272,15 @@ Once the cluster is deployed, ssh to the login node.
 2. Click on `ssh` for the login node of the cluster. You may need to approve Google authentication before the session can connect.
 
 [blueprint]: ./blueprint.md/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example
+[workstation-ssh]: ./blueprint.md/#allowing-direct-ssh-from-your-workstation
 ### Deletion of the Cluster
 
-It is very important that when you are done using the cluster you must use ghcp to destroy it. If your instances were deleted in a different manner, see here. To delete your cluster correctly do
+It is very important that when you are done using the cluster you must use `gcluster` to
+destroy it. If your instances were deleted in a different manner, see
+[Proper Cluster Deletion on GCP](./Cluster-Deletion.md). To delete your cluster correctly do
 
 ```
-./ghpc destroy ppro-4-e4s-23-11-cluster-slurm-rocky8
+./gcluster destroy ppro-e4s-25-11-cluster
 ```
 At this point you will be prompted to review or accept the proposed changes.
 You may review them if you like, but you should press `a` for accept once satisfied and the deletion will proceed.

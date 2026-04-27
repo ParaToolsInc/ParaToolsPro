@@ -1,104 +1,138 @@
-blueprint_name: ppro-4-e4s-23-11-cluster-slurm-gcp-5-9-hpc-rocky-linux-8
+# Copyright 2022 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+---
+
+blueprint_name: ppro-e4s-25-11-cluster
 
 vars:
-#  project_id:  "paratools-pro" #(1)
-  deployment_name: ppro-4-e4s-23-11-cluster-slurm-rocky8
-  image_family: ppro-4-e4s-23-11-slurm-gcp-5-9-hpc-rocky-linux-8 #(2)!
+  project_id: paratools-pro #(1)!
+  deployment_name: ppro-e4s-25-11-cluster
   region: us-central1
   zone: us-central1-a
-  disk_size_gb: 130
+  disk_size: 250
+  image_family: paratools-gcluster-e4s-2511-nvidia89-x86-64 #(2)!
+  instance_image_custom: true
+
+# Documentation for each of the modules used below can be found at
+# https://github.com/GoogleCloudPlatform/cluster-toolkit/blob/main/modules/README.md
 
 deployment_groups:
 - group: primary
   modules:
-  - id: network1
-    source: modules/network/vpc
-    settings:
-      firewall_rules:
-        - name: ssh-login
-          direction: INGRESS
-          ranges: [0.0.0.0/0] #(3)!
-          allow:
-            - protocol: tcp
-              ports: [22]
+  # Source is an embedded module, denoted by "modules/*" without ./, ../, /
+  # as a prefix. To refer to a local module, prefix with ./, ../ or /
+  - id: network
+    source: modules/network/vpc #(3)!
 
   - id: homefs
     source: modules/file-system/filestore
-    use: [network1]
+    use: [network]
     settings:
       local_mount: /home
 
-  - id: compute_node_group
-    source: community/modules/compute/schedmd-slurm-gcp-v5-node-group
+  - id: debug_nodeset
+    source: community/modules/compute/schedmd-slurm-gcp-v6-nodeset
+    use: [network]
     settings:
       node_count_dynamic_max: 2 #(4)!
-      machine_type: c3-standard-88
-      disk_type: pd-balanced
-      enable_smt: false
-      disk_size_gb: $(vars.disk_size_gb)
+      machine_type: n1-standard-16
+      guest_accelerator: #(5)!
+      - type: nvidia-tesla-t4
+        count: 1
+      enable_placement: false # the default is: true
+      instance_image_custom: true
+      disk_size_gb: $(vars.disk_size)
       instance_image:
         family: $(vars.image_family)
         project: $(vars.project_id)
-      instance_image_custom: true
+
+  - id: debug_partition
+    source: community/modules/compute/schedmd-slurm-gcp-v6-partition
+    use:
+    - debug_nodeset
+    settings:
+      partition_name: debug
+      exclusive: false # allows nodes to stay up after jobs are done
+      is_default: true
+
+  - id: compute_nodeset
+    source: community/modules/compute/schedmd-slurm-gcp-v6-nodeset
+    use: [network]
+    settings:
+      node_count_dynamic_max: 2
       bandwidth_tier: gvnic_enabled #(6)!
+      instance_image_custom: true
+      disk_size_gb: $(vars.disk_size)
+      instance_image:
+        family: $(vars.image_family)
+        project: $(vars.project_id)
 
   - id: compute_partition
-    source: community/modules/compute/schedmd-slurm-gcp-v5-partition
+    source: community/modules/compute/schedmd-slurm-gcp-v6-partition
     use:
-    - network1
-    - homefs
-    - compute_node_group
+    - compute_nodeset
     settings:
       partition_name: compute
-      is_default: true
-      enable_placement: true
 
-  - id: h3_node_group
-    source: community/modules/compute/schedmd-slurm-gcp-v5-node-group
+  - id: h3_nodeset #(7)!
+    source: community/modules/compute/schedmd-slurm-gcp-v6-nodeset
+    use: [network]
     settings:
       node_count_dynamic_max: 2
       machine_type: h3-standard-88
+      # H3 does not support pd-ssd and pd-standard
+      # https://cloud.google.com/compute/docs/compute-optimized-machines#h3_disks
       disk_type: pd-balanced
+      bandwidth_tier: gvnic_enabled
+      instance_image_custom: true
+      disk_size_gb: $(vars.disk_size)
       instance_image:
         family: $(vars.image_family)
         project: $(vars.project_id)
-      instance_image_custom: true
-      bandwidth_tier: gvnic_enabled
 
-  - id: h3_partition #(5)!
-    source: community/modules/compute/schedmd-slurm-gcp-v5-partition
+  - id: h3_partition
+    source: community/modules/compute/schedmd-slurm-gcp-v6-partition
     use:
-    - network1
-    - homefs
-    - h3_node_group
+    - h3_nodeset
     settings:
       partition_name: h3
 
+  - id: slurm_login
+    source: community/modules/scheduler/schedmd-slurm-gcp-v6-login
+    use: [network]
+    settings:
+      machine_type: n1-standard-16
+      enable_login_public_ips: true
+      instance_image_custom: true
+      disk_size_gb: $(vars.disk_size)
+      instance_image:
+        family: $(vars.image_family)
+        project: $(vars.project_id)
+
   - id: slurm_controller
-    source: community/modules/scheduler/schedmd-slurm-gcp-v5-controller
+    source: community/modules/scheduler/schedmd-slurm-gcp-v6-controller
     use:
-    - network1
+    - network
+    - debug_partition
     - compute_partition
     - h3_partition
     - homefs
+    - slurm_login
     settings:
-      disable_controller_public_ips: false
-      disk_size_gb: $(vars.disk_size_gb)
+      enable_controller_public_ips: true
+      disk_size_gb: $(vars.disk_size)
       instance_image:
         family: $(vars.image_family)
         project: $(vars.project_id)
-      instance_image_custom: true
-
-  - id: slurm_login
-    source: community/modules/scheduler/schedmd-slurm-gcp-v5-login
-    use:
-    - network1
-    - slurm_controller
-    settings:
-      machine_type: n2-standard-4
-      disable_login_public_ips: false
-      disk_size_gb: $(vars.disk_size_gb)
-      instance_image:
-        family: $(vars.image_family)
-        project: $(vars.project_id)
-      instance_image_custom: true
