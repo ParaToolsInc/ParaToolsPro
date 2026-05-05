@@ -3,7 +3,7 @@
 properdocs>=1.6.7,<2.0.0
 
 # Material theme (works with ProperDocs via mkdocs.* import alias shim)
-mkdocs-material>=9.7.0,<10.0.0
+mkdocs-material>=9.7.6,<10.0.0
 
 # Link checker (standalone, no mkdocs dependency)
 mkdocs-linkcheck>=1.0.6,<2.0.0
@@ -12,4 +12,4 @@ mkdocs-linkcheck>=1.0.6,<2.0.0
 mkdocs-redirects>=1.2.3,<2.0.0
 
 # Git revision date (last-modified + created date in page footer)
-mkdocs-git-revision-date-localized-plugin>=1.2.0,<2.0.0
+mkdocs-git-revision-date-localized-plugin>=1.5.1,<2.0.0
