@@ -20,7 +20,7 @@ The Software may be deployed:
 
 - Via supported cloud marketplaces, including Amazon Web Services (AWS), Google Cloud Platform (GCP), Microsoft Azure, IBM Cloud, and Oracle Cloud Infrastructure (OCI); and
 - Using supported execution environments, including:
-  - Adaptive Computing’s **Hiedi** interface, or
+  - Adaptive Computing’s **Heidi** interface, or
   - Native HPC clustering services provided by the applicable cloud provider, e.g., AWS Parallel Cluster.
 
 ---
