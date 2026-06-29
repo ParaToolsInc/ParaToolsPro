@@ -89,7 +89,7 @@ Parameters:
     Description: Amazon FSx for Lustre mount name
   PlacementGroupName:
     Type: String
-    Description: Placement group name for compute nodes (leave blank to creaet a new one)
+    Description: Name of an existing cluster placement group for compute nodes (see step 6)
     Default: "AWSPCS-PTPro-cluster"
 
 
@@ -153,11 +153,7 @@ Resources:
             packages:
             - amazon-efs-utils
 
-            # Enable GDM autologin for `ubuntu` BEFORE gdm3 starts, so DCV's "console" session attaches
-            # to the user's Xorg without a greeter->user-session transition. A late (`runcmd`) edit +
-            # `systemctl restart gdm3` would segfault the mode=system dcvagent mid-transition.
-            # Idempotent: sed regex won't match on reboot after first edit. Remove once the underlying
-            # AMI bakes this config. Canonical per AWS DCV Ubuntu + GNOME setup.
+            # Enable GDM autologin for `ubuntu` before gdm3 starts so DCV's console session attaches to the user's Xorg.
             bootcmd:
             - sed -i 's/^#  AutomaticLoginEnable = true/AutomaticLoginEnable = true/' /etc/gdm3/custom.conf
             - sed -i 's/^#  AutomaticLogin = user1/AutomaticLogin = ubuntu/' /etc/gdm3/custom.conf
@@ -174,12 +170,8 @@ Resources:
                 printf '\n  DCV remote desktop: https://%s:8443/  (user: ubuntu)\n\n' "$IP"
 
             runcmd:
-            # Mount EFS filesystem as /home. The home-seed rsync (copying the AMI's baked
-            # /home into the freshly-mounted EFS) runs in the BACKGROUND: AWS PCS appends its
-            # pcs_bootstrap_finalize.sh (which starts slurmd) as the LAST runcmd entry, so a
-            # slow multi-GB small-file rsync here would delay slurmd past the node-bootstrap
-            # health window and trigger a node boot loop on content-rich AMIs. The mount stays
-            # synchronous; only the seed is deferred.
+            # Mount EFS as /home; seed it from the AMI's /home in the BACKGROUND so a large
+            # /home can't delay PCS slurmd start (appended as the last runcmd) and boot-loop the node.
             - mkdir -p /tmp/home
             - rsync -aA /home/ /tmp/home
             - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab
@@ -233,12 +225,8 @@ Resources:
             - amazon-efs-utils
 
             runcmd:
-            # Mount EFS filesystem as /home. The home-seed rsync (copying the AMI's baked
-            # /home into the freshly-mounted EFS) runs in the BACKGROUND: AWS PCS appends its
-            # pcs_bootstrap_finalize.sh (which starts slurmd) as the LAST runcmd entry, so a
-            # slow multi-GB small-file rsync here would delay slurmd past the node-bootstrap
-            # health window and trigger a node boot loop on content-rich AMIs. The mount stays
-            # synchronous; only the seed is deferred.
+            # Mount EFS as /home; seed it from the AMI's /home in the BACKGROUND so a large
+            # /home can't delay PCS slurmd start (appended as the last runcmd) and boot-loop the node.
             - mkdir -p /tmp/home
             - rsync -aA /home/ /tmp/home
             - echo "${EfsFilesystemId}:/ /home efs tls,_netdev" >> /etc/fstab

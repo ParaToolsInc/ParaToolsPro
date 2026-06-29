@@ -26,6 +26,7 @@ Metadata:
       - Label:
           default: Subnets B
         Parameters:
+          - ProvisionSubnetsB
           - CidrPublicSubnetB
           - CidrPrivateSubnetB
       - Label:
@@ -71,10 +72,17 @@ Parameters:
     Default: 10.3.160.0/20
     Description: VPC CIDR Block for the Private Subnet C
     Type: String
+  ProvisionSubnetsB:
+    Type: String
+    Description: Provision optional 2nd Availability Zone (public + private subnet B, with its own NAT gateway)
+    Default: "False"
+    AllowedValues:
+         - "True"
+         - "False"
   ProvisionSubnetsC:
     Type: String
-    Description: Provision optional 3rd set of subnets
-    Default: "True"
+    Description: Provision optional 3rd Availability Zone (public + private subnet C, with its own NAT gateway)
+    Default: "False"
     AllowedValues:
          - "True"
          - "False"
@@ -203,6 +211,7 @@ Mappings:
       ZoneId3: mec1-az1
 
 Conditions:
+     DoProvisionSubnetsB: !Equals [!Ref ProvisionSubnetsB, "True"]
      DoProvisionSubnetsC: !Equals [!Ref ProvisionSubnetsC, "True"]
 
 Resources:
@@ -271,6 +280,7 @@ Resources:
 
   PublicSubnetB:
     Type: AWS::EC2::Subnet
+    Condition: DoProvisionSubnetsB
     Properties:
       VpcId: !Ref VPC
       CidrBlock: !Ref CidrPublicSubnetB
@@ -329,6 +339,7 @@ Resources:
 
   PublicSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: DoProvisionSubnetsB
     Properties:
       SubnetId: !Ref PublicSubnetB
       RouteTableId: !Ref PublicRouteTable
@@ -356,6 +367,7 @@ Resources:
   
   PrivateSubnetB:
     Type: AWS::EC2::Subnet
+    Condition: DoProvisionSubnetsB
     Properties:
       VpcId: !Ref VPC
       AvailabilityZone: !GetAtt AvailabiltyZone2.ZoneName
@@ -391,6 +403,7 @@ Resources:
       
   NatGatewayBEIP:
     Type: AWS::EC2::EIP
+    Condition: DoProvisionSubnetsB
     DependsOn: AttachGateway
     Properties:
       Domain: vpc
@@ -410,6 +423,7 @@ Resources:
 
   NatGatewayB:
     Type: AWS::EC2::NatGateway
+    Condition: DoProvisionSubnetsB
     Properties:
       AllocationId: !GetAtt NatGatewayBEIP.AllocationId
       SubnetId: !Ref PublicSubnetB
@@ -431,6 +445,7 @@ Resources:
   
   PrivateRouteTableB:
     Type: AWS::EC2::RouteTable
+    Condition: DoProvisionSubnetsB
     Properties:
       VpcId: !Ref VPC
       Tags:
@@ -455,6 +470,7 @@ Resources:
       
   DefaultPrivateRouteB:
     Type: AWS::EC2::Route
+    Condition: DoProvisionSubnetsB
     Properties:
       RouteTableId: !Ref PrivateRouteTableB
       DestinationCidrBlock: 0.0.0.0/0
@@ -476,6 +492,7 @@ Resources:
       
   PrivateSubnetBRouteTableAssociation:
     Type: AWS::EC2::SubnetRouteTableAssociation
+    Condition: DoProvisionSubnetsB
     Properties:
       RouteTableId: !Ref PrivateRouteTableB
       SubnetId: !Ref PrivateSubnetB
@@ -496,6 +513,7 @@ Resources:
 
   AvailabiltyZone2:
     Type: Custom::AvailabiltyZone
+    Condition: DoProvisionSubnetsB
     DependsOn: LogGroupGetAZLambdaFunction
     Properties:
       ServiceToken: !GetAtt GetAZLambdaFunction.Arn
@@ -590,7 +608,7 @@ Resources:
       RouteTableIds:
         - !Ref PublicRouteTable
         - !Ref PrivateRouteTableA
-        - !Ref PrivateRouteTableB
+        - !If [DoProvisionSubnetsB, !Ref PrivateRouteTableB, !Ref "AWS::NoValue"]
       VpcId: !Ref VPC
 
   SecurityGroup:
@@ -616,7 +634,10 @@ Outputs:
     Value: !Join
       - ','
       - - !Ref PublicSubnetA
-        - !Ref PublicSubnetB
+        - !If
+          - DoProvisionSubnetsB
+          - !Ref PublicSubnetB
+          - !Ref AWS::NoValue
         - !If
           - DoProvisionSubnetsC
           - !Ref PublicSubnetC
@@ -628,7 +649,10 @@ Outputs:
     Value: !Join
       - ','
       - - !Ref PrivateSubnetA
-        - !Ref PrivateSubnetB
+        - !If
+          - DoProvisionSubnetsB
+          - !Ref PrivateSubnetB
+          - !Ref AWS::NoValue
         - !If
           - DoProvisionSubnetsC
           - !Ref PrivateSubnetC

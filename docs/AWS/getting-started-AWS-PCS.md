@@ -28,6 +28,9 @@ For the purposes of this tutorial, you have already created an [AWS account][5] 
 
 For additional context, see the official [AWS PCS Getting Started](https://docs.aws.amazon.com/pcs/latest/userguide/getting-started.html) guide. This tutorial follows the official guide with a few minor changes; refer to it if anything is unclear.
 
+!!! note "Console links target `us-east-1`"
+    The console links below open in `us-east-1` — switch the Region in the console after the page loads to deploy elsewhere. Deploy the linked template files via the CloudFormation console (**Upload a template file**) or `aws cloudformation deploy --region <region> --template-file <file>`.
+
 ### 1. Create VPC and Subnets
 
 ??? tip "It is possible to reuse existing VPC and subnets"
@@ -44,8 +47,6 @@ Create a new stack for the cluster's VPC and subnets [using the CloudFormation c
     ```
 
 Give the stack a name like `AWSPCS-PTPro-cluster` and leave the options at their defaults.
-
-!!! tip "Use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T124707.749Zt1m-0-pcs-cluster-cloudformation-vpc-and-subnets.yaml&stackName=AWSPCS-PTPro-cluster&param_CidrPublicSubnetA=10.3.0.0%2F20&param_ProvisionSubnetsC=False&param_CidrBlock=10.3.0.0%2F16&param_CidrPrivateSubnetB=10.3.144.0%2F20&param_CidrPrivateSubnetC=10.3.160.0%2F20&param_CidrPublicSubnetC=10.3.32.0%2F20&param_CidrPublicSubnetB=10.3.16.0%2F20&param_CidrPrivateSubnetA=10.3.128.0%2F20) to quickly provision these resources with default settings"
 
 Under **Capabilities**, check the box for **I acknowledge that AWS CloudFormation might create IAM resources**.
 
@@ -77,10 +78,6 @@ Using [CloudFormation][1], create a new stack for the security groups with the f
 - Set **VpcId** to the VPC ID noted in [step 1].
 - Enable SSH, and optionally enable DCV access.
 
-??? warning "Use a Quick create link"
-
-    Use this AWS CloudFormation [quick-create link](https://us-east-1.console.aws.amazon.com/cloudformation/home?region=us-east-1#/stacks/quickcreate?templateURL=https%3A%2F%2Fs3.us-east-1.amazonaws.com%2Fcf-templates-behdg14v2lp8-us-east-1%2F2025-12-18T134612.678Zi9c-1-pcs-cluster-cloudformation-security-groups.yaml&stackName=AWSPCS-PTPro-sg&param_CreateInboundDcvSecurityGroup=True&param_VpcId=vpc-0c6a46e761800dead&param_CreateInboundSshSecurityGroup=True&param_ClientIpCidr=0.0.0.0%2F0) to provision these security groups in `us-east-1`. __*Change the VPC ID*__ to the one created in [step 1].
-
 ### 3. Create PCS Cluster
 
 ??? tip "It is possible to reuse an existing PCS cluster"
@@ -90,7 +87,7 @@ Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) a
 
 - Under **Cluster setup**, choose a name like `AWSPCS-PTPro-cluster`.
 - Set the **Controller size** to **Small**.
-- Use the version of Slurm compatible with the ParaTools Pro for E4S™ image. This is usually the latest version available (`25.05` as of December 2025).
+- Set the **Slurm version** to the latest (`25.11` as of June 2026). Images target the newest Slurm at build time, so the console may offer a version newer than an older image supports — if the compute nodes fail to register, try recreating the cluster on the previous Slurm version.
 - Under **Networking**:
     - Use the VPC ID created in [step 1] (e.g., `AWSPCS-PTPro-cluster...`).
     - Select the subnet labeled `PrivateSubnetA` created in [step 1].
@@ -104,7 +101,7 @@ Go to the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters) a
 - Click **Create file system**:
     - **Name**: something like `AWSPCS-PTPro-fs`.
     - **Virtual Private Cloud (VPC)**: the VPC ID from [step 1](#1-create-vpc-and-subnets).
-- Click **Create**.
+- Click **Create**. The default settings add an EFS **mount target in each subnet's Availability Zone using the VPC default security group** — the launch templates ([step 7](#7-create-node-launch-templates)) attach that same default security group to the nodes, so they can reach EFS over NFS. (A single-AZ VPC gets one mount target; confirm it is in the cluster subnet's AZ.)
 - Note the **File system ID** (e.g., `fs-0123456789abcdef0`); it is needed in [step 7](#7-create-node-launch-templates).
 
 ### 5. Create an Instance Profile
@@ -269,10 +266,12 @@ In the [AWS PCS console](https://console.aws.amazon.com/pcs/home#/clusters), sel
 
     | Role | `x86_64` | `arm64` |
     |---|---|---|
-    | Compute node group | `g4dn.8xlarge` (NVIDIA T4, EFA) | `hpc7g.8xlarge` (Graviton3E, 200 Gbps EFA, no GPU) |
+    | Compute node group | `g4dn.8xlarge` (NVIDIA T4, EFA) | `c7g.16xlarge` (Graviton3, EFA, no GPU) |
     | Login node group (`~4xlarge`) | `g4dn.4xlarge` (NVIDIA T4) | `g5g.4xlarge` (Graviton2 + NVIDIA T4G) |
 
     `g5g` has no EFA and is suited only for login / interactive visualization, not for compute.
+
+    For arm64 compute, `hpc7g.8xlarge` (Graviton3E, 200 Gbps EFA) is a higher-bandwidth alternative in regions that offer it (e.g., `us-east-1`, `eu-west-1`, `ap-northeast-1`); it is not available everywhere (notably not `us-west-2`).
 
 #### 8.1 Compute node group (`compute-1`)
 
@@ -401,6 +400,9 @@ The ParaTools Pro for E4S™ AMI ships with [NICE DCV][dcv] configured to serve 
 
 !!! tip "Rotate or set the password later"
     `DcvUbuntuPassword` is only consumed once during cloud-init on first boot. To change the password later (or to set one when the parameter was left blank), SSH into the login node and run `sudo passwd ubuntu`.
+
+!!! warning "DCV keyboard not responding?"
+    If the desktop accepts the mouse but no keyboard input, log out of the GNOME desktop session (top-right system menu → **Log Out**) and log back in. The DCV connection stays up, and typing works once the session restarts — no settings changes needed.
 
 ### 11. Verify the Slurm environment
 
