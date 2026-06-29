@@ -3357,7 +3357,15 @@ Otherwise, create it as follows:</p>
 <span class="normal"><a href="#__codelineno-6-265">265</a></span>
 <span class="normal"><a href="#__codelineno-6-266">266</a></span>
 <span class="normal"><a href="#__codelineno-6-267">267</a></span>
-<span class="normal"><a href="#__codelineno-6-268">268</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># original source: https://aws-hpc-recipes.s3.amazonaws.com/main/recipes/pcs/getting_started/assets/pcs-lt-efs-fsxl.yaml</span>
+<span class="normal"><a href="#__codelineno-6-268">268</a></span>
+<span class="normal"><a href="#__codelineno-6-269">269</a></span>
+<span class="normal"><a href="#__codelineno-6-270">270</a></span>
+<span class="normal"><a href="#__codelineno-6-271">271</a></span>
+<span class="normal"><a href="#__codelineno-6-272">272</a></span>
+<span class="normal"><a href="#__codelineno-6-273">273</a></span>
+<span class="normal"><a href="#__codelineno-6-274">274</a></span>
+<span class="normal"><a href="#__codelineno-6-275">275</a></span>
+<span class="normal"><a href="#__codelineno-6-276">276</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1"></a><span class="c1"># original source: https://aws-hpc-recipes.s3.amazonaws.com/main/recipes/pcs/getting_started/assets/pcs-lt-efs-fsxl.yaml</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2"></a><span class="c1"># has been modified</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3"></a>
 <a id="__codelineno-6-4" name="__codelineno-6-4"></a><span class="nt">AWSTemplateFormatVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2010-09-09</span>
@@ -3533,98 +3541,106 @@ Otherwise, create it as follows:</p>
 <a id="__codelineno-6-174" name="__codelineno-6-174"></a><span class="w">                </span><span class="no">printf &#39;\n  DCV remote desktop: https://%s:8443/  (user: ubuntu)\n\n&#39; &quot;$IP&quot;</span>
 <a id="__codelineno-6-175" name="__codelineno-6-175"></a>
 <a id="__codelineno-6-176" name="__codelineno-6-176"></a><span class="w">            </span><span class="no">runcmd:</span>
-<a id="__codelineno-6-177" name="__codelineno-6-177"></a><span class="w">            </span><span class="no"># Mount EFS filesystem as /home</span>
-<a id="__codelineno-6-178" name="__codelineno-6-178"></a><span class="w">            </span><span class="no">- mkdir -p /tmp/home</span>
-<a id="__codelineno-6-179" name="__codelineno-6-179"></a><span class="w">            </span><span class="no">- rsync -aA /home/ /tmp/home</span>
-<a id="__codelineno-6-180" name="__codelineno-6-180"></a><span class="w">            </span><span class="no">- echo &quot;${EfsFilesystemId}:/ /home efs tls,_netdev&quot; &gt;&gt; /etc/fstab</span>
-<a id="__codelineno-6-181" name="__codelineno-6-181"></a><span class="w">            </span><span class="no">- mount -a -t efs defaults</span>
-<a id="__codelineno-6-182" name="__codelineno-6-182"></a><span class="w">            </span><span class="no">- if command -v sestatus &gt;/dev/null 2&gt;&amp;1 &amp;&amp; [ &quot;X$(sestatus | awk &#39;/^SELinux status:/{print $3}&#39;)&quot; = &quot;Xenabled&quot; ]; then setsebool -P use_nfs_home_dirs 1; fi</span>
-<a id="__codelineno-6-183" name="__codelineno-6-183"></a><span class="w">            </span><span class="no">- rsync -aA --ignore-existing /tmp/home/ /home</span>
-<a id="__codelineno-6-184" name="__codelineno-6-184"></a><span class="w">            </span><span class="no">- rm -rf /tmp/home/</span>
-<a id="__codelineno-6-185" name="__codelineno-6-185"></a><span class="w">            </span><span class="no"># If provided, mount FSxL filesystem as /shared</span>
-<a id="__codelineno-6-186" name="__codelineno-6-186"></a><span class="w">            </span><span class="no">- if [ ! -z &quot;${FSxLustreFilesystemId}&quot; ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; chmod 777 /shared; fi</span>
-<a id="__codelineno-6-187" name="__codelineno-6-187"></a><span class="w">            </span><span class="no"># If provided, set an initial password for the `ubuntu` user so DCV web sessions can sign in.</span>
-<a id="__codelineno-6-188" name="__codelineno-6-188"></a><span class="w">            </span><span class="no">- if [ -n &#39;${DcvUbuntuPassword}&#39; ]; then echo &#39;ubuntu:${DcvUbuntuPassword}&#39; | chpasswd; fi</span>
-<a id="__codelineno-6-189" name="__codelineno-6-189"></a>
-<a id="__codelineno-6-190" name="__codelineno-6-190"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==--</span>
-<a id="__codelineno-6-191" name="__codelineno-6-191"></a>
-<a id="__codelineno-6-192" name="__codelineno-6-192"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplate</span><span class="p">:</span>
-<a id="__codelineno-6-193" name="__codelineno-6-193"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::EC2::LaunchTemplate</span>
-<a id="__codelineno-6-194" name="__codelineno-6-194"></a><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
-<a id="__codelineno-6-195" name="__codelineno-6-195"></a><span class="w">      </span><span class="nt">LaunchTemplateName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;compute-${AWS::StackName}&#39;</span>
-<a id="__codelineno-6-196" name="__codelineno-6-196"></a><span class="w">      </span><span class="nt">LaunchTemplateData</span><span class="p">:</span>
-<a id="__codelineno-6-197" name="__codelineno-6-197"></a><span class="w">        </span><span class="nt">TagSpecifications</span><span class="p">:</span>
-<a id="__codelineno-6-198" name="__codelineno-6-198"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ResourceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">instance</span>
-<a id="__codelineno-6-199" name="__codelineno-6-199"></a><span class="w">            </span><span class="nt">Tags</span><span class="p">:</span>
-<a id="__codelineno-6-200" name="__codelineno-6-200"></a><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HPCRecipes</span>
-<a id="__codelineno-6-201" name="__codelineno-6-201"></a><span class="w">                </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
-<a id="__codelineno-6-202" name="__codelineno-6-202"></a><span class="w">        </span><span class="nt">MetadataOptions</span><span class="p">:</span>
-<a id="__codelineno-6-203" name="__codelineno-6-203"></a><span class="w">          </span><span class="nt">HttpEndpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enabled</span>
-<a id="__codelineno-6-204" name="__codelineno-6-204"></a><span class="w">          </span><span class="nt">HttpPutResponseHopLimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
-<a id="__codelineno-6-205" name="__codelineno-6-205"></a><span class="w">          </span><span class="nt">HttpTokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">required</span>
-<a id="__codelineno-6-206" name="__codelineno-6-206"></a><span class="w">        </span><span class="nt">Placement</span><span class="p">:</span>
-<a id="__codelineno-6-207" name="__codelineno-6-207"></a><span class="w">          </span><span class="nt">GroupName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PlacementGroupName</span>
-<a id="__codelineno-6-208" name="__codelineno-6-208"></a><span class="w">        </span><span class="nt">NetworkInterfaces</span><span class="p">:</span>
-<a id="__codelineno-6-209" name="__codelineno-6-209"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary network interface</span>
-<a id="__codelineno-6-210" name="__codelineno-6-210"></a><span class="w">            </span><span class="nt">DeviceIndex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-6-211" name="__codelineno-6-211"></a><span class="w">            </span><span class="nt">InterfaceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">efa</span>
-<a id="__codelineno-6-212" name="__codelineno-6-212"></a><span class="w">            </span><span class="nt">NetworkCardIndex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
-<a id="__codelineno-6-213" name="__codelineno-6-213"></a><span class="w">            </span><span class="nt">SubnetId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NodeGroupSubnetId</span>
-<a id="__codelineno-6-214" name="__codelineno-6-214"></a><span class="w">            </span><span class="nt">Groups</span><span class="p">:</span>
-<a id="__codelineno-6-215" name="__codelineno-6-215"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EfaSecurityGroup</span>
-<a id="__codelineno-6-216" name="__codelineno-6-216"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterSecurityGroupId</span>
-<a id="__codelineno-6-217" name="__codelineno-6-217"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VpcDefaultSecurityGroupId</span>
-<a id="__codelineno-6-218" name="__codelineno-6-218"></a><span class="w">        </span><span class="nt">KeyName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SshKeyName</span>
-<a id="__codelineno-6-219" name="__codelineno-6-219"></a><span class="w">        </span><span class="nt">UserData</span><span class="p">:</span>
-<a id="__codelineno-6-220" name="__codelineno-6-220"></a><span class="w">          </span><span class="nt">Fn::Base64</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<a id="__codelineno-6-221" name="__codelineno-6-221"></a><span class="w">            </span><span class="no">MIME-Version: 1.0</span>
-<a id="__codelineno-6-222" name="__codelineno-6-222"></a><span class="w">            </span><span class="no">Content-Type: multipart/mixed; boundary=&quot;==MYBOUNDARY==&quot;</span>
-<a id="__codelineno-6-223" name="__codelineno-6-223"></a>
-<a id="__codelineno-6-224" name="__codelineno-6-224"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==</span>
-<a id="__codelineno-6-225" name="__codelineno-6-225"></a><span class="w">            </span><span class="no">Content-Type: text/cloud-config; charset=&quot;us-ascii&quot;</span>
-<a id="__codelineno-6-226" name="__codelineno-6-226"></a><span class="w">            </span><span class="no">MIME-Version: 1.0</span>
+<a id="__codelineno-6-177" name="__codelineno-6-177"></a><span class="w">            </span><span class="no"># Mount EFS filesystem as /home. The home-seed rsync (copying the AMI&#39;s baked</span>
+<a id="__codelineno-6-178" name="__codelineno-6-178"></a><span class="w">            </span><span class="no"># /home into the freshly-mounted EFS) runs in the BACKGROUND: AWS PCS appends its</span>
+<a id="__codelineno-6-179" name="__codelineno-6-179"></a><span class="w">            </span><span class="no"># pcs_bootstrap_finalize.sh (which starts slurmd) as the LAST runcmd entry, so a</span>
+<a id="__codelineno-6-180" name="__codelineno-6-180"></a><span class="w">            </span><span class="no"># slow multi-GB small-file rsync here would delay slurmd past the node-bootstrap</span>
+<a id="__codelineno-6-181" name="__codelineno-6-181"></a><span class="w">            </span><span class="no"># health window and trigger a node boot loop on content-rich AMIs. The mount stays</span>
+<a id="__codelineno-6-182" name="__codelineno-6-182"></a><span class="w">            </span><span class="no"># synchronous; only the seed is deferred.</span>
+<a id="__codelineno-6-183" name="__codelineno-6-183"></a><span class="w">            </span><span class="no">- mkdir -p /tmp/home</span>
+<a id="__codelineno-6-184" name="__codelineno-6-184"></a><span class="w">            </span><span class="no">- rsync -aA /home/ /tmp/home</span>
+<a id="__codelineno-6-185" name="__codelineno-6-185"></a><span class="w">            </span><span class="no">- echo &quot;${EfsFilesystemId}:/ /home efs tls,_netdev&quot; &gt;&gt; /etc/fstab</span>
+<a id="__codelineno-6-186" name="__codelineno-6-186"></a><span class="w">            </span><span class="no">- mount -a -t efs defaults</span>
+<a id="__codelineno-6-187" name="__codelineno-6-187"></a><span class="w">            </span><span class="no">- if command -v sestatus &gt;/dev/null 2&gt;&amp;1 &amp;&amp; [ &quot;X$(sestatus | awk &#39;/^SELinux status:/{print $3}&#39;)&quot; = &quot;Xenabled&quot; ]; then setsebool -P use_nfs_home_dirs 1; fi</span>
+<a id="__codelineno-6-188" name="__codelineno-6-188"></a><span class="w">            </span><span class="no">- ( rsync -aA --ignore-existing /tmp/home/ /home &amp;&amp; rm -rf /tmp/home/ ) &gt;/var/log/efs-home-seed.log 2&gt;&amp;1 &amp;</span>
+<a id="__codelineno-6-189" name="__codelineno-6-189"></a><span class="w">            </span><span class="no"># If provided, mount FSxL filesystem as /shared</span>
+<a id="__codelineno-6-190" name="__codelineno-6-190"></a><span class="w">            </span><span class="no">- if [ ! -z &quot;${FSxLustreFilesystemId}&quot; ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; chmod 777 /shared; fi</span>
+<a id="__codelineno-6-191" name="__codelineno-6-191"></a><span class="w">            </span><span class="no"># If provided, set an initial password for the `ubuntu` user so DCV web sessions can sign in.</span>
+<a id="__codelineno-6-192" name="__codelineno-6-192"></a><span class="w">            </span><span class="no">- if [ -n &#39;${DcvUbuntuPassword}&#39; ]; then echo &#39;ubuntu:${DcvUbuntuPassword}&#39; | chpasswd; fi</span>
+<a id="__codelineno-6-193" name="__codelineno-6-193"></a>
+<a id="__codelineno-6-194" name="__codelineno-6-194"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==--</span>
+<a id="__codelineno-6-195" name="__codelineno-6-195"></a>
+<a id="__codelineno-6-196" name="__codelineno-6-196"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplate</span><span class="p">:</span>
+<a id="__codelineno-6-197" name="__codelineno-6-197"></a><span class="w">    </span><span class="nt">Type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">AWS::EC2::LaunchTemplate</span>
+<a id="__codelineno-6-198" name="__codelineno-6-198"></a><span class="w">    </span><span class="nt">Properties</span><span class="p">:</span>
+<a id="__codelineno-6-199" name="__codelineno-6-199"></a><span class="w">      </span><span class="nt">LaunchTemplateName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;compute-${AWS::StackName}&#39;</span>
+<a id="__codelineno-6-200" name="__codelineno-6-200"></a><span class="w">      </span><span class="nt">LaunchTemplateData</span><span class="p">:</span>
+<a id="__codelineno-6-201" name="__codelineno-6-201"></a><span class="w">        </span><span class="nt">TagSpecifications</span><span class="p">:</span>
+<a id="__codelineno-6-202" name="__codelineno-6-202"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">ResourceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">instance</span>
+<a id="__codelineno-6-203" name="__codelineno-6-203"></a><span class="w">            </span><span class="nt">Tags</span><span class="p">:</span>
+<a id="__codelineno-6-204" name="__codelineno-6-204"></a><span class="w">              </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Key</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">HPCRecipes</span>
+<a id="__codelineno-6-205" name="__codelineno-6-205"></a><span class="w">                </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<a id="__codelineno-6-206" name="__codelineno-6-206"></a><span class="w">        </span><span class="nt">MetadataOptions</span><span class="p">:</span>
+<a id="__codelineno-6-207" name="__codelineno-6-207"></a><span class="w">          </span><span class="nt">HttpEndpoint</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">enabled</span>
+<a id="__codelineno-6-208" name="__codelineno-6-208"></a><span class="w">          </span><span class="nt">HttpPutResponseHopLimit</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">4</span>
+<a id="__codelineno-6-209" name="__codelineno-6-209"></a><span class="w">          </span><span class="nt">HttpTokens</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">required</span>
+<a id="__codelineno-6-210" name="__codelineno-6-210"></a><span class="w">        </span><span class="nt">Placement</span><span class="p">:</span>
+<a id="__codelineno-6-211" name="__codelineno-6-211"></a><span class="w">          </span><span class="nt">GroupName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">PlacementGroupName</span>
+<a id="__codelineno-6-212" name="__codelineno-6-212"></a><span class="w">        </span><span class="nt">NetworkInterfaces</span><span class="p">:</span>
+<a id="__codelineno-6-213" name="__codelineno-6-213"></a><span class="w">          </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Primary network interface</span>
+<a id="__codelineno-6-214" name="__codelineno-6-214"></a><span class="w">            </span><span class="nt">DeviceIndex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-6-215" name="__codelineno-6-215"></a><span class="w">            </span><span class="nt">InterfaceType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">efa</span>
+<a id="__codelineno-6-216" name="__codelineno-6-216"></a><span class="w">            </span><span class="nt">NetworkCardIndex</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">0</span>
+<a id="__codelineno-6-217" name="__codelineno-6-217"></a><span class="w">            </span><span class="nt">SubnetId</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">NodeGroupSubnetId</span>
+<a id="__codelineno-6-218" name="__codelineno-6-218"></a><span class="w">            </span><span class="nt">Groups</span><span class="p">:</span>
+<a id="__codelineno-6-219" name="__codelineno-6-219"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EfaSecurityGroup</span>
+<a id="__codelineno-6-220" name="__codelineno-6-220"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterSecurityGroupId</span>
+<a id="__codelineno-6-221" name="__codelineno-6-221"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">VpcDefaultSecurityGroupId</span>
+<a id="__codelineno-6-222" name="__codelineno-6-222"></a><span class="w">        </span><span class="nt">KeyName</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">SshKeyName</span>
+<a id="__codelineno-6-223" name="__codelineno-6-223"></a><span class="w">        </span><span class="nt">UserData</span><span class="p">:</span>
+<a id="__codelineno-6-224" name="__codelineno-6-224"></a><span class="w">          </span><span class="nt">Fn::Base64</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="p p-Indicator">|</span>
+<a id="__codelineno-6-225" name="__codelineno-6-225"></a><span class="w">            </span><span class="no">MIME-Version: 1.0</span>
+<a id="__codelineno-6-226" name="__codelineno-6-226"></a><span class="w">            </span><span class="no">Content-Type: multipart/mixed; boundary=&quot;==MYBOUNDARY==&quot;</span>
 <a id="__codelineno-6-227" name="__codelineno-6-227"></a>
-<a id="__codelineno-6-228" name="__codelineno-6-228"></a><span class="w">            </span><span class="no">packages:</span>
-<a id="__codelineno-6-229" name="__codelineno-6-229"></a><span class="w">            </span><span class="no">- amazon-efs-utils</span>
-<a id="__codelineno-6-230" name="__codelineno-6-230"></a>
-<a id="__codelineno-6-231" name="__codelineno-6-231"></a><span class="w">            </span><span class="no">runcmd:</span>
-<a id="__codelineno-6-232" name="__codelineno-6-232"></a><span class="w">            </span><span class="no"># Mount EFS filesystem as /home</span>
-<a id="__codelineno-6-233" name="__codelineno-6-233"></a><span class="w">            </span><span class="no">- mkdir -p /tmp/home</span>
-<a id="__codelineno-6-234" name="__codelineno-6-234"></a><span class="w">            </span><span class="no">- rsync -aA /home/ /tmp/home</span>
-<a id="__codelineno-6-235" name="__codelineno-6-235"></a><span class="w">            </span><span class="no">- echo &quot;${EfsFilesystemId}:/ /home efs tls,_netdev&quot; &gt;&gt; /etc/fstab</span>
-<a id="__codelineno-6-236" name="__codelineno-6-236"></a><span class="w">            </span><span class="no">- mount -a -t efs defaults</span>
-<a id="__codelineno-6-237" name="__codelineno-6-237"></a><span class="w">            </span><span class="no">- if command -v sestatus &gt;/dev/null 2&gt;&amp;1 &amp;&amp; [ &quot;X$(sestatus | awk &#39;/^SELinux status:/{print $3}&#39;)&quot; = &quot;Xenabled&quot; ]; then setsebool -P use_nfs_home_dirs 1; fi</span>
-<a id="__codelineno-6-238" name="__codelineno-6-238"></a><span class="w">            </span><span class="no">- rsync -aA --ignore-existing /tmp/home/ /home</span>
-<a id="__codelineno-6-239" name="__codelineno-6-239"></a><span class="w">            </span><span class="no">- rm -rf /tmp/home/</span>
-<a id="__codelineno-6-240" name="__codelineno-6-240"></a><span class="w">            </span><span class="no"># If provided, mount FSxL filesystem as /shared</span>
-<a id="__codelineno-6-241" name="__codelineno-6-241"></a><span class="w">            </span><span class="no">- if [ ! -z &quot;${FSxLustreFilesystemId}&quot; ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; fi</span>
-<a id="__codelineno-6-242" name="__codelineno-6-242"></a>
-<a id="__codelineno-6-243" name="__codelineno-6-243"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==--</span>
-<a id="__codelineno-6-244" name="__codelineno-6-244"></a>
-<a id="__codelineno-6-245" name="__codelineno-6-245"></a><span class="nt">Outputs</span><span class="p">:</span>
-<a id="__codelineno-6-246" name="__codelineno-6-246"></a><span class="w">  </span><span class="nt">LoginLaunchTemplateId</span><span class="p">:</span>
-<a id="__codelineno-6-247" name="__codelineno-6-247"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Login</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">ID&quot;</span>
-<a id="__codelineno-6-248" name="__codelineno-6-248"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoginLaunchTemplate</span>
-<a id="__codelineno-6-249" name="__codelineno-6-249"></a><span class="w">  </span><span class="nt">LoginLaunchTemplateName</span><span class="p">:</span>
-<a id="__codelineno-6-250" name="__codelineno-6-250"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Login</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">name&quot;</span>
-<a id="__codelineno-6-251" name="__codelineno-6-251"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;login-${AWS::StackName}&#39;</span>
-<a id="__codelineno-6-252" name="__codelineno-6-252"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplateId</span><span class="p">:</span>
-<a id="__codelineno-6-253" name="__codelineno-6-253"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Compute</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">ID&quot;</span>
-<a id="__codelineno-6-254" name="__codelineno-6-254"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ComputeLaunchTemplate</span>
-<a id="__codelineno-6-255" name="__codelineno-6-255"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplateName</span><span class="p">:</span>
-<a id="__codelineno-6-256" name="__codelineno-6-256"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Compute</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">name&quot;</span>
-<a id="__codelineno-6-257" name="__codelineno-6-257"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;compute-${AWS::StackName}&#39;</span>
-<a id="__codelineno-6-258" name="__codelineno-6-258"></a><span class="w">  </span><span class="nt">EfaSecurityGroupId</span><span class="p">:</span>
-<a id="__codelineno-6-259" name="__codelineno-6-259"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security group created to support EFA communications</span>
-<a id="__codelineno-6-260" name="__codelineno-6-260"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EfaSecurityGroup</span>
-<a id="__codelineno-6-261" name="__codelineno-6-261"></a><span class="w">  </span><span class="nt">DcvWebAccessHint</span><span class="p">:</span>
-<a id="__codelineno-6-262" name="__codelineno-6-262"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
-<a id="__codelineno-6-263" name="__codelineno-6-263"></a><span class="w">      </span><span class="no">Once the login node reaches &quot;Active&quot;, point a browser at</span>
-<a id="__codelineno-6-264" name="__codelineno-6-264"></a><span class="w">      </span><span class="no">https://&lt;login-public-ipv4&gt;:8443/ and sign in as user `ubuntu`</span>
-<a id="__codelineno-6-265" name="__codelineno-6-265"></a><span class="w">      </span><span class="no">with the password supplied via DcvUbuntuPassword (if set). The</span>
-<a id="__codelineno-6-266" name="__codelineno-6-266"></a><span class="w">      </span><span class="no">login node also prints the resolved DCV URL in its MOTD on SSH /</span>
-<a id="__codelineno-6-267" name="__codelineno-6-267"></a><span class="w">      </span><span class="no">Session Manager login.</span>
-<a id="__codelineno-6-268" name="__codelineno-6-268"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://&lt;login-public-ipv4&gt;:8443/</span><span class="nv">  </span><span class="s">(user:</span><span class="nv"> </span><span class="s">ubuntu)&quot;</span>
+<a id="__codelineno-6-228" name="__codelineno-6-228"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==</span>
+<a id="__codelineno-6-229" name="__codelineno-6-229"></a><span class="w">            </span><span class="no">Content-Type: text/cloud-config; charset=&quot;us-ascii&quot;</span>
+<a id="__codelineno-6-230" name="__codelineno-6-230"></a><span class="w">            </span><span class="no">MIME-Version: 1.0</span>
+<a id="__codelineno-6-231" name="__codelineno-6-231"></a>
+<a id="__codelineno-6-232" name="__codelineno-6-232"></a><span class="w">            </span><span class="no">packages:</span>
+<a id="__codelineno-6-233" name="__codelineno-6-233"></a><span class="w">            </span><span class="no">- amazon-efs-utils</span>
+<a id="__codelineno-6-234" name="__codelineno-6-234"></a>
+<a id="__codelineno-6-235" name="__codelineno-6-235"></a><span class="w">            </span><span class="no">runcmd:</span>
+<a id="__codelineno-6-236" name="__codelineno-6-236"></a><span class="w">            </span><span class="no"># Mount EFS filesystem as /home. The home-seed rsync (copying the AMI&#39;s baked</span>
+<a id="__codelineno-6-237" name="__codelineno-6-237"></a><span class="w">            </span><span class="no"># /home into the freshly-mounted EFS) runs in the BACKGROUND: AWS PCS appends its</span>
+<a id="__codelineno-6-238" name="__codelineno-6-238"></a><span class="w">            </span><span class="no"># pcs_bootstrap_finalize.sh (which starts slurmd) as the LAST runcmd entry, so a</span>
+<a id="__codelineno-6-239" name="__codelineno-6-239"></a><span class="w">            </span><span class="no"># slow multi-GB small-file rsync here would delay slurmd past the node-bootstrap</span>
+<a id="__codelineno-6-240" name="__codelineno-6-240"></a><span class="w">            </span><span class="no"># health window and trigger a node boot loop on content-rich AMIs. The mount stays</span>
+<a id="__codelineno-6-241" name="__codelineno-6-241"></a><span class="w">            </span><span class="no"># synchronous; only the seed is deferred.</span>
+<a id="__codelineno-6-242" name="__codelineno-6-242"></a><span class="w">            </span><span class="no">- mkdir -p /tmp/home</span>
+<a id="__codelineno-6-243" name="__codelineno-6-243"></a><span class="w">            </span><span class="no">- rsync -aA /home/ /tmp/home</span>
+<a id="__codelineno-6-244" name="__codelineno-6-244"></a><span class="w">            </span><span class="no">- echo &quot;${EfsFilesystemId}:/ /home efs tls,_netdev&quot; &gt;&gt; /etc/fstab</span>
+<a id="__codelineno-6-245" name="__codelineno-6-245"></a><span class="w">            </span><span class="no">- mount -a -t efs defaults</span>
+<a id="__codelineno-6-246" name="__codelineno-6-246"></a><span class="w">            </span><span class="no">- if command -v sestatus &gt;/dev/null 2&gt;&amp;1 &amp;&amp; [ &quot;X$(sestatus | awk &#39;/^SELinux status:/{print $3}&#39;)&quot; = &quot;Xenabled&quot; ]; then setsebool -P use_nfs_home_dirs 1; fi</span>
+<a id="__codelineno-6-247" name="__codelineno-6-247"></a><span class="w">            </span><span class="no">- ( rsync -aA --ignore-existing /tmp/home/ /home &amp;&amp; rm -rf /tmp/home/ ) &gt;/var/log/efs-home-seed.log 2&gt;&amp;1 &amp;</span>
+<a id="__codelineno-6-248" name="__codelineno-6-248"></a><span class="w">            </span><span class="no"># If provided, mount FSxL filesystem as /shared</span>
+<a id="__codelineno-6-249" name="__codelineno-6-249"></a><span class="w">            </span><span class="no">- if [ ! -z &quot;${FSxLustreFilesystemId}&quot; ]; then amazon-linux-extras install -y lustre=latest; mkdir -p /shared; chmod a+rwx /shared; mount -t lustre ${FSxLustreFilesystemId}.fsx.${AWS::Region}.amazonaws.com@tcp:/${FSxLustreFilesystemMountName} /shared; fi</span>
+<a id="__codelineno-6-250" name="__codelineno-6-250"></a>
+<a id="__codelineno-6-251" name="__codelineno-6-251"></a><span class="w">            </span><span class="no">--==MYBOUNDARY==--</span>
+<a id="__codelineno-6-252" name="__codelineno-6-252"></a>
+<a id="__codelineno-6-253" name="__codelineno-6-253"></a><span class="nt">Outputs</span><span class="p">:</span>
+<a id="__codelineno-6-254" name="__codelineno-6-254"></a><span class="w">  </span><span class="nt">LoginLaunchTemplateId</span><span class="p">:</span>
+<a id="__codelineno-6-255" name="__codelineno-6-255"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Login</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">ID&quot;</span>
+<a id="__codelineno-6-256" name="__codelineno-6-256"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoginLaunchTemplate</span>
+<a id="__codelineno-6-257" name="__codelineno-6-257"></a><span class="w">  </span><span class="nt">LoginLaunchTemplateName</span><span class="p">:</span>
+<a id="__codelineno-6-258" name="__codelineno-6-258"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Login</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">name&quot;</span>
+<a id="__codelineno-6-259" name="__codelineno-6-259"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;login-${AWS::StackName}&#39;</span>
+<a id="__codelineno-6-260" name="__codelineno-6-260"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplateId</span><span class="p">:</span>
+<a id="__codelineno-6-261" name="__codelineno-6-261"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Compute</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">ID&quot;</span>
+<a id="__codelineno-6-262" name="__codelineno-6-262"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ComputeLaunchTemplate</span>
+<a id="__codelineno-6-263" name="__codelineno-6-263"></a><span class="w">  </span><span class="nt">ComputeLaunchTemplateName</span><span class="p">:</span>
+<a id="__codelineno-6-264" name="__codelineno-6-264"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Compute</span><span class="nv"> </span><span class="s">nodes</span><span class="nv"> </span><span class="s">template</span><span class="nv"> </span><span class="s">name&quot;</span>
+<a id="__codelineno-6-265" name="__codelineno-6-265"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Sub</span><span class="w"> </span><span class="s">&#39;compute-${AWS::StackName}&#39;</span>
+<a id="__codelineno-6-266" name="__codelineno-6-266"></a><span class="w">  </span><span class="nt">EfaSecurityGroupId</span><span class="p">:</span>
+<a id="__codelineno-6-267" name="__codelineno-6-267"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Security group created to support EFA communications</span>
+<a id="__codelineno-6-268" name="__codelineno-6-268"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="kt">!Ref</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">EfaSecurityGroup</span>
+<a id="__codelineno-6-269" name="__codelineno-6-269"></a><span class="w">  </span><span class="nt">DcvWebAccessHint</span><span class="p">:</span>
+<a id="__codelineno-6-270" name="__codelineno-6-270"></a><span class="w">    </span><span class="nt">Description</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">&gt;-</span>
+<a id="__codelineno-6-271" name="__codelineno-6-271"></a><span class="w">      </span><span class="no">Once the login node reaches &quot;Active&quot;, point a browser at</span>
+<a id="__codelineno-6-272" name="__codelineno-6-272"></a><span class="w">      </span><span class="no">https://&lt;login-public-ipv4&gt;:8443/ and sign in as user `ubuntu`</span>
+<a id="__codelineno-6-273" name="__codelineno-6-273"></a><span class="w">      </span><span class="no">with the password supplied via DcvUbuntuPassword (if set). The</span>
+<a id="__codelineno-6-274" name="__codelineno-6-274"></a><span class="w">      </span><span class="no">login node also prints the resolved DCV URL in its MOTD on SSH /</span>
+<a id="__codelineno-6-275" name="__codelineno-6-275"></a><span class="w">      </span><span class="no">Session Manager login.</span>
+<a id="__codelineno-6-276" name="__codelineno-6-276"></a><span class="w">    </span><span class="nt">Value</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://&lt;login-public-ipv4&gt;:8443/</span><span class="nv">  </span><span class="s">(user:</span><span class="nv"> </span><span class="s">ubuntu)&quot;</span>
 </code></pre></div></td></tr></table></div>
 </details>
 <p>Give the stack a name (e.g., <code>AWSPCS-PTPro-lt</code>). Populate the parameters as follows:</p>
