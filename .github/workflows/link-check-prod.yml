@@ -22,7 +22,7 @@ jobs:
       SITE_URL: https://docs.paratoolspro.com
       REPORT_PATH: link-report.md
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
         with:
           fetch-depth: 0
 
