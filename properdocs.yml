@@ -113,6 +113,7 @@ nav:
   - Heidi:
     - Getting Started: Heidi/getting-started-Heidi.md
   - Azure:
-    - Getting Started: Azure/getting-started-Azure.md
+    - Getting Started with CycleCloud Workspace for Slurm: Azure/getting-started-Azure-CCWS.md
+    - Getting Started with CycleCloud: Azure/getting-started-Azure.md
   - EULA: EULA.md
   - Privacy Policy: privacy.md

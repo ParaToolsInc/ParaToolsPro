@@ -8,6 +8,9 @@ twitter_card: summary_large_image
 
 # ParaTools Pro for E4S™ Getting Started with Microsoft Azure
 
+!!! info "Recommended: CycleCloud Workspace for Slurm"
+    This guide covers installing a CycleCloud server yourself and creating a cluster on it manually. For most users, the easier route is [Getting Started with CycleCloud Workspace for Slurm](getting-started-Azure-CCWS.md), which deploys CycleCloud, networking, and a running Slurm cluster in a single marketplace deployment.
+
 ## General Background Information
 
 In this tutorial we will show you how to launch an HPC cluster on Microsoft Azure. You will use Azure CycleCloud to configure a cluster which use the ParaTools Pro for E4S™ software stack. It will then launch a head-node that can spawn Azure instances that are linked with InfiniBand networking capabilities.
