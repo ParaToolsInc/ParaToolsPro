@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../Azure/getting-started-Azure/" class="md-tabs__link">
+        <a href="../../Azure/getting-started-Azure-CCWS/" class="md-tabs__link">
           
   
   
@@ -971,6 +971,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../Azure/getting-started-Azure-CCWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with CycleCloud Workspace for Slurm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../Azure/getting-started-Azure/" class="md-nav__link">
         
   
@@ -978,7 +1006,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started with CycleCloud
   
 
     
@@ -1108,7 +1136,7 @@
 <a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>source ~/apc-ve/bin/activate
 </code></pre></div>
 <p>Install ParallelCluster. If the version of ParallelCluster does not match the version used to generate the AMI, the cluster creation operation will fail. At the time of writing, ParaTools Pro for E4S™ AMIs are built with ParallelCluster 3.10.0. Check the version string of your selected ParaTools Pro for E4S™ AMI, visible on the AWS Marketplace listing, for the associated ParallelCluster version.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python3 -m pip install --upgrade &quot;aws-parallelcluster&quot;==3.10.0
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python3 -m pip install --upgrade "aws-parallelcluster"==3.10.0
 </code></pre></div>
 <p>ParallelCluster requires Node.js for CloudFormation. Install it with:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
@@ -1119,7 +1147,7 @@
 </code></pre></div>
 <h3 id="install-aws-command-line-interface">Install <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">AWS Command Line Interface</a><a class="headerlink" href="#install-aws-command-line-interface" title="Permanent link">&para;</a></h3>
 <p>Install the AWS CLI, which handles authentication every time you create a cluster. This section follows <a href="https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html">"Installing AWS CLI"</a>; refer to it if you run into issues.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl &quot;https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip&quot; -o &quot;awscliv2.zip&quot;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
 <a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a>unzip awscliv2.zip
 <a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a>sudo ./aws/install
 </code></pre></div>
@@ -1148,9 +1176,9 @@
 </ul>
 <p>The policies described here are supersets of the required permissions; trim them down as needed. To create the policies, open the <strong>IAM</strong> page, select <strong>Policies</strong> on the left, click <strong>Create Policy</strong>, and select the <strong>JSON</strong> editor. Copy and paste the policy found <a href="https://docs.aws.amazon.com/parallelcluster/latest/ug/iam-roles-in-parallelcluster-v3.html#iam-roles-in-parallelcluster-v3-base-user-policy">here</a>. Unless AWS Secrets Manager is in use, remove the final section from the JSON:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>      {
-<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>          &quot;Action&quot;: &quot;secretsmanager:DescribeSecret&quot;,
-<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>          &quot;Resource&quot;: &quot;arn:aws:secretsmanager:&lt;REGION&gt;:&lt;AWS ACCOUNT ID&gt;:secret:&lt;SECRET NAME&gt;&quot;,
-<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>          &quot;Effect&quot;: &quot;Allow&quot;
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>          "Action": "secretsmanager:DescribeSecret",
+<a id="__codelineno-8-3" name="__codelineno-8-3" href="#__codelineno-8-3"></a>          "Resource": "arn:aws:secretsmanager:&lt;REGION&gt;:&lt;AWS ACCOUNT ID&gt;:secret:&lt;SECRET NAME&gt;",
+<a id="__codelineno-8-4" name="__codelineno-8-4" href="#__codelineno-8-4"></a>          "Effect": "Allow"
 <a id="__codelineno-8-5" name="__codelineno-8-5" href="#__codelineno-8-5"></a>      }
 </code></pre></div>
 If the editor reports errors, replace <code>&lt;AWS ACCOUNT ID&gt;</code> with your 12-digit account ID.</p>
@@ -1169,10 +1197,10 @@ If the editor reports errors, replace <code>&lt;AWS ACCOUNT ID&gt;</code> with y
 <li><strong>Queue structure</strong>: select as required by your use case.</li>
 <li><strong>Compute instance types</strong>: select an EFA-capable instance. To list EFA-capable instance types:</li>
 </ul>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws ec2 describe-instance-types --filters &quot;Name=processor-info.supported-architecture,Values=x86_64*&quot; &quot;Name=network-info.efa-supported,Values=true&quot; --query InstanceTypes[].InstanceType
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64*" "Name=network-info.efa-supported,Values=true" --query InstanceTypes[].InstanceType
 </code></pre></div>
 <p>To list EFA-capable instances that also have GPU support:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aws ec2 describe-instance-types --filters &quot;Name=processor-info.supported-architecture,Values=x86_64&quot; &quot;Name=network-info.efa-supported,Values=true&quot; --query &#39;InstanceTypes[?GpuInfo.Gpus!=null].InstanceType&#39;
+<div class="highlight"><pre><span></span><code><a id="__codelineno-10-1" name="__codelineno-10-1" href="#__codelineno-10-1"></a>aws ec2 describe-instance-types --filters "Name=processor-info.supported-architecture,Values=x86_64" "Name=network-info.efa-supported,Values=true" --query 'InstanceTypes[?GpuInfo.Gpus!=null].InstanceType'
 </code></pre></div>
 <ul>
 <li><strong>Network settings</strong>: select as required for your workflow, or accept the defaults.</li>
@@ -1309,27 +1337,27 @@ If the editor reports errors, replace <code>&lt;AWS ACCOUNT ID&gt;</code> with y
 <span class="normal"><a href="#__codelineno-16-23">23</a></span>
 <span class="normal"><a href="#__codelineno-16-24">24</a></span>
 <span class="normal"><a href="#__codelineno-16-25">25</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-16-1" name="__codelineno-16-1"></a><span class="p">{</span>
-<a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">  </span><span class="nt">&quot;cluster&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">    </span><span class="nt">&quot;clusterName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;name_of_cluster&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">    </span><span class="nt">&quot;cloudformationStackStatus&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE_IN_PROGRESS&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">    </span><span class="nt">&quot;cloudformationStackArn&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">    </span><span class="nt">&quot;region&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;us-west-2&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w">    </span><span class="nt">&quot;version&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;3.5.1&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w">    </span><span class="nt">&quot;clusterStatus&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CREATE_IN_PROGRESS&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="w">    </span><span class="nt">&quot;scheduler&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<a id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;slurm&quot;</span>
+<a id="__codelineno-16-2" name="__codelineno-16-2"></a><span class="w">  </span><span class="nt">"cluster"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-3" name="__codelineno-16-3"></a><span class="w">    </span><span class="nt">"clusterName"</span><span class="p">:</span><span class="w"> </span><span class="s2">"name_of_cluster"</span><span class="p">,</span>
+<a id="__codelineno-16-4" name="__codelineno-16-4"></a><span class="w">    </span><span class="nt">"cloudformationStackStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CREATE_IN_PROGRESS"</span><span class="p">,</span>
+<a id="__codelineno-16-5" name="__codelineno-16-5"></a><span class="w">    </span><span class="nt">"cloudformationStackArn"</span><span class="p">:</span><span class="w"> </span><span class="s2">"arn:aws:cloudformation:us-west-2:123456789100:stack/name_of_cluster"</span><span class="p">,</span>
+<a id="__codelineno-16-6" name="__codelineno-16-6"></a><span class="w">    </span><span class="nt">"region"</span><span class="p">:</span><span class="w"> </span><span class="s2">"us-west-2"</span><span class="p">,</span>
+<a id="__codelineno-16-7" name="__codelineno-16-7"></a><span class="w">    </span><span class="nt">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"3.5.1"</span><span class="p">,</span>
+<a id="__codelineno-16-8" name="__codelineno-16-8"></a><span class="w">    </span><span class="nt">"clusterStatus"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CREATE_IN_PROGRESS"</span><span class="p">,</span>
+<a id="__codelineno-16-9" name="__codelineno-16-9"></a><span class="w">    </span><span class="nt">"scheduler"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<a id="__codelineno-16-10" name="__codelineno-16-10"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"slurm"</span>
 <a id="__codelineno-16-11" name="__codelineno-16-11"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-16-12" name="__codelineno-16-12"></a><span class="w">  </span><span class="p">},</span>
-<a id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w">  </span><span class="nt">&quot;validationMessages&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<a id="__codelineno-16-13" name="__codelineno-16-13"></a><span class="w">  </span><span class="nt">"validationMessages"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <a id="__codelineno-16-14" name="__codelineno-16-14"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="w">      </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;CustomAmiTagValidator&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The custom AMI may not have been created by pcluster. You can ignore this warning if the AMI is shared or copied from another pcluster AMI. If the AMI is indeed not created by pcluster, cluster creation will fail. If the cluster creation fails, please go to https://docs.aws.amazon.com/parallelcluster/latest/ug/troubleshooting.html#troubleshooting-stack-creation-failures for troubleshooting.&quot;</span>
+<a id="__codelineno-16-15" name="__codelineno-16-15"></a><span class="w">      </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WARNING"</span><span class="p">,</span>
+<a id="__codelineno-16-16" name="__codelineno-16-16"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"CustomAmiTagValidator"</span><span class="p">,</span>
+<a id="__codelineno-16-17" name="__codelineno-16-17"></a><span class="w">      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"The custom AMI may not have been created by pcluster. You can ignore this warning if the AMI is shared or copied from another pcluster AMI. If the AMI is indeed not created by pcluster, cluster creation will fail. If the cluster creation fails, please go to https://docs.aws.amazon.com/parallelcluster/latest/ug/troubleshooting.html#troubleshooting-stack-creation-failures for troubleshooting."</span>
 <a id="__codelineno-16-18" name="__codelineno-16-18"></a><span class="w">    </span><span class="p">},</span>
 <a id="__codelineno-16-19" name="__codelineno-16-19"></a><span class="w">    </span><span class="p">{</span>
-<a id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="w">      </span><span class="nt">&quot;level&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;WARNING&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w">      </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;AmiOsCompatibleValidator&quot;</span><span class="p">,</span>
-<a id="__codelineno-16-22" name="__codelineno-16-22"></a><span class="w">      </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2204 compatibility, please make sure they are compatible before cluster creation and update operations.&quot;</span>
+<a id="__codelineno-16-20" name="__codelineno-16-20"></a><span class="w">      </span><span class="nt">"level"</span><span class="p">:</span><span class="w"> </span><span class="s2">"WARNING"</span><span class="p">,</span>
+<a id="__codelineno-16-21" name="__codelineno-16-21"></a><span class="w">      </span><span class="nt">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"AmiOsCompatibleValidator"</span><span class="p">,</span>
+<a id="__codelineno-16-22" name="__codelineno-16-22"></a><span class="w">      </span><span class="nt">"message"</span><span class="p">:</span><span class="w"> </span><span class="s2">"Could not check node AMI ami-12345678910 OS and cluster OS ubuntu2204 compatibility, please make sure they are compatible before cluster creation and update operations."</span>
 <a id="__codelineno-16-23" name="__codelineno-16-23"></a><span class="w">    </span><span class="p">}</span>
 <a id="__codelineno-16-24" name="__codelineno-16-24"></a><span class="w">  </span><span class="p">]</span>
 <a id="__codelineno-16-25" name="__codelineno-16-25"></a><span class="p">}</span>
@@ -1434,7 +1462,7 @@ If the editor reports errors, replace <code>&lt;AWS ACCOUNT ID&gt;</code> with y
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.breadcrumbs", "toc.follow", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

@@ -6,17 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Launch E4S HPC clusters on Azure using CycleCloud and InfiniBand networking">
+        <meta name="description" content="Deploy a complete E4S HPC Slurm cluster on Azure in a single marketplace deployment with CycleCloud Workspace for Slurm">
       
       
       
-        <link rel="canonical" href="https://docs.paratoolspro.com/Azure/getting-started-Azure/">
+        <link rel="canonical" href="https://docs.paratoolspro.com/Azure/getting-started-Azure-CCWS/">
       
       
-        <link rel="prev" href="../getting-started-Azure-CCWS/">
+        <link rel="prev" href="../../Heidi/getting-started-Heidi/">
       
       
-        <link rel="next" href="../../EULA/">
+        <link rel="next" href="../getting-started-Azure/">
       
       
         
@@ -27,7 +27,7 @@
     
     
       
-        <title>Getting Started with Microsoft Azure - ParaTools Pro for E4S™ Documentation</title>
+        <title>Getting Started with CycleCloud Workspace for Slurm - ParaTools Pro for E4S™ Documentation</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#paratools-pro-for-e4stm-getting-started-with-microsoft-azure" class="md-skip">
+        <a href="#paratools-pro-for-e4stm-getting-started-with-cyclecloud-workspace-for-slurm" class="md-skip">
           Skip to content
         </a>
       
@@ -113,7 +113,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Getting Started with Microsoft Azure
+              Getting Started with CycleCloud Workspace for Slurm
             
           </span>
         </div>
@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item md-tabs__item--active">
-        <a href="../getting-started-Azure-CCWS/" class="md-tabs__link">
+        <a href="./" class="md-tabs__link">
           
   
   
@@ -772,34 +772,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../getting-started-Azure-CCWS/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Getting Started with CycleCloud Workspace for Slurm
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -819,7 +791,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started with CycleCloud
+    Getting Started with CycleCloud Workspace for Slurm
   
 
     
@@ -837,7 +809,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started with CycleCloud
+    Getting Started with CycleCloud Workspace for Slurm
   
 
     
@@ -886,10 +858,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#configure-cyclecloud" class="md-nav__link">
+  <a href="#1-prerequisites" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configure CycleCloud
+        1. Prerequisites
       
     </span>
   </a>
@@ -897,10 +869,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#accept-terms-of-the-paratools-pro-for-e4stm-image-and-allow-programmatic-access" class="md-nav__link">
+  <a href="#2-deploy-through-the-marketplace-wizard" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Accept terms of the ParaTools Pro for E4S™ image and allow programmatic access
+        2. Deploy through the marketplace wizard
       
     </span>
   </a>
@@ -908,10 +880,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#configure-a-cyclecloud-cluster-using-a-paratools-pro-for-e4stm-image" class="md-nav__link">
+  <a href="#3-wait-for-the-cluster-to-start" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configure a CycleCloud Cluster using a ParaTools Pro for E4S™ image
+        3. Wait for the cluster to start
       
     </span>
   </a>
@@ -919,10 +891,43 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#launch-the-cluster" class="md-nav__link">
+  <a href="#4-connect-to-the-cyclecloud-web-ui" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Launch the cluster
+        4. Connect to the CycleCloud web UI
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#5-ssh-into-the-login-node" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. SSH into the login node
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#6-vnc-remote-desktop-optional" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. VNC remote desktop (optional)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#appendix-deploying-with-the-azure-cli" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix: deploying with the Azure CLI
       
     </span>
   </a>
@@ -938,6 +943,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../getting-started-Azure/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with CycleCloud
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -1021,49 +1054,125 @@
 
 
 
-<h1 id="paratools-pro-for-e4stm-getting-started-with-microsoft-azure">ParaTools Pro for E4S™ Getting Started with Microsoft Azure<a class="headerlink" href="#paratools-pro-for-e4stm-getting-started-with-microsoft-azure" title="Permanent link">&para;</a></h1>
+<h1 id="paratools-pro-for-e4stm-getting-started-with-cyclecloud-workspace-for-slurm">ParaTools Pro for E4S™ Getting Started with CycleCloud Workspace for Slurm<a class="headerlink" href="#paratools-pro-for-e4stm-getting-started-with-cyclecloud-workspace-for-slurm" title="Permanent link">&para;</a></h1>
 <div class="admonition info">
-<p class="admonition-title">Recommended: CycleCloud Workspace for Slurm</p>
-<p>This guide covers installing a CycleCloud server yourself and creating a cluster on it manually. For most users, the easier route is <a href="../getting-started-Azure-CCWS/">Getting Started with CycleCloud Workspace for Slurm</a>, which deploys CycleCloud, networking, and a running Slurm cluster in a single marketplace deployment.</p>
+<p class="admonition-title">Looking for the manual CycleCloud setup?</p>
+<p>This guide covers <strong>CycleCloud Workspace for Slurm (CCWS)</strong>, which deploys a CycleCloud server and a running Slurm cluster in a single step, but has more limited configuration options compared to a full, manual CycleCloud deployment. To install a CycleCloud server and create clusters on it manually, see <a href="../getting-started-Azure/">Getting Started with Microsoft Azure</a>.</p>
 </div>
 <h2 id="general-background-information">General Background Information<a class="headerlink" href="#general-background-information" title="Permanent link">&para;</a></h2>
-<p>In this tutorial we will show you how to launch an HPC cluster on Microsoft Azure. You will use Azure CycleCloud to configure a cluster which use the ParaTools Pro for E4S™ software stack. It will then launch a head-node that can spawn Azure instances that are linked with InfiniBand networking capabilities.</p>
+<p><a href="https://learn.microsoft.com/azure/cyclecloud/overview-ccws">CycleCloud Workspace for Slurm</a> (CCWS) is an Azure Marketplace solution that deploys an HPC environment in one pass. It deploys an Azure CycleCloud server, a virtual network, a NAT gateway for outbound internet access, an Azure Bastion host for inbound access, and storage, and configures and deploys a Slurm cluster that starts automatically alongside CycleCloud. This tutorial explains how to deploy CCWS to run the <strong>ParaTools Pro for E4S™: AI/ML &amp; HPC Tools on CycleCloud (AMD64)</strong> image from the Azure Marketplace on the automatically-deployed Slurm cluster.</p>
+<p>When deployed through CCWS, none of the nodes has a public IP address. All access, both to the CycleCloud web interface and to the cluster nodes over SSH, goes through the Bastion host using the Azure CLI.</p>
+<p>This tutorial follows the same path as Microsoft's <a href="https://learn.microsoft.com/azure/cyclecloud/qs-deploy-ccws?view=cyclecloud-8">CycleCloud Workspace for Slurm quickstart</a>, which includes screenshots of each step.</p>
 <h2 id="tutorial">Tutorial<a class="headerlink" href="#tutorial" title="Permanent link">&para;</a></h2>
-<h3 id="configure-cyclecloud">Configure CycleCloud<a class="headerlink" href="#configure-cyclecloud" title="Permanent link">&para;</a></h3>
-<p>As a prerequisite to this tutorial, you must first have a running CycleCloud server and the ability to log into CycleCloud as an administrator. If you do not already have such a CycleCloud install, first <a href="https://learn.microsoft.com/en-us/training/modules/azure-cyclecloud-high-performance-computing/">create one by following Microsoft's official CycleCloud tutorial</a>. Complete the CycleCloud tutorial including all of the section titled "Exercise - Install and configure Azure CycleCloud" and Task 1 of the section titled "Exercise - Create an HPC cluster from built-in templates". The below instructions replace Tasks 2 and 3 of the official CycleCloud tutorial.</p>
-<h3 id="accept-terms-of-the-paratools-pro-for-e4stm-image-and-allow-programmatic-access">Accept terms of the ParaTools Pro for E4S™ image and allow programmatic access<a class="headerlink" href="#accept-terms-of-the-paratools-pro-for-e4stm-image-and-allow-programmatic-access" title="Permanent link">&para;</a></h3>
-<p>First, enable the use of the <strong>ParaTools Pro for E4S™: AI/ML &amp; HPC Tools on CycleCloud (AMD64)</strong> image on Microsoft Azure. To do this:
-- Go to the <a href="https://portal.azure.com/">Azure Portal</a> at https://portal.azure.com/.
-- In the "Search resources, services, and docs" text field in the top center of the page, enter "ParaTools" to list ParaTools images.
-- Select the entry "ParaTools Pro for E4S™: AI/ML &amp; HPC Tools on CycleCloud (AMD64)" from the list.
-- On the Marketplace page for the image, click the link titled "Want to deploy programmatically? Get started"
-- Next to each Subscription in which you wish to deploy ParaTools Pro for E4S™, change the Status to "Enable".
-- Click "Save"</p>
-<h3 id="configure-a-cyclecloud-cluster-using-a-paratools-pro-for-e4stm-image">Configure a CycleCloud Cluster using a ParaTools Pro for E4S™ image<a class="headerlink" href="#configure-a-cyclecloud-cluster-using-a-paratools-pro-for-e4stm-image" title="Permanent link">&para;</a></h3>
+<h3 id="1-prerequisites">1. Prerequisites<a class="headerlink" href="#1-prerequisites" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Open the administrative interface of your CycleCloud server in a web browser and log in as an administrator.</li>
-<li>If the "Create a New Cluster" page is not already shown, click the "+" icon.</li>
-<li>In the "Create a New Cluster" page, select "Slurm".</li>
-<li>In the "About" tab, enter a name for your cluster and click "Next".</li>
-<li>In the "Required Settings" section, change the "HPC VM Type" to a node type which supports InfiniBand networking, such as <code>Standard_HB120-16rs_v3</code>.</li>
-<li>In the "Required Settings" section, set the "Max HPC Cores" to the number of cores you wish to make available in the cluster.</li>
-<li>In the "Required Settings" section, set "Subnet ID" to the subnet you created in Task 1 of the "Exercise - Create an HPC cluster from built-in templates" section of the official CycleCloud tutorial.</li>
-<li>Click "Advanced Settings".</li>
-<li>Under advanced settings, click "Custom image" under both "Scheduler OS" and "HPC OS".</li>
-<li>For both "Custom image" fields, enter the identifier of the custom image: <code>paratools-inc:pt-pro-4-e4s-msa-cyclecloud-amd64:paratools-pro-cyclecloud-amd64:latest</code></li>
-<li>Click "Save"</li>
+<li>An Azure subscription in which you have both the <strong>Contributor</strong> and <strong>User Access Administrator</strong> roles at the subscription scope. CCWS creates managed identities and assigns roles to them, which Contributor alone cannot do. See <a href="https://learn.microsoft.com/azure/cyclecloud/how-to/ccws/plan-your-deployment?view=cyclecloud-8">Plan your CCWS deployment</a> for details.</li>
+<li>An SSH key pair. You will paste the public key into the deployment wizard and use the private key to log in to the cluster. Generate one with <code>ssh-keygen -t ed25519</code> if needed.</li>
+<li>The <a href="https://learn.microsoft.com/cli/azure/install-azure-cli">Azure CLI</a> installed on your local machine and logged in with <code>az login</code>. The CLI is required to open Bastion tunnels to the CycleCloud web interface and the cluster nodes. You may also optionally deploy through the CLI.</li>
+<li>Sufficient VM quota in your chosen region for the CycleCloud node, the scheduler node, and as many compute nodes as you request.</li>
 </ul>
-<h3 id="launch-the-cluster">Launch the cluster<a class="headerlink" href="#launch-the-cluster" title="Permanent link">&para;</a></h3>
+<h3 id="2-deploy-through-the-marketplace-wizard">2. Deploy through the marketplace wizard<a class="headerlink" href="#2-deploy-through-the-marketplace-wizard" title="Permanent link">&para;</a></h3>
+<p>In the <a href="https://portal.azure.com/">Azure Portal</a>, search the marketplace for "CycleCloud Workspace for Slurm", select it, and click <strong>Create</strong>. The wizard walks through several tabs. The instructions below cover only the settings to change from their defaults; leave everything else alone.</p>
+<p><strong>Basics:</strong></p>
 <ul>
-<li>If not already open, open the administrative interface of your CycleCloud server in a web browser and log in as an administrator.</li>
-<li>If not already selected, select the Cluster created in the previous section.</li>
-<li>Click "Start" in the Cluster details page. When asked "Are you sure you want to start the selected cluster(s)?", click "OK".</li>
-<li>Wait approximately 10 minutes for the cluster to start. When cluster startup is complete, the message "Node scheduler has started" will appear in the log on the right of the page and the scheduler will show a green status.</li>
-<li>In the Nodes list, click "scheduler". In the detail view below, the scheduler node should show a status of "Ready":</li>
-<li>The detail view will show an IP address for the scheduler node. </li>
-<li>SSH into that node with the username <code>cc-admin</code> and the SSH key you configured when setting up the account in the official CycleCloud tutorial.</li>
+<li>Select your subscription and create a new resource group.</li>
+<li>Set <strong>Region</strong> to the region where you want to deploy and have sufficient quota.</li>
+<li>Leave the <strong>CycleCloud VM Name</strong> at its default, <code>ccw-cyclecloud-vm</code>. Later commands in this tutorial refer to it by that name. If you change the VM name, change it in future steps as well.</li>
+<li>Set <strong>Admin User</strong> to the username you will use for both the CycleCloud web interface and SSH to the cluster nodes, such as <code>cc-admin</code>.</li>
+<li>Set an <strong>Admin Password</strong>. This is the CycleCloud web interface password.</li>
+<li>Paste your SSH public key into <strong>Admin SSH Public Key</strong>, or select a key already stored in Azure.</li>
 </ul>
-<p>You will now be able to schedule jobs using Slurm.</p>
+<p><strong>Networking:</strong></p>
+<ul>
+<li>Set <strong>Virtual network options</strong> to create a new virtual network.</li>
+<li>Check <strong>Create a Bastion for SSH connections</strong>. Without it there is no way to reach the deployment, since no VM gets a public IP.</li>
+<li>Check <strong>Create a NAT Gateway</strong>. This gives the cluster nodes outbound internet access.</li>
+</ul>
+<p><strong>Slurm Settings:</strong></p>
+<ul>
+<li>Leave the <strong>Cluster name</strong> at its default, <code>ccw</code>. If you change the cluster name, change it in future steps as well.</li>
+<li>Leave <strong>Start cluster</strong> checked so the cluster starts as soon as the deployment finishes.</li>
+<li>Check <strong>Auto-accept VM image terms</strong>.</li>
+<li>
+<p>Under <strong>Scheduler</strong>, pick a size such as <code>Standard_D4as_v4</code>, then set <strong>Image Name</strong> to <strong>Custom image</strong> and paste the ParaTools Pro for E4S™ image URN into <strong>Custom Image ID</strong>:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>paratools-inc:pt-pro-4-e4s-msa-cyclecloud-amd64:paratools-pro-cyclecloud-amd64:latest
+</code></pre></div>
+</li>
+<li>
+<p>Check <strong>Use image on all nodes</strong> so the login, HTC, HPC, and GPU nodes boot the same image.</p>
+</li>
+<li>Leave <strong>Slurm Version</strong> at its default, <code>25.11.5</code>.</li>
+<li>Leave <strong>Use login nodes</strong> checked, and under <strong>Login Nodes</strong> pick a size and set both the initial and maximum number of nodes to 1.</li>
+</ul>
+<p><strong>Partition Settings:</strong> the cluster gets three Slurm partitions, each backed by a node array that scales from zero.</p>
+<ul>
+<li><strong>HTC Partition</strong>: a small non-InfiniBand SKU such as <code>Standard_F2s_v2</code>, with a maximum node count that fits your quota. Leave <strong>Enable Azure Spot</strong> unchecked.</li>
+<li><strong>HPC Partition</strong>: an InfiniBand-capable SKU such as <code>Standard_HB120rs_v2</code> or <code>Standard_HB120-16rs_v3</code>, with <strong>Maximum number of nodes</strong> set to what your HB-series quota allows.</li>
+<li><strong>GPU Partition</strong>: a GPU and InfiniBand-capable SKU, with <strong>Maximum number of nodes</strong> set to what your GPU quota allows, or 0 if you do not intend to use GPU nodes.</li>
+</ul>
+<p><strong>Open OnDemand:</strong> leave <strong>Deploy Open OnDemand</strong> unchecked.</p>
+<p><strong>Advanced</strong> and <strong>Tags</strong>: leave the defaults.</p>
+<p>Click <strong>Review + create</strong>, then <strong>Create</strong>. The deployment takes 20 to 30 minutes.</p>
+<h3 id="3-wait-for-the-cluster-to-start">3. Wait for the cluster to start<a class="headerlink" href="#3-wait-for-the-cluster-to-start" title="Permanent link">&para;</a></h3>
+<p>The portal marking the deployment <strong>Succeeded</strong> does not mean the cluster is ready. The CCWS installer keeps running on the CycleCloud VM for several minutes after the deployment completes, importing and starting the cluster, and the scheduler node takes roughly another 10 minutes to boot and configure. Expect 10 to 20 minutes between deployment success and a usable cluster. You can watch progress in the CycleCloud web interface as soon as the tunnel in the next step connects.</p>
+<h3 id="4-connect-to-the-cyclecloud-web-ui">4. Connect to the CycleCloud web UI<a class="headerlink" href="#4-connect-to-the-cyclecloud-web-ui" title="Permanent link">&para;</a></h3>
+<p>Open a Bastion tunnel from your local machine to port 443 on the CycleCloud VM:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>az<span class="w"> </span>network<span class="w"> </span>bastion<span class="w"> </span>tunnel<span class="w"> </span>--name<span class="w"> </span>bastion<span class="w"> </span>--resource-group<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a><span class="w">    </span>--target-resource-id<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>az<span class="w"> </span>vm<span class="w"> </span>show<span class="w"> </span>-g<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span>-n<span class="w"> </span>ccw-cyclecloud-vm<span class="w"> </span>--query<span class="w"> </span>id<span class="w"> </span>-o<span class="w"> </span>tsv<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a><span class="w">    </span>--resource-port<span class="w"> </span><span class="m">443</span><span class="w"> </span>--port<span class="w"> </span><span class="m">8443</span>
+</code></pre></div>
+<p>The first <code>az network bastion</code> command offers to install the Azure CLI's <code>bastion</code> extension; accept. Leave the tunnel running and browse to <a href="https://localhost:8443">https://localhost:8443</a>. Your browser will issue a warning about the certificate because the VM's self-signed certificate does not match <code>localhost</code>; this is expected, so proceed past the warning. Log in with the admin username and password you specified in <a href="#2-deploy-through-the-marketplace-wizard">step 2</a>.</p>
+<p>The cluster page for <code>ccw</code> shows the scheduler and login node provisioning. The cluster is ready when the scheduler node reaches <strong>Started</strong> with a green status. For more on Bastion access to the portal, see <a href="https://learn.microsoft.com/azure/cyclecloud/how-to/ccws/connect-to-portal-with-bastion">Connect to the CycleCloud portal through Bastion</a>.</p>
+<h3 id="5-ssh-into-the-login-node">5. SSH into the login node<a class="headerlink" href="#5-ssh-into-the-login-node" title="Permanent link">&para;</a></h3>
+<p>Login nodes are deployed in a VM scale set, so the Bastion needs the node's full resource ID rather than a VM name. The easiest place to get it is the CycleCloud web interface: select the <code>ccw</code> cluster, click the login node, and copy the <strong>Resource ID</strong> shown in the node's details. Alternatively, look it up with the CLI (Microsoft documents both approaches in <a href="https://learn.microsoft.com/azure/cyclecloud/how-to/ccws/connect-to-login-node-with-bastion">Connect to the login node through Bastion</a>):</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nv">LOGIN_ID</span><span class="o">=</span><span class="k">$(</span>az<span class="w"> </span>vmss<span class="w"> </span>list-instances<span class="w"> </span>-g<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">    </span>-n<span class="w"> </span><span class="s2">"</span><span class="k">$(</span>az<span class="w"> </span>vmss<span class="w"> </span>list<span class="w"> </span>-g<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span>--query<span class="w"> </span><span class="s2">"[?starts_with(name,'login')].name | [0]"</span><span class="w"> </span>-o<span class="w"> </span>tsv<span class="k">)</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">    </span>--query<span class="w"> </span><span class="s2">"[0].id"</span><span class="w"> </span>-o<span class="w"> </span>tsv<span class="k">)</span>
+</code></pre></div>
+<p>Then either connect in one command:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>az<span class="w"> </span>network<span class="w"> </span>bastion<span class="w"> </span>ssh<span class="w"> </span>--name<span class="w"> </span>bastion<span class="w"> </span>--resource-group<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--target-resource-id<span class="w"> </span><span class="s2">"</span><span class="nv">$LOGIN_ID</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--auth-type<span class="w"> </span>ssh-key<span class="w"> </span>--username<span class="w"> </span>&lt;admin-username&gt;<span class="w"> </span>--ssh-key<span class="w"> </span>&lt;path-to-private-key&gt;
+</code></pre></div>
+<p>or open a port-22 tunnel, which also supports <code>scp</code> and port forwarding:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a>az<span class="w"> </span>network<span class="w"> </span>bastion<span class="w"> </span>tunnel<span class="w"> </span>--name<span class="w"> </span>bastion<span class="w"> </span>--resource-group<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">    </span>--target-resource-id<span class="w"> </span><span class="s2">"</span><span class="nv">$LOGIN_ID</span><span class="s2">"</span><span class="w"> </span>--resource-port<span class="w"> </span><span class="m">22</span><span class="w"> </span>--port<span class="w"> </span><span class="m">2222</span>
+</code></pre></div>
+<p>and, with the tunnel running, connect from a second terminal:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>ssh<span class="w"> </span>-p<span class="w"> </span><span class="m">2222</span><span class="w"> </span>-i<span class="w"> </span>&lt;path-to-private-key&gt;<span class="w"> </span>&lt;admin-username&gt;@localhost
+</code></pre></div>
+<p>The scheduler node is a regular VM, so the same commands work for it with its resource ID:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="nv">SCHED_ID</span><span class="o">=</span><span class="k">$(</span>az<span class="w"> </span>vm<span class="w"> </span>list<span class="w"> </span>-g<span class="w"> </span>&lt;resource-group&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="w">    </span>--query<span class="w"> </span><span class="s2">"[?starts_with(name,'scheduler')].id | [0]"</span><span class="w"> </span>-o<span class="w"> </span>tsv<span class="k">)</span>
+</code></pre></div>
+<h3 id="6-vnc-remote-desktop-optional">6. VNC remote desktop (optional)<a class="headerlink" href="#6-vnc-remote-desktop-optional" title="Permanent link">&para;</a></h3>
+<p>The ParaTools Pro for E4S™ image includes a VNC server for GPU-accelerated remote desktop sessions. Reuse the port-22 tunnel from <a href="#5-ssh-into-the-login-node">step 5</a> and add a forward for the VNC port to the SSH connection:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a>ssh<span class="w"> </span>-p<span class="w"> </span><span class="m">2222</span><span class="w"> </span>-i<span class="w"> </span>&lt;path-to-private-key&gt;<span class="w"> </span>-L<span class="w"> </span><span class="m">5901</span>:localhost:5901<span class="w"> </span>&lt;admin-username&gt;@localhost
+</code></pre></div>
+<p>Then point a VNC client at <code>localhost:5901</code>.</p>
+<h3 id="appendix-deploying-with-the-azure-cli">Appendix: deploying with the Azure CLI<a class="headerlink" href="#appendix-deploying-with-the-azure-cli" title="Permanent link">&para;</a></h3>
+<p>CCWS can also be deployed from the command line, which is useful for scripted or repeated deployments. Documentation on CLI deployments of CCWS is available in <a href="https://learn.microsoft.com/azure/cyclecloud/how-to/ccws/deploy-with-cli?view=cyclecloud-8">Deploy CCWS with the CLI</a>. The deployment takes two inputs: the Bicep template from the <a href="https://github.com/Azure/cyclecloud-slurm-workspace">CycleCloud Workspace for Slurm repository</a>, and a <code>parameters.json</code> file containing the settings the wizard would otherwise collect.</p>
+<p>The <code>parameters.json</code> file can be produced through the Azure portal <a href="https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/SandboxBlade">Create UI Definition sandbox</a>:</p>
+<ol>
+<li>
+<p>Clone the repository:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/Azure/cyclecloud-slurm-workspace.git
+<a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="nb">cd</span><span class="w"> </span>cyclecloud-slurm-workspace
+</code></pre></div>
+</li>
+<li>
+<p>Copy the entire contents of <code>uidefinitions/createUiDefinition.json</code> to the clipboard.</p>
+</li>
+<li>Open the <a href="https://portal.azure.com/#view/Microsoft_Azure_CreateUIDef/SandboxBlade">Create UI Definition sandbox</a> in the Azure portal, paste the copied JSON into the text box on the right, replacing the placeholder definition already there, and click <strong>Preview</strong>.</li>
+<li>The sandbox renders the same tabs as the marketplace wizard. Fill them in with the settings from <a href="#2-deploy-through-the-marketplace-wizard">step 2</a>, including the custom image URN and <strong>Auto-accept VM image terms</strong>.</li>
+<li>On the <strong>Review + create</strong> tab, click <strong>View outputs payload</strong> next to the <strong>Create</strong> button. Copy the JSON it displays into a local file named <code>parameters.json</code>.</li>
+</ol>
+<p>If you have already deployed CCWS through the marketplace, you can also read the settings back from that deployment: in the portal, open the resource group, select <strong>Deployments</strong>, pick the CCWS deployment, and open its <strong>Inputs</strong> tab.</p>
+<p>Then deploy at subscription scope from the repository root:</p>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>az<span class="w"> </span>deployment<span class="w"> </span>sub<span class="w"> </span>create<span class="w"> </span>--location<span class="w"> </span>&lt;region&gt;<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-2" name="__codelineno-9-2" href="#__codelineno-9-2"></a><span class="w">    </span>--template-file<span class="w"> </span>bicep/mainTemplate.bicep<span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-9-3" name="__codelineno-9-3" href="#__codelineno-9-3"></a><span class="w">    </span>--parameters<span class="w"> </span>parameters.json
+</code></pre></div>
 
 
 

@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../Azure/getting-started-Azure/" class="md-tabs__link">
+        <a href="../../Azure/getting-started-Azure-CCWS/" class="md-tabs__link">
           
   
   
@@ -883,6 +883,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../Azure/getting-started-Azure-CCWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with CycleCloud Workspace for Slurm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../Azure/getting-started-Azure/" class="md-nav__link">
         
   
@@ -890,7 +918,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started with CycleCloud
   
 
     
@@ -1135,14 +1163,14 @@ further guidance.</p>
 <span class="normal"><a href="#__codelineno-0-138">138</a></span>
 <span class="normal"><a href="#__codelineno-0-139">139</a></span></pre></div></td><td class="code"><div><pre><span></span><code><a id="__codelineno-0-1" name="__codelineno-0-1"></a><span class="c1"># Copyright 2022 Google LLC</span>
 <a id="__codelineno-0-2" name="__codelineno-0-2"></a><span class="c1">#</span>
-<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<a id="__codelineno-0-3" name="__codelineno-0-3"></a><span class="c1"># Licensed under the Apache License, Version 2.0 (the "License");</span>
 <a id="__codelineno-0-4" name="__codelineno-0-4"></a><span class="c1"># you may not use this file except in compliance with the License.</span>
 <a id="__codelineno-0-5" name="__codelineno-0-5"></a><span class="c1"># You may obtain a copy of the License at</span>
 <a id="__codelineno-0-6" name="__codelineno-0-6"></a><span class="c1">#</span>
 <a id="__codelineno-0-7" name="__codelineno-0-7"></a><span class="c1">#      http://www.apache.org/licenses/LICENSE-2.0</span>
 <a id="__codelineno-0-8" name="__codelineno-0-8"></a><span class="c1">#</span>
 <a id="__codelineno-0-9" name="__codelineno-0-9"></a><span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
-<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<a id="__codelineno-0-10" name="__codelineno-0-10"></a><span class="c1"># distributed under the License is distributed on an "AS IS" BASIS,</span>
 <a id="__codelineno-0-11" name="__codelineno-0-11"></a><span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <a id="__codelineno-0-12" name="__codelineno-0-12"></a><span class="c1"># See the License for the specific language governing permissions and</span>
 <a id="__codelineno-0-13" name="__codelineno-0-13"></a><span class="c1"># limitations under the License.</span>
@@ -1166,7 +1194,7 @@ further guidance.</p>
 <a id="__codelineno-0-31" name="__codelineno-0-31"></a><span class="nt">deployment_groups</span><span class="p">:</span>
 <a id="__codelineno-0-32" name="__codelineno-0-32"></a><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">group</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">primary</span>
 <a id="__codelineno-0-33" name="__codelineno-0-33"></a><span class="w">  </span><span class="nt">modules</span><span class="p">:</span>
-<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">  </span><span class="c1"># Source is an embedded module, denoted by &quot;modules/*&quot; without ./, ../, /</span>
+<a id="__codelineno-0-34" name="__codelineno-0-34"></a><span class="w">  </span><span class="c1"># Source is an embedded module, denoted by "modules/*" without ./, ../, /</span>
 <a id="__codelineno-0-35" name="__codelineno-0-35"></a><span class="w">  </span><span class="c1"># as a prefix. To refer to a local module, prefix with ./, ../ or /</span>
 <a id="__codelineno-0-36" name="__codelineno-0-36"></a><span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">id</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">network</span>
 <a id="__codelineno-0-37" name="__codelineno-0-37"></a><span class="hll"><span class="w">    </span><span class="nt">source</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">modules/network/vpc</span><span class="w"> </span><span class="c1">#(3)!</span>
@@ -1329,7 +1357,7 @@ home or office network:</p>
 <a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a><span class="w">      </span><span class="nt">firewall_rules</span><span class="p">:</span>
 <a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a><span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ssh-from-workstation</span>
 <a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a><span class="w">          </span><span class="nt">direction</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">INGRESS</span>
-<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">          </span><span class="nt">ranges</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">203.0.113.42/32</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># single IP -- replace with your workstation&#39;s IP</span>
+<a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="w">          </span><span class="nt">ranges</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="nv">203.0.113.42/32</span><span class="p p-Indicator">]</span><span class="w">   </span><span class="c1"># single IP -- replace with your workstation's IP</span>
 <a id="__codelineno-1-8" name="__codelineno-1-8" href="#__codelineno-1-8"></a><span class="w">          </span><span class="c1"># ranges: [203.0.113.0/24] # or a CIDR block covering your network</span>
 <a id="__codelineno-1-9" name="__codelineno-1-9" href="#__codelineno-1-9"></a><span class="w">          </span><span class="nt">allow</span><span class="p">:</span>
 <a id="__codelineno-1-10" name="__codelineno-1-10" href="#__codelineno-1-10"></a><span class="w">            </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">protocol</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">tcp</span>
@@ -1338,9 +1366,9 @@ home or office network:</p>
 <p>Then re-run <code>gcluster create -w ...</code> and <code>gcluster deploy ...</code> to apply the change.</p>
 <h3 id="option-2-add-the-rule-out-of-band">Option 2: Add the Rule Out of Band<a class="headerlink" href="#option-2-add-the-rule-out-of-band" title="Permanent link">&para;</a></h3>
 <p>After the cluster is deployed, add the firewall rule with <code>gcloud</code> directly:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Replace YOUR_IP with your workstation&#39;s public IP, or a CIDR covering your network.</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># Replace YOUR_IP with your workstation's public IP, or a CIDR covering your network.</span>
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># Replace VPC_NAME with the name of the VPC created by your deployment</span>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># (typically &quot;${deployment_name}-net0&quot;, e.g., &quot;ppro-e4s-25-11-cluster-net0&quot;).</span>
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="c1"># (typically "${deployment_name}-net0", e.g., "ppro-e4s-25-11-cluster-net0").</span>
 <a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>gcloud<span class="w"> </span>compute<span class="w"> </span>firewall-rules<span class="w"> </span>create<span class="w"> </span>ssh-from-workstation<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a><span class="w">    </span>--network<span class="o">=</span>VPC_NAME<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="w">    </span>--direction<span class="o">=</span>INGRESS<span class="w"> </span><span class="se">\</span>
@@ -1438,7 +1466,7 @@ your control. Prefer Console (IAP) SSH whenever possible.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.breadcrumbs", "toc.follow", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

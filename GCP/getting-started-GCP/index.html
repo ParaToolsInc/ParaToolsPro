@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../Azure/getting-started-Azure/" class="md-tabs__link">
+        <a href="../../Azure/getting-started-Azure-CCWS/" class="md-tabs__link">
           
   
   
@@ -916,6 +916,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../Azure/getting-started-Azure-CCWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with CycleCloud Workspace for Slurm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../Azure/getting-started-Azure/" class="md-nav__link">
         
   
@@ -923,7 +951,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started with CycleCloud
   
 
     
@@ -1048,20 +1076,20 @@ Open your local shell or the <a href="https://docs.cloud.google.com/cluster-tool
 </code></pre></div></p>
 <p>Set a default project you will be using for this tutorial.
 If you have multiple projects, you can switch back to a different one when you are finished.</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>gcloud<span class="w"> </span>config<span class="w"> </span><span class="nb">set</span><span class="w"> </span>project<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span>
 </code></pre></div>
 <p>Next, ensure that the default Compute Engine service account is enabled:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>gcloud<span class="w"> </span>iam<span class="w"> </span>service-accounts<span class="w"> </span><span class="nb">enable</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">     </span>--project<span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="w">     </span>--project<span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="w">     </span><span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com
 </code></pre></div>
 and grant the service account the IAM roles required by Cluster Toolkit
 (<code>roles/compute.instanceAdmin.v1</code> for managing Compute Engine resources, and
 <code>roles/iam.serviceAccountUser</code> to act as the service account):</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="w">    </span>--member<span class="o">=</span>serviceAccount:<span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="w">    </span>--role<span class="o">=</span>roles/compute.instanceAdmin.v1
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="w">    </span>--member<span class="o">=</span>serviceAccount:<span class="si">${</span><span class="nv">PROJECT_NUMBER</span><span class="si">}</span>-compute@developer.gserviceaccount.com<span class="w"> </span><span class="se">\</span>
 <a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="w">    </span>--role<span class="o">=</span>roles/iam.serviceAccountUser
 </code></pre></div>
@@ -1144,7 +1172,7 @@ location, run:</p>
 </code></pre></div>
 <p>This installs <code>gcluster</code> into <code>${HOME}/bin</code>; then ensure that directory is
 on your <code>PATH</code>:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/bin&quot;</span>
+<div class="highlight"><pre><span></span><code><a id="__codelineno-12-1" name="__codelineno-12-1" href="#__codelineno-12-1"></a><span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="si">${</span><span class="nv">PATH</span><span class="si">}</span><span class="s2">:</span><span class="si">${</span><span class="nv">HOME</span><span class="si">}</span><span class="s2">/bin"</span>
 </code></pre></div>
 <h3 id="grant-adc-access-to-terraform">Grant ADC Access to Terraform<a class="headerlink" href="#grant-adc-access-to-terraform" title="Permanent link">&para;</a></h3>
 <p>Generate cloud credentials associated with your Google Cloud account and grant
@@ -1189,10 +1217,10 @@ At minimum, grant yourself:</p>
   tunnels through <a href="https://cloud.google.com/iap">Identity-Aware Proxy</a>) can reach the login node.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-14-1" name="__codelineno-14-1" href="#__codelineno-14-1"></a><span class="nv">USER_EMAIL</span><span class="o">=</span><span class="k">$(</span>gcloud<span class="w"> </span>config<span class="w"> </span>get-value<span class="w"> </span>account<span class="k">)</span>
-<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">&quot;user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--role<span class="o">=</span>roles/compute.osLogin
-<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">&quot;</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span><span class="se">\</span>
-<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">&quot;user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">&quot;</span><span class="w"> </span>--role<span class="o">=</span>roles/iap.tunnelResourceAccessor
+<a id="__codelineno-14-2" name="__codelineno-14-2" href="#__codelineno-14-2"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-3" name="__codelineno-14-3" href="#__codelineno-14-3"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">"user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--role<span class="o">=</span>roles/compute.osLogin
+<a id="__codelineno-14-4" name="__codelineno-14-4" href="#__codelineno-14-4"></a>gcloud<span class="w"> </span>projects<span class="w"> </span>add-iam-policy-binding<span class="w"> </span><span class="s2">"</span><span class="si">${</span><span class="nv">PROJECT_ID</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span><span class="se">\</span>
+<a id="__codelineno-14-5" name="__codelineno-14-5" href="#__codelineno-14-5"></a><span class="w">    </span>--member<span class="o">=</span><span class="s2">"user:</span><span class="si">${</span><span class="nv">USER_EMAIL</span><span class="si">}</span><span class="s2">"</span><span class="w"> </span>--role<span class="o">=</span>roles/iap.tunnelResourceAccessor
 </code></pre></div>
 <h3 id="deploy-the-cluster">Deploy the Cluster<a class="headerlink" href="#deploy-the-cluster" title="Permanent link">&para;</a></h3>
 <p>Copy the <a href="../blueprint/#paratools-pro-for-e4stm-slurm-cluster-blueprint-example">ParaTools-Pro-slurm-cluster-blueprint-example</a> from the
@@ -1377,7 +1405,7 @@ deletion.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.breadcrumbs", "toc.follow", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>

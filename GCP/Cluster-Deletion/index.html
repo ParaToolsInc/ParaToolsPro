@@ -23,7 +23,7 @@
       
       
       <link rel="icon" href="../../assets/favicon.png">
-      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.6">
+      <meta name="generator" content="mkdocs-ProperDocs 1.6.7, mkdocs-material-9.7.7">
     
     
       
@@ -31,7 +31,7 @@
       
     
     
-      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.ec1eaa64.min.css">
       
         
         <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -255,7 +255,7 @@
     
     
       <li class="md-tabs__item">
-        <a href="../../Azure/getting-started-Azure/" class="md-tabs__link">
+        <a href="../../Azure/getting-started-Azure-CCWS/" class="md-tabs__link">
           
   
   
@@ -883,6 +883,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../Azure/getting-started-Azure-CCWS/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Getting Started with CycleCloud Workspace for Slurm
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../Azure/getting-started-Azure/" class="md-nav__link">
         
   
@@ -890,7 +918,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Getting Started with CycleCloud
   
 
     
@@ -1017,11 +1045,11 @@ folder with the new contents.</p>
 <p>If you are getting errors like the one below, <code>gcluster</code> is unable to
 recreate a cluster because of leftover resources from a prior deployment
 that was not cleanly destroyed:</p>
-<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Error: Error creating Address: googleapi: Error 409: The resource &#39;projects/YOUR-PROJECT/regions/us-central1/addresses/DEPLOYMENT_NAME&#39; already exists, alreadyExists
+<div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>Error: Error creating Address: googleapi: Error 409: The resource 'projects/YOUR-PROJECT/regions/us-central1/addresses/DEPLOYMENT_NAME' already exists, alreadyExists
 <a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a>
-<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>with module.network.module.nat_ip_addresses[&quot;us-central1&quot;].google_compute_address.ip[1],
-<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>on .terraform/modules/network.nat_ip_addresses/main.tf line 50, in resource &quot;google_compute_address&quot; &quot;ip&quot;:
-<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  50: resource &quot;google_compute_address&quot; &quot;ip&quot; {
+<a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a>with module.network.module.nat_ip_addresses["us-central1"].google_compute_address.ip[1],
+<a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a>on .terraform/modules/network.nat_ip_addresses/main.tf line 50, in resource "google_compute_address" "ip":
+<a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>  50: resource "google_compute_address" "ip" {
 </code></pre></div>
 <p>You must manually delete the leftover resources before <code>gcluster</code> can
 recreate them. The most common categories are:</p>
@@ -1055,11 +1083,11 @@ cluster configuration, so v6 deployments will not produce the
 <code>*-ghpc_startup_sh</code> key collisions described below. Keep this section as a fallback
 for cleaning up older v5 deployments left behind by previous releases.</p>
 <p>If you see errors like
-<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Error: key &quot;DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh&quot; already present in metadata for project &quot;YOUR-PROJECT&quot;. Use `terraform import` to manage it with Terraform
+<div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>Error: key "DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh" already present in metadata for project "YOUR-PROJECT". Use `terraform import` to manage it with Terraform
 <a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a>
-<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a> with module.slurm_controller.module.slurm_controller_instance.google_compute_project_metadata_item.compute_startup_scripts[&quot;ghpc_startup_sh&quot;],
-<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  on .terraform/modules/slurm_controller.slurm_controller_instance/terraform/slurm_cluster/modules/slurm_controller_instance/main.tf line 281, in resource &quot;google_compute_project_metadata_item&quot; &quot;compute_startup_scripts&quot;:
-<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a> 281: resource &quot;google_compute_project_metadata_item&quot; &quot;compute_startup_scripts&quot; {
+<a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a> with module.slurm_controller.module.slurm_controller_instance.google_compute_project_metadata_item.compute_startup_scripts["ghpc_startup_sh"],
+<a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a>  on .terraform/modules/slurm_controller.slurm_controller_instance/terraform/slurm_cluster/modules/slurm_controller_instance/main.tf line 281, in resource "google_compute_project_metadata_item" "compute_startup_scripts":
+<a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a> 281: resource "google_compute_project_metadata_item" "compute_startup_scripts" {
 </code></pre></div>
 you must manually delete each of the listed keys with <code>gcloud compute
 project-info remove-metadata</code>. See <a href="https://cloud.google.com/sdk/gcloud/reference/compute/project-info"><code>gcloud compute project-info</code></a> for
@@ -1068,13 +1096,13 @@ reference. Inspect current metadata with
 </code></pre></div>
 Remove keys one at a time:
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>gcloud compute project-info remove-metadata \
-<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    --keys=&quot;DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh&quot; \
+<a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a>    --keys="DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh" \
 <a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a>    --project=YOUR-PROJECT
 </code></pre></div>
 Or, if you have many keys to remove, batch them in a single call (replace each entry
 with the actual key name from your error output):
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a>gcloud compute project-info remove-metadata \
-<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    --keys=&quot;DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh&quot;,&quot;DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-slurmdbd-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-cgroup-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-tpl-slurm-conf&quot;,&quot;DEPLOYMENT_NAME-slurm-partition-compute-script-ghpc_startup_sh&quot; \
+<a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a>    --keys="DEPLOYMENT_NAME-slurm-compute-script-ghpc_startup_sh","DEPLOYMENT_NAME-slurm-controller-script-ghpc_startup_sh","DEPLOYMENT_NAME-slurm-tpl-slurmdbd-conf","DEPLOYMENT_NAME-slurm-tpl-cgroup-conf","DEPLOYMENT_NAME-slurm-tpl-slurm-conf","DEPLOYMENT_NAME-slurm-partition-compute-script-ghpc_startup_sh" \
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a>    --project=YOUR-PROJECT
 </code></pre></div></p>
 <div class="admonition danger">
@@ -1168,7 +1196,7 @@ clearly named after the deleted v5 deployment.</p>
       <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.tracking", "navigation.tabs", "navigation.sections", "navigation.breadcrumbs", "toc.follow", "toc.integrate", "navigation.top", "search.suggest", "search.highlight", "content.code.annotate", "content.code.copy", "content.code.select", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
       
     
   </body>
