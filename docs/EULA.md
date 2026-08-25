@@ -1,12 +1,12 @@
 # End User License Agreement (EULA)
 
-**ParaTools Pro for E4S**
+**ParaTools Pro for E4S™**
 
 **Last Updated:** January 5, 2025
 
 ---
 
-This End User License Agreement ("Agreement") is a legal agreement between you ("Licensee" or "You") and **ParaTools, Inc.** ("ParaTools," "We," or "Licensor") governing your use of the software distribution known as **ParaTools Pro for E4S** ("Software").
+This End User License Agreement ("Agreement") is a legal agreement between you ("Licensee" or "You") and **ParaTools, Inc.** ("ParaTools," "We," or "Licensor") governing your use of the software distribution known as **ParaTools Pro for E4S™** ("Software").
 
 By installing, accessing, or using the Software, You agree to be bound by the terms of this Agreement.
 
@@ -27,7 +27,7 @@ The Software may be deployed:
 
 ## 2. Software Description and Open-Source Components
 
-ParaTools Pro for E4S is a **commercial software distribution based on the E4S (Ecosystem for Science) software ecosystem**.
+ParaTools Pro for E4S™ is a **commercial software distribution based on the E4S (Ecosystem for Science) software ecosystem**.
 
 - The Software includes, aggregates, or depends upon **open-source software components**, each of which is licensed under its own applicable open-source license.
 - Nothing in this Agreement limits Your rights under the licenses governing such open-source components.
