@@ -25,6 +25,7 @@ case "$1" in
             mkdocs-linkcheck -r docs \
                 -m get \
                 --exclude "console.cloud.google.com" \
+                --exclude "^https?://localhost(:[0-9]+)?" \
                 --exclude "\.md$" \
                 --exclude "\.yaml$" \
                 "$@"

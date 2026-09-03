@@ -117,3 +117,11 @@ nav:
     - Getting Started with CycleCloud: Azure/getting-started-Azure.md
   - EULA: EULA.md
   - Privacy Policy: privacy.md
+
+# Fail strict builds on broken in-site links (mkdocs >= 1.6 validation)
+validation:
+  links:
+    not_found: warn
+    anchors: warn
+    absolute_links: warn
+    unrecognized_links: warn

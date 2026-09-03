@@ -49,6 +49,7 @@ jobs:
             --rate-limit=5 \
             --timeout=30 \
             --ignore-fragments \
+            --exclude="^https?://localhost(:[0-9]+)?(/.*)?$" \
             --header="User-Agent: ParaToolsProLinkChecker/1.0 (+https://github.com/ParaToolsInc/ParaToolsPro)" \
             --accepted-status-codes=200,204,206,301,302,304,401,403,405,418,429 \
             "$SITE_URL" > muffet.out 2>&1
